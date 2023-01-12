@@ -5,9 +5,9 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
-from s2spy.time import AdventCalendar
-from s2spy.time import MonthlyCalendar
-from s2spy.time import WeeklyCalendar
+from lilio.time import AdventCalendar
+from lilio.time import MonthlyCalendar
+from lilio.time import WeeklyCalendar
 
 
 def interval(start, end, closed: Literal["left", "right", "both", "neither"] = "left"):

@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 import pytest
 from pandas.tseries.offsets import DateOffset
-from s2spy.time import Calendar
-from s2spy.time import Interval
+from lilio.time import Calendar
+from lilio.time import Interval
 
 
 def interval(start, end, closed: Literal["left", "right", "both", "neither"] = "left"):

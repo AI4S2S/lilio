@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
-SPHINXPROJ    = s2spy
+SPHINXPROJ    = lilio
 SOURCEDIR     = .
 BUILDDIR      = _build
 

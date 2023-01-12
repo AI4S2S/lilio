@@ -1,7 +1,7 @@
 # YAML 1.2
 ---
 cff-version: "1.1.0"
-title: "s2spy"
+title: "lilio"
 authors:
   -
     family-names: Liu
@@ -34,7 +34,7 @@ authors:
 
 date-released: 2022-09-02
 version: "0.2.1"
-repository-code: "https://github.com/AI4S2S/s2spy"
+repository-code: "https://github.com/AI4S2S/lilio"
 keywords:
   - s2s
   - ai

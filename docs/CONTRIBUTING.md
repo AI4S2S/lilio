@@ -50,10 +50,10 @@ This section is for maintainers of the package.
 5. Make sure pre-commit hooks are green for all files by running ``pre-commit run --all-files``.
 6. Commit & push changes to GitHub.
 7. Wait for [GitHub
-    actions](https://github.com/AI4S2S/s2spy/actions?query=branch%3Amain+)
+    actions](https://github.com/AI4S2S/lilio/actions?query=branch%3Amain+)
     to be completed and green.
 
-8. Create a [GitHub release](https://github.com/AI4S2S/s2spy/releases/new)
+8. Create a [GitHub release](https://github.com/AI4S2S/lilio/releases/new)
 
     - Use version as title and tag version.
     - As description use intro text from README.md (to give context to
@@ -67,9 +67,9 @@ This section is for maintainers of the package.
 
 10. Verify
 
-    1. Has [new Zenodo record](https://zenodo.org/search?page=1&size=20&q=s2spy) been created?
+    1. Has [new Zenodo record](https://zenodo.org/search?page=1&size=20&q=lilio) been created?
     2. Has [stable](https://ai4s2s.readthedocs.io/en/stable/) ReadTheDocs been updated?
     3. Can new version be installed with pip using
-        `python3 -m pip install s2spy==<new version>`?
+        `python3 -m pip install lilio==<new version>`?
 
 11. Celebrate

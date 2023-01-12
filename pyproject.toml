@@ -7,7 +7,7 @@ testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["s2spy"]
+source = ["lilio"]
 command_line = "-m pytest"
 
 [tool.coverage.report]

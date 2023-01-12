@@ -17,13 +17,13 @@ fi
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 echo "Starting isort analysis using configuration from setup.cfg..."
 
-# recursively run isort on s2spy/ directory, don't try to automatically fix anything
-isort --recursive --check-only s2spy
+# recursively run isort on lilio/ directory, don't try to automatically fix anything
+isort --recursive --check-only lilio
 
 if [ $? != "0" ]; then
     echo "Commit aborted."
-    echo "  Run 'isort --recursive --check-only --diff s2spy' to see what's wrong."
-    echo "  Run 'isort --recursive s2spy' to let isort fix problems automatically."
+    echo "  Run 'isort --recursive --check-only --diff lilio' to see what's wrong."
+    echo "  Run 'isort --recursive lilio' to let isort fix problems automatically."
     exit 1
 fi
 

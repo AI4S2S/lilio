@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 import pytest
 from bokeh import io as bokeh_io
-from s2spy import time
+from lilio import time
 
 
 class TestPlots:

@@ -5,8 +5,8 @@ import numpy as np
 import pytest
 import xarray as xr
 import pandas as pd
-from s2spy.time import Calendar
-from s2spy import calendar_shifter
+from lilio.time import Calendar
+from lilio import calendar_shifter
 
 
 class TestCalendarShifter:

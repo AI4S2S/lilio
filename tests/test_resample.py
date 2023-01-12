@@ -6,9 +6,9 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
-from s2spy.time import AdventCalendar
-from s2spy.time import Calendar
-from s2spy.time import resample
+from lilio.time import AdventCalendar
+from lilio.time import Calendar
+from lilio.time import resample
 
 
 class TestResample:
