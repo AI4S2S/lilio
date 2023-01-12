@@ -12,11 +12,11 @@ readme = "README.md"
 license = { text = "Apache Software License" }
 requires-python = ">=3.8, <3.11"
 authors = [
-  { name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
-  { name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl" },
-  { name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl" },
-  { name = "Jannes van Ingen" },
-  { name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl" },
+  {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
+  {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Jannes van Ingen"},
+  {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
 ]
 keywords = [
   "calendar",
@@ -39,10 +39,11 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
 ]
 dependencies = [
+  "netcdf4",
   "numpy",
   "pandas",
-  "xarray",
   "matplotlib",
+  "xarray",
 ]
 dynamic = ["version"]
 
