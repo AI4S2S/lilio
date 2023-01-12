@@ -32,7 +32,7 @@ jobs:
       - name: Upgrade pip and install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install .[dev,publishing]
+          python3 -m pip install .[dev]
       - name: Run unit tests
         run: pytest -v
       - name: Verify that we can build the package

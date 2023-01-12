@@ -13,7 +13,7 @@ authors = [
   "Jannes van Ingen <jannes.van.ingen@s2s-ai.com>",
   "Sem Vijverberg <sem.vijverberg@vu.nl>",
 ]
-licence = "Apache 2.0"
+license = "Apache 2.0"
 readme = "README.md"
 repository = "https://github.com/AI4S2S/lilio"
 keywords = [
@@ -47,6 +47,23 @@ numpy="*"
 pandas="*"
 matplotlib="*"
 xarray="*"
+
+[tool.poetry.dev-dependencies]
+bump2version = "*"
+black = "*"
+coverage = {version = "*", extras = ["toml"]}
+isort = "*"
+mypy = "==0.981"
+myst_parser = "*"
+pylint = "2.15.6"
+prospector = {version = "1.7.7", extras = ["with_pyroma"]}  # https://github.com/PyCQA/prospector/issues/545
+pytest = "*"
+pytest-cov = "*"
+sphinx = "*"
+sphinx_rtd_theme = "*"
+sphinx-autoapi = "*"
+bokeh = "< 3.0.0"
+tox = "*"
 
 [tool.poetry.extras]
 dev = [
