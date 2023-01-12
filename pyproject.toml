@@ -69,6 +69,10 @@ publishing = ["twine", "wheel"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.pylint."messages control"]
+# Suppress warnings for bad variables for specific variables:
+good-names = ["X", "x", "y"]
+
 [tool.black]
 line-length = 88
 target-version = ['py38', 'py39', 'py310']

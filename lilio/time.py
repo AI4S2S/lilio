@@ -507,9 +507,8 @@ class Calendar(BaseCalendar):
         self._last_year: Union[None, int] = None
 
         if intervals is not None:
-            [
-                self._append(iv) for iv in intervals
-            ]  # pylint: disable=expression-not-assigned
+            # pylint: disable=expression-not-assigned
+            [self._append(iv) for iv in intervals]
 
         self._set_mapping(mapping)
 
