@@ -28,7 +28,7 @@
 
     "license": "Apache-2.0",
 
-    "title": "lilio: make calendars for machine learning with timeseries",
+    "title": "lilio: Calendar generator for machine learning with timeseries data",
 
     "keywords": [
         "calendar",

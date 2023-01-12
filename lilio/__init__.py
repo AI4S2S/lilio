@@ -1,5 +1,5 @@
 """
-lilio: make calendars for machine learning with timeseries
+lilio: Calendar generator for machine learning with timeseries data
 """
 import logging
 from . import calendar_shifter

@@ -1,4 +1,4 @@
-# lilio: make calendars for machine learning with timeseries
+# lilio: Calendar generator for machine learning with timeseries data
 
 <img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/s2spy/main/docs/assets/images/ai4s2s_logo.png">
 
