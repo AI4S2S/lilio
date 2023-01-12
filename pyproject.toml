@@ -71,7 +71,8 @@ dev = [
   "mypy==0.981",
   "myst_parser",
   "pylint==2.15.6",
-  "prospector[with_pyroma]==1.7.7",  # https://github.com/PyCQA/prospector/issues/545
+  "pyroma",
+  "prospector[with_pyroma]",
   "pytest",
   "pytest-cov",
   "sphinx",
