@@ -1,27 +1,44 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.8.0", "hatch-vcs", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
-name = "lilio"
-version = "0.2.0"
-description = "python package for generating calendars for machine learning timeseries analysis."
-authors = [
-  "Yang Liu <y.liu@esciencecenter.nl>",
-  "Bart Schilperoort <b.schilperoort@esciencecenter.nl>",
-  "Peter Kalverla <b.schilperoort@esciencecenter.nl>",
-  "Jannes van Ingen <jannes.van.ingen@s2s-ai.com>",
-  "Sem Vijverberg <sem.vijverberg@vu.nl>",
+[tool.setuptools]
+py-modules = ["lilio"]
+
+[tool.hatch.version]
+path = "lilio/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+  "/notebooks",
+  "/tests",
 ]
-license = "Apache 2.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lilio"]
+
+[project]
+name = "lilio"
+description = "python package for generating calendars for machine learning timeseries analysis."
 readme = "README.md"
-repository = "https://github.com/AI4S2S/lilio"
+license = { text = "Apache Software License" }
+requires-python = ">=3.8, <3.11"
+authors = [
+  {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
+  {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Jannes van Ingen"},
+  {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
+]
 keywords = [
   "calendar",
   "calendar generation",
   "calendar maker",
   "machine learning",
   "timeseries analysis",
+
 ]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
@@ -35,41 +52,21 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
 ]
-packages = [
-    { include = "lilio" },
+dependencies = [
+  "netcdf4",
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "xarray",
 ]
-include = ["CHANGELOG.md"]
+dynamic = ["version"]
 
-[tool.poetry.dependencies]
-python=">=3.8, <3.11"
-netcdf4="*"
-numpy="*"
-pandas="*"
-matplotlib="*"
-xarray="*"
-
-[tool.poetry.dev-dependencies]
-bump2version = "*"
-black = "*"
-coverage = {version = "*", extras = ["toml"]}
-isort = "*"
-mypy = "==0.981"
-myst_parser = "*"
-pylint = "2.15.6"
-prospector = {version = "1.7.7", extras = ["with_pyroma"]}  # https://github.com/PyCQA/prospector/issues/545
-pytest = "*"
-pytest-cov = "*"
-sphinx = "*"
-sphinx_rtd_theme = "*"
-sphinx-autoapi = "*"
-bokeh = "< 3.0.0"
-tox = "*"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 dev = [
   "bump2version",
   "black",
   "coverage [toml]",
+  "hatch",
   "isort",
   "mypy==0.981",
   "myst_parser",
