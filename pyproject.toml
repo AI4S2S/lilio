@@ -1,9 +1,89 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["lilio"]
+
+[project]
+name = "lilio"
+description = "python package for generating calendars for machine learning timeseries analysis."
+readme = "README.md"
+license = { text = "Apache Software License" }
+requires-python = ">=3.8, <3.11"
+authors = [
+  { name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
+  { name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl" },
+  { name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl" },
+  { name = "Jannes van Ingen" },
+  { name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl" },
+]
+keywords = [
+  "calendar",
+  "calendar generation",
+  "calendar maker",
+  "machine learning",
+  "timeseries analysis",
+
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "xarray",
+  "matplotlib",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+  "bump2version",
+  "black",
+  "coverage [toml]",
+  "isort",
+  "mypy==0.981",
+  "myst_parser",
+  "pylint==2.15.6",
+  "prospector[with_pyroma]==1.7.7",  # https://github.com/PyCQA/prospector/issues/545
+  "pytest",
+  "pytest-cov",
+  "sphinx",
+  "sphinx_rtd_theme",
+  "sphinx-autoapi",
+  "bokeh < 3.0.0",
+  "tox",
+]
+publishing = ["twine", "wheel"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310']
+include = '\.pyi?$'
+
+[tool.isort]
+py_version=39
+skip = [".gitignore", ".dockerignore"]
+skip_glob = ["docs/*"]
+force_single_line = true
+lines_after_imports = 2
+no_lines_before = ["FUTURE","STDLIB","THIRDPARTY","FIRSTPARTY","LOCALFOLDER"]
+known_first_party = ["lilio"]
+src_paths = ["lilio", "tests"]
+line_length = 120
 
 [tool.coverage.run]
 branch = true

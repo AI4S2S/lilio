@@ -2,11 +2,11 @@
 """
 import copy
 import numpy as np
+import pandas as pd
 import pytest
 import xarray as xr
-import pandas as pd
-from lilio.time import Calendar
 from lilio import calendar_shifter
+from lilio.time import Calendar
 
 
 class TestCalendarShifter:
