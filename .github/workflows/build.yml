@@ -31,12 +31,12 @@ jobs:
           python3 --version
       - name: Upgrade pip and install dependencies
         run: |
-          python3 -m pip install --upgrade pip setuptools
+          python3 -m pip install --upgrade pip
           python3 -m pip install .[dev,publishing]
       - name: Run unit tests
         run: pytest -v
       - name: Verify that we can build the package
-        run: python3 setup.py sdist bdist_wheel
+        run: python3 -m build
 
   lint:
     name: Linting build

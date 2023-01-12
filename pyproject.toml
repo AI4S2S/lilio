@@ -1,30 +1,27 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.setuptools]
-py-modules = ["lilio"]
-
-[project]
+[tool.poetry]
 name = "lilio"
+version = "0.2.0"
 description = "python package for generating calendars for machine learning timeseries analysis."
-readme = "README.md"
-license = { text = "Apache Software License" }
-requires-python = ">=3.8, <3.11"
 authors = [
-  {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
-  {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
-  {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
-  {name = "Jannes van Ingen"},
-  {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
+  "Yang Liu <y.liu@esciencecenter.nl>",
+  "Bart Schilperoort <b.schilperoort@esciencecenter.nl>",
+  "Peter Kalverla <b.schilperoort@esciencecenter.nl>",
+  "Jannes van Ingen <jannes.van.ingen@s2s-ai.com>",
+  "Sem Vijverberg <sem.vijverberg@vu.nl>",
 ]
+licence = "Apache 2.0"
+readme = "README.md"
+repository = "https://github.com/AI4S2S/lilio"
 keywords = [
   "calendar",
   "calendar generation",
   "calendar maker",
   "machine learning",
   "timeseries analysis",
-
 ]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
@@ -38,16 +35,20 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
 ]
-dependencies = [
-  "netcdf4",
-  "numpy",
-  "pandas",
-  "matplotlib",
-  "xarray",
+packages = [
+    { include = "lilio" },
 ]
-dynamic = ["version"]
+include = ["CHANGELOG.md"]
 
-[project.optional-dependencies]
+[tool.poetry.dependencies]
+python=">=3.8, <3.11"
+netcdf4="*"
+numpy="*"
+pandas="*"
+matplotlib="*"
+xarray="*"
+
+[tool.poetry.extras]
 dev = [
   "bump2version",
   "black",
