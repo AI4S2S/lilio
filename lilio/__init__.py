@@ -1,8 +1,5 @@
 """
-s2spy: integrating expert knowledge and ai to boost S2S forecasting.
-
-This package is a high-level python package integrating expert knowledge
-and artificial intelligence to boost (sub) seasonal forecasting.
+lilio: make calendars for machine learning with timeseries
 """
 import logging
 from . import calendar_shifter

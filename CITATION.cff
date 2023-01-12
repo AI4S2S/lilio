@@ -36,7 +36,10 @@ date-released: 2022-09-02
 version: "0.2.1"
 repository-code: "https://github.com/AI4S2S/lilio"
 keywords:
-  - s2s
-  - ai
+  - calendar
+  - calendar generation
+  - calendar maker
+  - machine learning
+  - timeseries analysis
 message: "If you use this software, please cite it using these metadata."
 license: Apache-2.0

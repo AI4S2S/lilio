@@ -28,7 +28,13 @@
 
     "license": "Apache-2.0",
 
-    "title": "s2spy: boosting (sub) seasonal forecasting with AI in python",
+    "title": "lilio: make calendars for machine learning with timeseries",
 
-    "keywords": ["s2s", "AI"]
+    "keywords": [
+        "calendar",
+        "calendar generation",
+        "calendar maker",
+        "machine learning",
+        "timeseries analysis"
+    ]
 }
