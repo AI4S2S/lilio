@@ -1,7 +1,7 @@
 # YAML 1.2
 ---
 cff-version: "1.1.0"
-title: "lilio"
+title: "lilio: Calendar generator for machine learning with timeseries data"
 authors:
   -
     family-names: Liu
