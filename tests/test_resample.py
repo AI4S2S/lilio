@@ -52,7 +52,7 @@ class TestResample:
     @pytest.fixture(autouse=True)
     def dummy_multidimensional(self):
         np.random.seed(0)
-        time_index = pd.date_range('20171020', '20211001', freq='15d')
+        time_index = pd.date_range("20171020", "20211001", freq="15d")
         return xr.Dataset(
             data_vars=dict(
                 temp=(["x", "y", "time"], np.random.randn(2, 2, len(time_index))),
@@ -189,7 +189,7 @@ class TestResample:
         cal = dummy_calendar.map_to_data(dataset)
         resampled_data = resample(cal, dataset)
         with tempfile.TemporaryDirectory() as tmpdirname:
-            path = Path(tmpdirname) / 'test.nc'
+            path = Path(tmpdirname) / "test.nc"
             resampled_data.to_netcdf(path)
 
     def test_overlapping(self):

@@ -82,6 +82,7 @@ month_mapping_dict = {
 
 class AdventCalendar(BaseCalendar):
     """Countdown time to anticipated anchor date or period of interest."""
+
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -91,7 +92,7 @@ class AdventCalendar(BaseCalendar):
         max_lag: int = 0,
         allow_overlap: bool = False,
         mapping: Union[None, MappingYears, MappingData] = None,
-        ) -> None:
+    ) -> None:
         """Instantiate a basic calendar with minimal configuration.
 
         Set up the calendar with given freq ending exactly on the anchor date.
@@ -230,6 +231,7 @@ class AdventCalendar(BaseCalendar):
 
 class MonthlyCalendar(AdventCalendar):
     """Countdown time to anticipated anchor month, in steps of whole months."""
+
     # pylint: disable=too-many-arguments
     def __init__(
         self,
@@ -448,12 +450,13 @@ class Calendar(BaseCalendar):
         self,
         anchor: str,
         allow_overlap: bool = False,
-        mapping: Union[None,
-                       Tuple[Literal["years"], int, int],
-                       Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
-                       ] = None,
+        mapping: Union[
+            None,
+            Tuple[Literal["years"], int, int],
+            Tuple[Literal["data"], pd.Timestamp, pd.Timestamp],
+        ] = None,
         intervals: Union[None, List[Interval]] = None,
-        ):
+    ):
         """Instantiate a basic container for building calendar using basic blocks.
 
         This is a highly flexible calendar which allows the user to build their own
@@ -504,7 +507,9 @@ class Calendar(BaseCalendar):
         self._last_year: Union[None, int] = None
 
         if intervals is not None:
-            [self._append(iv) for iv in intervals]  # pylint: disable=expression-not-assigned
+            [
+                self._append(iv) for iv in intervals
+            ]  # pylint: disable=expression-not-assigned
 
         self._set_mapping(mapping)
 
@@ -534,11 +539,13 @@ class Calendar(BaseCalendar):
                 to 1.
         """
         if not isinstance(n, int):
-            raise ValueError("Please input an 'int' type for the 'n' argument."
-                             f" Not a {type(n)}.")
+            raise ValueError(
+                "Please input an 'int' type for the 'n' argument." f" Not a {type(n)}."
+            )
         if n <= 0:
-            raise ValueError("The number of intervals 'n' has to be 1 or greater, "
-                             f"not '{n}'.")
+            raise ValueError(
+                "The number of intervals 'n' has to be 1 or greater, " f"not '{n}'."
+            )
 
         if role in ["target", "precursor"]:
             for _ in range(n):
@@ -563,9 +570,11 @@ class Calendar(BaseCalendar):
         if len(intervals) == 0:
             intervals_str = repr(None)
         else:
-            intervals_str = f"[{linesep}\t\t" +\
-                            f",{linesep}\t\t".join([repr(iv) for iv in intervals]) +\
-                            f"{linesep}\t]"
+            intervals_str = (
+                f"[{linesep}\t\t"
+                + f",{linesep}\t\t".join([repr(iv) for iv in intervals])
+                + f"{linesep}\t]"
+            )
 
         if self._mapping == "years":
             mapping = ("years", self._first_year, self._last_year)

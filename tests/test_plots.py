@@ -8,6 +8,7 @@ from lilio import time
 
 class TestPlots:
     """Test the visualizations (rough check for errors only)."""
+
     @pytest.fixture(autouse=True)
     def dummy_bokeh_file(self, tmp_path):
         bokeh_io.output_file(tmp_path / "test.html")
@@ -37,27 +38,28 @@ class TestPlots:
 
     def test_visualize_relative(self, dummy_calendars, isinteractive):
         dummy_calendars.visualize(interactive=isinteractive, relative_dates=True)
-        plt.close('all')
+        plt.close("all")
 
     def test_visualize_absolute(self, dummy_calendars, isinteractive):
         dummy_calendars.visualize(interactive=isinteractive, relative_dates=False)
-        plt.close('all')
+        plt.close("all")
 
     def test_visualize_without_text(self, dummy_calendars, isinteractive):
         dummy_calendars.visualize(interactive=isinteractive, show_length=False)
-        plt.close('all')
+        plt.close("all")
 
     def test_visualize_with_text(self, dummy_calendars, isinteractive):
         dummy_calendars.visualize(interactive=isinteractive, show_length=True)
-        plt.close('all')
+        plt.close("all")
 
     def test_visualize_unmapped(self, isinteractive):
         time.AdventCalendar(anchor="12-31").visualize(interactive=isinteractive)
-        plt.close('all')
+        plt.close("all")
 
 
 class TestPlotsSingle:
     """Test the visualization routines, where a single calendar suffices"""
+
     @pytest.fixture(autouse=True)
     def dummy_bokeh_file(self, tmp_path):
         bokeh_io.output_file(tmp_path / "test.html")
@@ -80,16 +82,16 @@ class TestPlotsSingle:
     def test_bokeh_kwarg_mpl(self, dummy_calendar):
         with pytest.warns():
             dummy_calendar.visualize(interactive=False, width=800)
-            plt.close('all')
+            plt.close("all")
 
     def test_mpl_no_legend(self, dummy_calendar):
         dummy_calendar.visualize(interactive=False, add_legend=False)
-        plt.close('all')
+        plt.close("all")
 
     def test_mpl_ax_kwarg(self, dummy_calendar):
         _, ax = plt.subplots()
         dummy_calendar.visualize(interactive=False, ax=ax)
-        plt.close('all')
+        plt.close("all")
 
     def test_bokeh_ax_warning(self, dummy_calendar):
         _, ax = plt.subplots()

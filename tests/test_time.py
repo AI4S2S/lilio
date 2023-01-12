@@ -17,7 +17,12 @@ def interval(start, end, closed: Literal["left", "right", "both", "neither"] = "
 
 def remove_whitespace(input_string: str):
     "Removes all whitespace. Makes testing reprs easier."
-    return input_string.replace(" ", "").replace("\n", "").replace("\r", "").replace("\t", "")
+    return (
+        input_string.replace(" ", "")
+        .replace("\n", "")
+        .replace("\r", "")
+        .replace("\t", "")
+    )
 
 
 class TestAdventCalendar:

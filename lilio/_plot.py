@@ -160,7 +160,7 @@ def matplotlib_visualization(
     show_length: bool = False,
     add_legend: bool = True,
     add_yticklabels: bool = True,
-    ax = None,
+    ax=None,
 ):
     """Visualization routine for generating a calendar visualization with Bokeh.
 
@@ -174,7 +174,7 @@ def matplotlib_visualization(
         add_yticklabels: If the years should be displayed on the y-axis ticks.
     """
     if ax is None:
-        fig, ax = plt.subplots(figsize=(7,4))
+        fig, ax = plt.subplots(figsize=(7, 4))
     else:
         fig = None
 
@@ -217,16 +217,16 @@ def matplotlib_visualization(
     # Add a custom legend to explain to users what the colors mean
     if add_legend:
         legend_elements = [
-        Patch(
-            facecolor="#ff8c00",
-            label="Target interval",
-            linewidth=1.5,
-        ),
-        Patch(
-            facecolor="#137fc1",
-            label="Precursor interval",
-            linewidth=1.5,
-        ),
+            Patch(
+                facecolor="#ff8c00",
+                label="Target interval",
+                linewidth=1.5,
+            ),
+            Patch(
+                facecolor="#137fc1",
+                label="Precursor interval",
+                linewidth=1.5,
+            ),
         ]
         ax.legend(handles=legend_elements, loc="center left", bbox_to_anchor=(1, 0.5))
 

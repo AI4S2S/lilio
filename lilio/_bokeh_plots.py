@@ -69,7 +69,7 @@ def _bokeh_visualization(
 
     figure = plotting.figure(
         **kwargs,
-        )
+    )
 
     intervals = calendar.get_intervals()[:n_years]
 

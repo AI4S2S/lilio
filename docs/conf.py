@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = u"lilio"
-copyright = u"2022, Netherlands eScience Center"
-author = u"Yang Liu"
+project = "lilio"
+copyright = "2022, Netherlands eScience Center"
+author = "Yang Liu"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -83,20 +83,20 @@ html_theme = "sphinx_rtd_theme"
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
     "**": [
-        'globaltoc.html',
+        "globaltoc.html",
         "relations.html",  # needs 'show_related': True theme option to display
         "searchbox.html",
     ]
 }
 
-html_logo = './assets/images/ai4s2s_logo.png'
+html_logo = "./assets/images/ai4s2s_logo.png"
 
 # -- Options for Intersphinx
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'matplotlib': ('https://matplotlib.org/stable/', None),
-    'pandas': ('http://pandas.pydata.org/docs/', None),
-    'xarray': ('https://docs.xarray.dev/en/stable/', None),
+    "numpy": ("http://docs.scipy.org/doc/numpy/", None),
+    "matplotlib": ("https://matplotlib.org/stable/", None),
+    "pandas": ("http://pandas.pydata.org/docs/", None),
+    "xarray": ("https://docs.xarray.dev/en/stable/", None),
 }

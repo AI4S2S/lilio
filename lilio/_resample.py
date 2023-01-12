@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from lilio.time import Calendar
     from lilio.time import MonthlyCalendar
     from lilio.time import WeeklyCalendar
+
     Calendars = Union[Calendar, AdventCalendar, WeeklyCalendar, MonthlyCalendar]
 
 
@@ -201,7 +202,7 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
         _data = input_data_time[var].values
         for j, row in enumerate(contains_matrix):
             # Note: next line allows for np.median / np.max etc. To be implemented later
-            resampled_data[j,:] = np.mean(_data[row], axis=0)
+            resampled_data[j, :] = np.mean(_data[row], axis=0)
 
         resampled_data = np.squeeze(resampled_data)  # in case of (1, n) resampled data
 
@@ -221,16 +222,14 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
 
 @overload
 def resample(
-    mapped_calendar: "Calendars",
-    input_data: Union[xr.DataArray, xr.Dataset]
+    mapped_calendar: "Calendars", input_data: Union[xr.DataArray, xr.Dataset]
 ) -> xr.Dataset:
     ...
 
 
 @overload
 def resample(
-    mapped_calendar: "Calendars",
-    input_data: Union[pd.Series, pd.DataFrame]
+    mapped_calendar: "Calendars", input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     ...
 
