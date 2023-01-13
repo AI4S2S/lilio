@@ -18,6 +18,8 @@ jobs:
       matrix:
         os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
         python-version: ['3.8', '3.9', '3.10']
+    env:
+      MPLBACKEND: Agg  # https://github.com/orgs/community/discussions/26434
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
