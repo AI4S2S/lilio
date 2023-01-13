@@ -6,12 +6,10 @@
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio)
 [![github license badge](https://img.shields.io/github/license/AI4S2S/lilio)](https://github.com/AI4S2S/lilio)
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
-<!--
 [![Documentation Status](https://readthedocs.org/projects/ai4s2s/badge/?version=latest)](https://ai4s2s.readthedocs.io/en/latest/?badge=latest)
 [![build](https://github.com/AI4S2S/lilio/actions/workflows/build.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/build.yml)
 [![sonarcloud](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml)
 [![workflow scc badge](https://sonarcloud.io/api/project_badges/measure?project=AI4S2S_ai4s2s&metric=coverage)](https://sonarcloud.io/dashboard?id=AI4S2S_ai4s2s)
--->
 
 A python package for generating calendars to resample timeseries into training and target data for machine learning. Named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) of the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar).
 
@@ -80,11 +78,11 @@ Depending on data preparations, we can choose different types of calendars e.g. 
 ## Tutorials
 `lilio` supports operations that are common in a machine learning pipeline of sub-seasonal to seasonal forecasting research. Tutorials covering supported methods and functionalities are listed in [notebooks](https://github.com/AI4S2S/lilio/tree/main/notebooks). To check these notebooks, users need to install [`Jupyter lab`](https://jupyter.org/). More details about each method can be found in this [API reference documentation](https://ai4s2s.readthedocs.io/en/latest/autoapi/index.html).
 
-## Documentation
-[![Documentation Status](https://readthedocs.org/projects/ai4s2s/badge/?version=latest)](https://ai4s2s.readthedocs.io/en/latest/?badge=latest)
-
-For detailed information on using `s2spy` package, visit the [documentation page](https://ai4s2s.readthedocs.io/en/latest/) hosted at Readthedocs.
 -->
+## Documentation
+[![Documentation Status](https://readthedocs.org/projects/lilio/badge/?version=latest)](https://lilio.readthedocs.io/en/latest/?badge=latest)
+
+For detailed information on using `lilio` package, visit the [documentation page](https://lilio.readthedocs.io/en/latest/) hosted at Readthedocs.
 
 ## Contributing
 
