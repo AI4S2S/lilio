@@ -1,4 +1,4 @@
-"""Tests for the s2spy.time module.
+"""Tests for the lilio.time module.
 """
 from typing import Literal
 import numpy as np

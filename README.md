@@ -1,6 +1,6 @@
 # lilio: Calendar generator for machine learning with timeseries data
 
-<img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/s2spy/main/docs/assets/images/ai4s2s_logo.png">
+<img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/lilio/main/docs/assets/images/ai4s2s_logo.png">
 
 
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio)
@@ -50,7 +50,7 @@ python3 -m pytest
 In a typical ML-based timeseries analysis, the first step is always data processing.  A calendar-based datetime module `time` is implemented for time operations. For instance, a user is looking for predictors for winter climate at seasonal timescales (~180 days). First, a `calendar` object is created using `AdventCalendar`:
 
 ```py
->>> calendar = s2spy.time.AdventCalendar(anchor="11-30", freq='180d')
+>>> calendar = lilio.time.AdventCalendar(anchor="11-30", freq='180d')
 >>> calendar = calendar.map_years(2020, 2021)
 >>> calendar.show()
 i_interval                         -1                         1
@@ -63,7 +63,7 @@ Now, the user can load the data `input_data` (e.g. `pandas` `DataFrame`) and res
 
 ```py
 >>> calendar = calendar.map_to_data(input_data)
->>> bins = s2spy.time.resample(calendar, input_data)
+>>> bins = lilio.time.resample(calendar, input_data)
 >>> bins
   anchor_year  i_interval                  interval  mean_data  target
 0        2020          -1  [2020-06-03, 2020-11-30)      275.5    True
