@@ -13,10 +13,9 @@
 [![workflow scc badge](https://sonarcloud.io/api/project_badges/measure?project=AI4S2S_ai4s2s&metric=coverage)](https://sonarcloud.io/dashboard?id=AI4S2S_ai4s2s)
 -->
 
-A python package for generating calendars to resample timeseries into training and target data for machine learning.
+A python package for generating calendars to resample timeseries into training and target data for machine learning. Named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) of the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar).
 
 ## Installation
-<!--
 [![workflow pypi badge](https://img.shields.io/pypi/v/lilio.svg?colorB=blue)](https://pypi.python.org/project/lilio/)
 [![supported python versions](https://img.shields.io/pypi/pyversions/lilio)](https://pypi.python.org/project/lilio/)
 
@@ -24,7 +23,6 @@ To install the latest release of lilio, do:
 ```console
 python3 -m pip install lilio
 ```
--->
 
 To install the in-development version from the GitHub repository, do:
 
@@ -33,6 +31,8 @@ python3 -m pip install git+https://github.com/AI4S2S/lilio.git
 ```
 
 ### Configure the package for development and testing
+A more extensive developer guide can be found [here](./docs/README.dev.md).
+
 The testing framework used here is [pytest](https://pytest.org). Before running the test, we get a local copy of the source code and install `lilio` via the command:
 
 ```py
