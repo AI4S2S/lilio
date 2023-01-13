@@ -2,9 +2,6 @@
 requires = ["hatchling>=1.8.0", "hatch-vcs", "hatch-fancy-pypi-readme"]
 build-backend = "hatchling.build"
 
-[tool.setuptools]
-py-modules = ["lilio"]
-
 [tool.hatch.version]
 path = "lilio/__init__.py"
 
@@ -36,7 +33,6 @@ keywords = [
   "calendar maker",
   "machine learning",
   "timeseries analysis",
-
 ]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
