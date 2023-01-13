@@ -10,10 +10,8 @@ path = "lilio/__init__.py"
 
 [tool.hatch.build.targets.sdist]
 exclude = [
-  "/.github",
-  "/docs",
-  "/notebooks",
-  "/tests",
+  "/.github", "/.mypy_cache", "/.pytest_cache", "/.githooks",
+  "sonar-project.properties"
 ]
 
 [tool.hatch.build.targets.wheel]
