@@ -1,4 +1,4 @@
-"""Tests for s2spy.time's resample module.
+"""Tests for lilio.time's resample module.
 """
 import tempfile
 from pathlib import Path

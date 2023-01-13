@@ -15,6 +15,8 @@
 
 A python package for generating calendars to resample timeseries into training and target data for machine learning. Named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) of the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar).
 
+Lilio was originally designed for use in [`s2spy`](https://github.com/AI4S2S/s2spy), a high-level python package integrating expert knowledge and artificial intelligence to boost (sub) seasonal forecasting.
+
 ## Installation
 [![workflow pypi badge](https://img.shields.io/pypi/v/lilio.svg?colorB=blue)](https://pypi.python.org/project/lilio/)
 [![supported python versions](https://img.shields.io/pypi/pyversions/lilio)](https://pypi.python.org/project/lilio/)

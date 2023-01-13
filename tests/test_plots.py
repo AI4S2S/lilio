@@ -1,4 +1,4 @@
-"""Tests for the s2spy._bokeh_plots module.
+"""Tests for the lilio._bokeh_plots module.
 """
 import matplotlib.pyplot as plt
 import pytest
