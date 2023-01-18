@@ -95,7 +95,7 @@ def generate_plot_data(
     """
     n_targets = calendar.n_targets
 
-    anchor_date = calendar._get_anchor(year=year_intervals.values[-1].left.year)  # type: ignore # pylint: disable=protected-access
+    anchor_date = calendar._get_anchor(year=year_intervals.loc[1].left.year)  # type: ignore # pylint: disable=protected-access
 
     widths = _get_widths(relative_dates, year_intervals)
     interval_str = np.array(
