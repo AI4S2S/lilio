@@ -65,6 +65,13 @@ dev = [
   "bump2version",
   "hatch",
 ]
+docs = [  # Required for ReadTheDocs
+  "myst_parser",
+  "sphinx",
+  "sphinx_rtd_theme",
+  "sphinx-autoapi",
+  "coverage[toml]",
+]
 bokeh = [
   "bokeh < 3.0.0",
 ]
@@ -92,14 +99,7 @@ check = [
 fmt = ["isort .", "black .", "check",]
 
 [tool.hatch.envs.docs]
-features = ["bokeh",]
-dependencies = [
-  "myst_parser",
-  "sphinx",
-  "sphinx_rtd_theme",
-  "sphinx-autoapi",
-  "coverage[toml]",
-]
+features = ["bokeh", "docs"]
 
 [tool.hatch.envs.docs.scripts]
 build = [
