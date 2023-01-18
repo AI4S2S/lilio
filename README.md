@@ -38,12 +38,12 @@ The testing framework used here is [pytest](https://pytest.org). Before running 
 ```py
 git clone https://github.com/AI4S2S/lilio.git
 cd lilio
-python3 -m pip install -e .
+python3 -m pip install -e .[dev]
 ```
 
 Then, run tests:
 ```py
-python3 -m pytest
+hatch test:check
 ```
 
 ## How the lilio calendars work

@@ -6,13 +6,15 @@ If you're looking for user documentation, go [here](readme_link.rst).
 
 ```shell
 # Create a virtual environment, e.g. with
-python3 -m venv env
+python3 -m venv env_name
 
 # activate virtual environment
-source env/bin/activate
+source env_name/bin/activate
+# Or on windows:
+#  env_name/Scripts/Activate.ps1
 
-# make sure to have a recent version of pip and setuptools
-python3 -m pip install --upgrade pip setuptools
+# make sure to have a recent version of pip and hatch
+python3 -m pip install --upgrade pip hatch
 
 # (from the project root directory)
 # install lilio as an editable package
@@ -25,99 +27,46 @@ Afterwards check that the install directory is present in the `PATH` environment
 
 ## Running the tests
 
-There are two ways to run tests.
-
-The first way requires an activated virtual environment with the development tools installed:
+Running tests has been configured using `hatch`, and can be started by running:
 
 ```shell
-pytest -v
+hatch run test:check
 ```
-
-The second is to use `tox`, which can be installed separately (e.g. with `pip install tox`), i.e. not necessarily inside the virtual environment you use for installing `lilio`, but then builds the necessary virtual environments itself by simply running:
-
-```shell
-tox
-```
-
-Testing with `tox` allows for keeping the testing environment separate from your development environment.
-The development environment will typically accumulate (old) packages during development that interfere with testing; this problem is avoided by testing with `tox`.
-
-### Test coverage
 
 In addition to just running the tests to see if they pass, they can be used for coverage statistics, i.e. to determine how much of the package's code is actually executed during tests.
-In an activated virtual environment with the development tools installed, inside the package directory, run:
+Inside the package directory, run:
 
 ```shell
-coverage run
+hatch run test:cov
 ```
 
-This runs tests and stores the result in a `.coverage` file.
-To see the results on the command line, run
-
-```shell
-coverage report
-```
-
-`coverage` can also generate output in HTML and other formats; see `coverage help` for more information.
+This runs tests and prints the results to the command line, as well as storing the result in a `coverage.xml` file (for analysis by, e.g. SonarCloud).
 
 ## Running linters locally
 
-For linting we will use [prospector](https://pypi.org/project/prospector/) and to sort imports we will use
-[isort](https://pycqa.github.io/isort/). Running the linters requires an activated virtual environment with the
-development tools installed.
+For linting and code style we use `flake8`, `black` and `isort`. We additionally use `mypy` to check the type hints.
+All tools can simply be run by doing:
 
 ```shell
-# linter
-prospector
-
-# recursively check import style for the lilio module only
-isort --recursive --check-only lilio
-
-# recursively check import style for the lilio module only and show
-# any proposed changes as a diff
-isort --recursive --check-only --diff lilio
-
-# recursively fix import style for the lilio module only
-isort --recursive lilio
+hatch run style:check
 ```
 
-To fix readability of your code style you can use [yapf](https://github.com/google/yapf).
-
-You can enable automatic linting with `prospector` and `isort` on commit by enabling the git hook from `.githooks/pre-commit`, like so:
+To easily comply with `black` and `isort`, you can also run:
 
 ```shell
-git config --local core.hooksPath .githooks
+hatch run style:fmt
 ```
 
-## Generating the API docs
+This will apply the `black` and `isort` formatting, and then check the code style.
+
+## Generating the documentation
+To generate the documentation, simply run the following command. This will also test the documentation code snippets. Note that you might need to install [`pandoc`](https://pandoc.org/) to be able to generate the documentation.
 
 ```shell
-cd docs
-make html
+hatch run docs:build
 ```
 
-The documentation will be in `docs/_build/html`
-
-If you do not have `make` use
-
-```shell
-sphinx-build -b html docs docs/_build/html
-```
-
-To find undocumented Python objects run
-
-```shell
-cd docs
-make coverage
-cat _build/coverage/python.txt
-```
-
-To [test snippets](https://www.sphinx-doc.org/en/master/usage/extensions/doctest.html) in documentation run
-
-```shell
-cd docs
-make doctest
-```
+The documentation will be in `docs/_build/html`.
 
 ## Versioning
 

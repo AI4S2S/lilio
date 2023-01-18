@@ -345,6 +345,7 @@ class TestMap:
     max_lag_edge_cases = [(73, [2019], 74), (72, [2019, 2018], 73)]
     # Test the edge cases of max_lag; where the max_lag just fits in exactly 365 days,
     # and where the max_lag just causes the calendar to skip a year
+
     @pytest.mark.parametrize("max_lag,expected_index,expected_size", max_lag_edge_cases)
     def test_max_lag_skip_years(self, max_lag, expected_index, expected_size):
         calendar = AdventCalendar(anchor="12-31", freq="5d")

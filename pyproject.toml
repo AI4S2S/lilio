@@ -31,6 +31,7 @@ maintainers = [
   {name = "Jannes van Ingen", email = "jannes.van.ingen@s2s-ai.com"},
   {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
 ]
+url = "https://github.com/AI4S2S/lilio"
 keywords = [
   "calendar",
   "calendar generation",
@@ -62,31 +63,64 @@ dynamic = ["version"]
 [project.optional-dependencies]
 dev = [
   "bump2version",
-  "black",
-  "coverage [toml]",
   "hatch",
+]
+bokeh = [
+  "bokeh < 3.0.0",
+]
+
+[tool.hatch.envs.style]
+detached = false  # Mypy requires package and dependency info
+dependencies = [
+  "flake8",
+  "flake8-pyproject",  # Allows flake8 configuration through this file
+  "pyflakes",  # flake8 plugin, checks for errors in code
+  "mccabe",  # flake8 plugin, checks code complexity
+  "pep8-naming",  # flake8 plugin, checks PEP8 naming conventions
+  "black",
   "isort",
   "mypy==0.981",
+]
+
+[tool.hatch.envs.style.scripts]
+check = [
+  "flake8 .",
+  "mypy lilio",
+  "black --check --diff .",
+  "isort --check-only --diff .",
+]
+fmt = ["isort .", "black .", "check",]
+
+[tool.hatch.envs.docs]
+dependencies = [
   "myst_parser",
-  "pylint==2.15.6",
-  "pyroma",
-  "prospector[with_pyroma]",
-  "pytest",
-  "pytest-cov",
   "sphinx",
   "sphinx_rtd_theme",
   "sphinx-autoapi",
-  "bokeh < 3.0.0",
-  "tox",
 ]
-publishing = ["twine", "wheel"]
+
+[tool.hatch.envs.docs.scripts]
+build = ["docs/make coverage doctest html",]
+
+[tool.hatch.envs.test]
+features = ["bokeh",]
+dependencies = [
+  "pytest",
+  "pytest-cov",
+  "coverage[toml]",
+]
+
+[tool.hatch.envs.test.scripts]
+check = ["pytest",]
+cov = [
+  "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-[tool.pylint."messages control"]
-# Suppress warnings for bad variables for specific variables:
-good-names = ["X", "x", "y"]
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 88
@@ -104,6 +138,14 @@ known_first_party = ["lilio"]
 src_paths = ["lilio", "tests"]
 line_length = 120
 
+[tool.flake8]
+max-line-length = 88
+ignore = [
+  "E203",  # Whitespace before ":". Not PEP8 compliant (https://github.com/psf/black/issues/315)
+  "E501",  # Line length: currently (some) docstrings do not comply.
+  "W503",  # https://peps.python.org/pep-0008/#should-a-line-break-before-or-after-a-binary-operator
+]
+
 [tool.coverage.run]
 branch = true
 source = ["lilio"]
@@ -116,16 +158,3 @@ exclude_lines = [
   "if TYPE_CHECKING:",
   "if typing.TYPE_CHECKING:"
 ]
-
-[tool.tox]
-legacy_tox_ini = """
-
-[tox]
-envlist = py38,py39,py310
-skip_missing_interpreters = true
-
-[testenv]
-commands = pytest
-extras = dev
-
-"""
