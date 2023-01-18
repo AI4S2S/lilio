@@ -21,6 +21,10 @@ readme = "README.md"
 license = { text = "Apache Software License" }
 requires-python = ">=3.8, <3.11"
 authors = [
+  {email = "y.liu@esciencecenter.nl"},
+  {name = "Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
+]
+maintainers = [
   {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
   {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
   {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
