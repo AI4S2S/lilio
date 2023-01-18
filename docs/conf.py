@@ -95,7 +95,7 @@ html_logo = "./assets/images/ai4s2s_logo.png"
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
-    "numpy": ("http://docs.scipy.org/doc/numpy/", None),
+    "numpy": ("https://numpy.org/doc/stable/", None),
     "matplotlib": ("https://matplotlib.org/stable/", None),
     "pandas": ("http://pandas.pydata.org/docs/", None),
     "xarray": ("https://docs.xarray.dev/en/stable/", None),
