@@ -18,7 +18,7 @@ packages = ["lilio"]
 name = "lilio"
 description = "python package for generating calendars for machine learning timeseries analysis."
 readme = "README.md"
-license = { text = "Apache Software License" }
+license = "Apache-2.0"
 requires-python = ">=3.8, <3.11"
 authors = [
   {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
