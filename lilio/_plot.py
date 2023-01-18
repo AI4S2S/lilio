@@ -77,6 +77,7 @@ def _get_widths(
 def generate_plot_data(
     calendar,
     relative_dates: bool,
+    year: int,
     year_intervals: pd.Series,
 ) -> Dict:
     """Util to generate the plotting data, containing all variables to plot.
@@ -85,9 +86,8 @@ def generate_plot_data(
         relative_dates: If False, absolute dates will be used. If True, each anchor year
                         is aligned by the anchor date, so that all anchor years line up
                         vertically.
+        year: The anchor year for which plot data should be generated.
         year_intervals: The pandas series of intervals for a single anchor year.
-
-        n_targets: The number of target intervals in the calendar.
 
     Returns:
         Dict: Dictionary containing all the data to generate the Matplotlib or Bokeh
@@ -95,7 +95,7 @@ def generate_plot_data(
     """
     n_targets = calendar.n_targets
 
-    anchor_date = calendar._get_anchor(year=year_intervals.loc[1].left.year)  # type: ignore # pylint: disable=protected-access
+    anchor_date = calendar._get_anchor(year=year)  # pylint: disable=protected-access
 
     widths = _get_widths(relative_dates, year_intervals)
     interval_str = np.array(
@@ -180,10 +180,11 @@ def matplotlib_visualization(
 
     intervals = calendar.get_intervals()[:n_years]
 
-    for _, year_intervals in intervals.iterrows():
+    for year, year_intervals in intervals.iterrows():
         data = generate_plot_data(
             calendar=calendar,
             relative_dates=relative_dates,
+            year=year,
             year_intervals=year_intervals,
         )
         plot_rectangles(ax, data, show_length)
