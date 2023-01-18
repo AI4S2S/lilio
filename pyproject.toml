@@ -14,6 +14,9 @@ exclude = [
 [tool.hatch.build.targets.wheel]
 packages = ["lilio"]
 
+[tool.hatch.publish.index]
+disable = true  # Requires confirmation when publishing to pypi.
+
 [project]
 name = "lilio"
 description = "python package for generating calendars for machine learning timeseries analysis."
@@ -31,7 +34,6 @@ maintainers = [
   {name = "Jannes van Ingen", email = "jannes.van.ingen@s2s-ai.com"},
   {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
 ]
-url = "https://github.com/AI4S2S/lilio"
 keywords = [
   "calendar",
   "calendar generation",
