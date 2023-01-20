@@ -128,7 +128,7 @@ def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
 def assert_bokeh_available():
     """Util that attempts to load the optional module bokeh."""
     try:
-        import bokeh as _  # pylint: disable=import-outside-toplevel
+        import bokeh as _  # noqa: F401 (unused import)
 
     except ImportError as e:
         raise ImportError(

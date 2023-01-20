@@ -39,4 +39,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Implemented resampling data to the advent calendar.
 - Example notebooks on how to use the calendar and resampling functionalities.
 
-[Unreleased]: https://github.com/AI4S2S/s2spy
+[Unreleased]: https://github.com/AI4S2S/lilio

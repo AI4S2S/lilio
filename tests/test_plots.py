@@ -1,9 +1,13 @@
-"""Tests for the s2spy._bokeh_plots module.
+"""Tests for the lilio._bokeh_plots module.
 """
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
 from bokeh import io as bokeh_io
 from lilio import time
+
+
+mpl.use("Agg")  # required for windows
 
 
 class TestPlots:
