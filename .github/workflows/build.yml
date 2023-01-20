@@ -35,7 +35,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip hatch
       - name: Run unit tests
-        run: hatch run test:check
+        run: hatch run test
       - name: Verify that we can build the package
         run: hatch build
 
@@ -58,4 +58,4 @@ jobs:
       - name: Upgrade pip and install hatch
         run: python3 -m pip install --upgrade pip hatch
       - name: Check style against standards
-        run: hatch run style:check
+        run: hatch lint

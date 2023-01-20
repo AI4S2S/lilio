@@ -30,14 +30,14 @@ Afterwards check that the install directory is present in the `PATH` environment
 Running tests has been configured using `hatch`, and can be started by running:
 
 ```shell
-hatch run test:check
+hatch run test
 ```
 
 In addition to just running the tests to see if they pass, they can be used for coverage statistics, i.e. to determine how much of the package's code is actually executed during tests.
 Inside the package directory, run:
 
 ```shell
-hatch run test:cov
+hatch run coverage
 ```
 
 This runs tests and prints the results to the command line, as well as storing the result in a `coverage.xml` file (for analysis by, e.g. SonarCloud).
@@ -48,13 +48,13 @@ For linting and code style we use `flake8`, `black` and `isort`. We additionally
 All tools can simply be run by doing:
 
 ```shell
-hatch run style:check
+hatch run lint
 ```
 
 To easily comply with `black` and `isort`, you can also run:
 
 ```shell
-hatch run style:fmt
+hatch run format
 ```
 
 This will apply the `black` and `isort` formatting, and then check the code style.
@@ -91,7 +91,7 @@ This section describes how to make a release in 3 parts:
 1. Update the <CHANGELOG.md> (don't forget to update links at bottom of page)
 2. Verify that the information in `CITATION.cff` is correct, and that `.zenodo.json` contains equivalent data
 3. Make sure the [version has been updated](#versioning).
-4. Run the unit tests with `pytest -v`
+4. Run the unit tests with `hatch run test`
 
 ### (2/3) PyPI
 

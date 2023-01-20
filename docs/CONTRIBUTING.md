@@ -61,8 +61,8 @@ This section is for maintainers of the package.
 
 9. Create a PyPI release.
 
-    1. Create distribution archives with `python3 -m build`.
-    2. Upload archives to PyPI with `twine upload dist/*` (use your
+    1. Create distribution archives with `hatch build`.
+    2. Upload archives to PyPI with `hatch publish` (use your
         personal PyPI account).
 
 10. Verify

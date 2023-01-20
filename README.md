@@ -43,7 +43,7 @@ python3 -m pip install -e .[dev]
 
 Then, run tests:
 ```py
-hatch test:check
+hatch run test
 ```
 
 ## How the lilio calendars work

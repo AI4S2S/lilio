@@ -30,7 +30,7 @@ jobs:
       - name: Install hatch
         run: python3 -m pip install hatch
       - name: Run unit tests with coverage
-        run: hatch run test:cov
+        run: hatch run coverage
       - name: Correct coverage paths
         run: sed -i "s+$PWD/++g" coverage.xml
       - name: SonarCloud Scan
