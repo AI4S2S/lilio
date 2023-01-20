@@ -1,9 +1,4 @@
-"""BaseCalendar is a template for specific implementations of different calendars.
-
-The BaseCalendar includes most methods required for all calendar operations, except for
-a set of abstract methods (e.g., __init__, _get_anchor, ...). These will have to be
-customized for each specific calendar.
-"""
+"""Lilio's main Calendar module"""
 import copy
 import re
 import warnings

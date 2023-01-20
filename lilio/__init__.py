@@ -58,14 +58,14 @@ Example:
 
 """
 
+import logging
+from . import calendar_shifter
 from ._resample import resample  # noqa: F401 (unused import)
 from .calendar import Calendar  # noqa: F401
 from .calendar import Interval  # noqa: F401
 from .calendar_shorthands import daily_calendar  # noqa: F401
 from .calendar_shorthands import monthly_calendar  # noqa: F401
 from .calendar_shorthands import weekly_calendar  # noqa: F401
-from . import calendar_shifter
-import logging
 
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
@@ -74,8 +74,12 @@ __author__ = "Yang Liu"
 __email__ = "y.liu@esciencecenter.nl"
 __version__ = "0.2.1"
 
-__all__ = ["Calendar", "Interval", "resample",
-           "daily_calendar",
-           "monthly_calendar",
-           "weekly_calendar",
-           "calendar_shifter"]
+__all__ = [
+    "Calendar",
+    "Interval",
+    "resample",
+    "daily_calendar",
+    "monthly_calendar",
+    "weekly_calendar",
+    "calendar_shifter",
+]

@@ -1,3 +1,4 @@
+"""The implementation of the resampling methods for use with the Calendar"""
 from typing import Union
 from typing import overload
 import numpy as np

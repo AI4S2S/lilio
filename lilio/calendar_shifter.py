@@ -1,3 +1,4 @@
+"""Calendar shifter to create staggered calendars."""
 import copy
 from typing import Dict
 from typing import List

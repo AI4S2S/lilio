@@ -6,6 +6,7 @@ import pytest
 from bokeh import io as bokeh_io
 import lilio
 
+
 mpl.use("Agg")  # required for windows
 
 
