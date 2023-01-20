@@ -40,8 +40,8 @@ def daily_calendar(
         Instantiate a calendar counting down the quarters (3 month periods) from
         december.
 
-        >>> import lilio.time
-        >>> calendar = lilio.time.daily_calendar(anchor='12-25', freq="3d", max_lag=3)
+        >>> import lilio
+        >>> calendar = lilio.daily_calendar(anchor='12-25', freq="3d", max_lag=3)
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12-25',
@@ -111,8 +111,8 @@ def weekly_calendar(
         Instantiate a calendar counting down the quarters (3 month periods) from
         december.
 
-        >>> import lilio.time
-        >>> calendar = lilio.time.weekly_calendar(anchor="W40", freq="1W", max_lag=2)
+        >>> import lilio
+        >>> calendar = lilio.weekly_calendar(anchor="W40", freq="1W", max_lag=2)
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='W40-1',
@@ -178,8 +178,8 @@ def monthly_calendar(
         Instantiate a calendar counting down the quarters (3 month periods) from
         december.
 
-        >>> import lilio.time
-        >>> calendar = lilio.time.monthly_calendar(anchor='Dec', freq="3M")
+        >>> import lilio
+        >>> calendar = lilio.monthly_calendar(anchor='Dec', freq="3M")
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12',

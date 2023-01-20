@@ -164,8 +164,8 @@ class Calendar:
         Example:
             Instantiate a custom calendar and appending target/precursor periods.
 
-            >>> import lilio.time
-            >>> calendar = lilio.time.CustomCalendar(anchor="12-31")
+            >>> import lilio
+            >>> calendar = lilio.CustomCalendar(anchor="12-31")
             >>> calendar
             CustomCalendar(
                 anchor='12-31',

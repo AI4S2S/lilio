@@ -1,4 +1,4 @@
-"""Tests for lilio.time's resample module.
+"""Tests for lilio's resample module.
 """
 import tempfile
 from pathlib import Path
@@ -6,9 +6,9 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
-from lilio.time import Calendar
-from lilio.time import daily_calendar
-from lilio.time import resample
+from lilio import Calendar
+from lilio import daily_calendar
+from lilio import resample
 
 
 class TestResample:

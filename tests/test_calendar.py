@@ -1,4 +1,4 @@
-"""Tests for the lilio.time.Calendar module.
+"""Tests for the lilio.Calendar module.
 """
 from typing import Literal
 import numpy as np
@@ -6,9 +6,9 @@ import pandas as pd
 import pytest
 import xarray as xr
 from pandas.tseries.offsets import DateOffset
-from lilio.time import Calendar
-from lilio.time import Interval
-from lilio.time import daily_calendar
+from lilio import Calendar
+from lilio import Interval
+from lilio import daily_calendar
 
 
 def interval(start, end, closed: Literal["left", "right", "both", "neither"] = "left"):

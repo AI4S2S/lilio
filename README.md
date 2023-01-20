@@ -50,7 +50,7 @@ hatch run test
 In a typical ML-based timeseries analysis, the first step is always data processing.  A calendar-based datetime module `time` is implemented for time operations. For instance, a user is looking for predictors for winter climate at seasonal timescales (~180 days). First, a `calendar` object is created using `AdventCalendar`:
 
 ```py
->>> calendar = lilio.time.AdventCalendar(anchor="11-30", freq='180d')
+>>> calendar = lilio.AdventCalendar(anchor="11-30", freq='180d')
 >>> calendar = calendar.map_years(2020, 2021)
 >>> calendar.show()
 i_interval                         -1                         1
@@ -63,7 +63,7 @@ Now, the user can load the data `input_data` (e.g. `pandas` `DataFrame`) and res
 
 ```py
 >>> calendar = calendar.map_to_data(input_data)
->>> bins = lilio.time.resample(calendar, input_data)
+>>> bins = lilio.resample(calendar, input_data)
 >>> bins
   anchor_year  i_interval                  interval  mean_data  target
 0        2020          -1  [2020-06-03, 2020-11-30)      275.5    True
@@ -72,7 +72,7 @@ Now, the user can load the data `input_data` (e.g. `pandas` `DataFrame`) and res
 3        2021           1  [2021-11-30, 2022-05-29)      460.5   False
 ```
 
-Depending on data preparations, we can choose different types of calendars e.g. [`MonthlyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.time.MonthlyCalendar) and [`WeeklyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.time.WeeklyCalendar).
+Depending on data preparations, we can choose different types of calendars e.g. [`MonthlyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.MonthlyCalendar) and [`WeeklyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.WeeklyCalendar).
 
 <!---
 ## Tutorials

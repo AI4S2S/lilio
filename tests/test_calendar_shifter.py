@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 import xarray as xr
 from lilio import calendar_shifter
-from lilio.time import Calendar
+from lilio import Calendar
 
 
 class TestCalendarShifter:

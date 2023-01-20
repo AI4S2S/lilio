@@ -3,12 +3,12 @@ from typing import Dict
 from typing import List
 from typing import Union
 import xarray as xr
-import lilio.time
+import lilio
 from . import utils
 
 
 def _gap_shift(
-    interval: lilio.time.Interval, shift: Union[str, Dict[str, int]]
+    interval: lilio.Interval, shift: Union[str, Dict[str, int]]
 ) -> Dict[str, int]:
     """
     Shift a calendar interval's gap property by the given amount.
@@ -43,8 +43,8 @@ def _gap_shift(
 
 
 def calendar_shifter(
-    calendar: lilio.time.Calendar, shift: Union[str, dict]
-) -> lilio.time.Calendar:
+    calendar: lilio.Calendar, shift: Union[str, dict]
+) -> lilio.Calendar:
     """Shift a Calendar instance by a given time offset.
 
     Instead of shifting the anchor date, this function shifts two things in reference
@@ -57,15 +57,15 @@ def calendar_shifter(
     calendar. This is important for train-test splitting at later stages.
 
     Args:
-        calendar: a lilio.time.Calendar instance
+        calendar: a lilio.Calendar instance
         shift: a pandas-like
             frequency string (e.g. "10d", "2W", or "3M"), or a pandas.DateOffset
             compatible dictionary such as {days=10}, {weeks=2}, or {months=1, weeks=2}
 
     Example:
         Shift a calendar by a given dateoffset.
-        >>> import lilio.time
-        >>> cal = lilio.time.Calendar(anchor='07-01')
+        >>> import lilio
+        >>> cal = lilio.Calendar(anchor='07-01')
         >>> cal.add_intervals("target", "7d")
         >>> cal.add_intervals("precursor", "7d", gap="14d")
         >>> cal.add_intervals("precursor", "7d, n=3)
@@ -92,15 +92,15 @@ def calendar_shifter(
 
 
 def staggered_calendar(
-    calendar: lilio.time.Calendar, shift: Union[str, dict], n_shifts: int
-) -> List[lilio.time.Calendar]:
+    calendar: lilio.Calendar, shift: Union[str, dict], n_shifts: int
+) -> List[lilio.Calendar]:
     """Shift a Calendar instance by a given time offset n times to create a list of
     shifted calendars.
 
     We call this list a staggered calendar.
 
     Args:
-        calendar: an lilio.time.Calendar instance
+        calendar: an lilio.Calendar instance
         shift: a pandas-like
             frequency string (e.g. "10d", "2W", or "3M"), or a pandas.DateOffset
             compatible dictionary such as {days=10}, {weeks=2}, or {months=1, weeks=2}
@@ -109,8 +109,8 @@ def staggered_calendar(
     Example:
         Shift an input calendar n times by a given dateoffset and return a list of these
         shifted calendars.
-        >>> import lilio.time
-        >>> cal = lilio.time.Calendar(anchor="07-01")
+        >>> import lilio
+        >>> cal = lilio.Calendar(anchor="07-01")
         >>> cal.add_intervals("target", "7d")
         >>> cal.add_intervals("precursor", "7d", gap="14d")
         >>> cal.add_intervals("precursor", "7d", n=3)
@@ -171,7 +171,7 @@ def calendar_list_resampler(
     Returns:
         resampled xr.Dataset
     """
-    ds_r = xr.concat([lilio.time.resample(cal, ds) for cal in cal_list], dim=dim_name)
+    ds_r = xr.concat([lilio.resample(cal, ds) for cal in cal_list], dim=dim_name)
     ds_r = ds_r.assign_coords({dim_name: ds_r[dim_name].values})
 
     return ds_r

@@ -261,15 +261,15 @@ def resample(
         Assuming the input data is pd.DataFrame containing random values with index
         from 2021-11-11 to 2021-11-01 at daily frequency.
 
-        >>> import lilio.time
+        >>> import lilio
         >>> import pandas as pd
         >>> import numpy as np
-        >>> cal = lilio.time.daily_calendar(anchor="12-31", freq="180d")
+        >>> cal = lilio.daily_calendar(anchor="12-31", freq="180d")
         >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)
         >>> cal = cal.map_to_data(input_data)
-        >>> bins = lilio.time.resample(cal, input_data)
+        >>> bins = lilio.resample(cal, input_data)
         >>> bins # doctest: +NORMALIZE_WHITESPACE
             anchor_year  i_interval                  interval   data  target
         0          2019          -1  [2019-07-04, 2019-12-31)   14.5   False
