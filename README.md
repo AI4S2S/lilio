@@ -52,7 +52,7 @@ In Lilio, calendars are 2-dimensional. Each row (year) represents a unique
 observation, whereas each column corresponds to a precursor period with a
 certain lag. This is how we like to structure our data for ML applications.
 
-![Conceptual illustration of Lilio Calendar](https://raw.githubusercontent.com/AI4S2S/lilio/update_readme/docs/assets/images/calendar_concept.png")
+![Conceptual illustration of Lilio Calendar]("docs/assets/images/calendar_concept.png")
 
 We define the "anchor date" to be between the target and precursor periods. All
 other intervals are expressed as offsets to this anchor date. Conveniently, this
@@ -83,7 +83,13 @@ Now, the user can load the data `input_data` (e.g. `pandas` `DataFrame`) and res
 3        2021           1  [2021-11-30, 2022-05-29)      460.5   False
 ```
 
-Depending on data preparations, we can choose different types of calendars e.g. [`MonthlyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.MonthlyCalendar) and [`WeeklyCalendar`](https://ai4s2s.readthedocs.io/en/latest/autoapi/lilio/time/index.html#lilio.WeeklyCalendar).
+For convenience, Lilio offers a few shorthands for standard of calendars e.g.
+[`monthly_calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar_shorthands/index.html#lilio.calendar_shorthands.monthly_calendar)
+and
+[`weekly_calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar_shorthands/index.html#lilio.calendar_shorthands.weekly_calendar).
+However, you can also create very complex calendars by calling
+[`Calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar/index.html#lilio.calendar.Calendar)
+directly.
 
 <!---
 ## Tutorials
