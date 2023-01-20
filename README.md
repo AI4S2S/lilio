@@ -47,10 +47,21 @@ hatch run test
 ```
 
 ## How the lilio calendars work
-In a typical ML-based timeseries analysis, the first step is always data processing.  A calendar-based datetime module `time` is implemented for time operations. For instance, a user is looking for predictors for winter climate at seasonal timescales (~180 days). First, a `calendar` object is created using `AdventCalendar`:
+
+In Lilio, calendars are 2-dimensional. Each row (year) represents a unique
+observation, whereas each column corresponds to a precursor period with a
+certain lag. This is how we like to structure our data for ML applications.
+
+![Conceptual illustration of Lilio Calendar](https://raw.githubusercontent.com/AI4S2S/lilio/update_readme/docs/assets/images/calendar_concept.png")
+
+We define the "anchor date" to be between the target and precursor periods. All
+other intervals are expressed as offsets to this anchor date. Conveniently, this
+eliminates any ambiguity related to leap years.
+
+Here's a calendar generated with Lilio:
 
 ```py
->>> calendar = lilio.AdventCalendar(anchor="11-30", freq='180d')
+>>> calendar = lilio.daily_calendar(anchor="11-30", freq='180d')
 >>> calendar = calendar.map_years(2020, 2021)
 >>> calendar.show()
 i_interval                         -1                         1
