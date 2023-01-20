@@ -68,7 +68,7 @@ from ._base_calendar import BaseCalendar
 from ._base_calendar import Interval
 from ._base_calendar import MappingData
 from ._base_calendar import MappingYears
-from ._resample import resample  # pylint: disable=unused-import
+from ._resample import resample  # noqa: F401 (unused import)
 
 
 PandasData = (pd.Series, pd.DataFrame)

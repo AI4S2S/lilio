@@ -73,10 +73,11 @@ def _bokeh_visualization(
 
     intervals = calendar.get_intervals()[:n_years]
 
-    for _, year_intervals in intervals.iterrows():
+    for year, year_intervals in intervals.iterrows():
         data = generate_plot_data(
             calendar=calendar,
             relative_dates=relative_dates,
+            year=year,
             year_intervals=year_intervals,
         )
         _generate_rectangle(figure, plotting.ColumnDataSource(data))

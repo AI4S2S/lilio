@@ -1,21 +1,39 @@
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.8.0", "hatch-vcs", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
 
-[tool.poetry]
-name = "lilio"
-version = "0.2.0"
-description = "python package for generating calendars for machine learning timeseries analysis."
-authors = [
-  "Yang Liu <y.liu@esciencecenter.nl>",
-  "Bart Schilperoort <b.schilperoort@esciencecenter.nl>",
-  "Peter Kalverla <b.schilperoort@esciencecenter.nl>",
-  "Jannes van Ingen <jannes.van.ingen@s2s-ai.com>",
-  "Sem Vijverberg <sem.vijverberg@vu.nl>",
+[tool.hatch.version]
+path = "lilio/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github", "/.mypy_cache", "/.pytest_cache", "/.githooks",
+  "sonar-project.properties"
 ]
-license = "Apache 2.0"
+
+[tool.hatch.build.targets.wheel]
+packages = ["lilio"]
+
+[tool.hatch.publish.index]
+disable = true  # Requires confirmation when publishing to pypi.
+
+[project]
+name = "lilio"
+description = "python package for generating calendars for machine learning timeseries analysis."
 readme = "README.md"
-repository = "https://github.com/AI4S2S/lilio"
+license = "Apache-2.0"
+requires-python = ">=3.8, <3.11"
+authors = [
+  {email = "y.liu@esciencecenter.nl"},
+  {name = "Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
+]
+maintainers = [
+  {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
+  {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Jannes van Ingen", email = "jannes.van.ingen@s2s-ai.com"},
+  {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
+]
 keywords = [
   "calendar",
   "calendar generation",
@@ -35,62 +53,72 @@ classifiers = [
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
 ]
-packages = [
-    { include = "lilio" },
+dependencies = [
+  "netcdf4",
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "xarray",
 ]
-include = ["CHANGELOG.md"]
+dynamic = ["version"]
 
-[tool.poetry.dependencies]
-python=">=3.8, <3.11"
-netcdf4="*"
-numpy="*"
-pandas="*"
-matplotlib="*"
-xarray="*"
-
-[tool.poetry.dev-dependencies]
-bump2version = "*"
-black = "*"
-coverage = {version = "*", extras = ["toml"]}
-isort = "*"
-mypy = "==0.981"
-myst_parser = "*"
-pylint = "2.15.6"
-prospector = {version = "1.7.7", extras = ["with_pyroma"]}  # https://github.com/PyCQA/prospector/issues/545
-pytest = "*"
-pytest-cov = "*"
-sphinx = "*"
-sphinx_rtd_theme = "*"
-sphinx-autoapi = "*"
-bokeh = "< 3.0.0"
-tox = "*"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 dev = [
   "bump2version",
+  "hatch",
+  "flake8",
+  "flake8-pyproject",  # Allows flake8 configuration through this file
+  "pyflakes",  # flake8 plugin, checks for errors in code
+  "mccabe",  # flake8 plugin, checks code complexity
+  "pep8-naming",  # flake8 plugin, checks PEP8 naming conventions
   "black",
-  "coverage [toml]",
   "isort",
   "mypy==0.981",
-  "myst_parser",
-  "pylint==2.15.6",
-  "prospector[with_pyroma]==1.7.7",  # https://github.com/PyCQA/prospector/issues/545
   "pytest",
   "pytest-cov",
+]
+docs = [  # Required for ReadTheDocs
+  "myst_parser",
   "sphinx",
   "sphinx_rtd_theme",
   "sphinx-autoapi",
-  "bokeh < 3.0.0",
-  "tox",
+  "coverage[toml]",
 ]
-publishing = ["twine", "wheel"]
+bokeh = [
+  "bokeh < 3.0.0",
+]
+
+[tool.hatch.envs.default]
+features = ["dev", "bokeh"]
+
+[tool.hatch.envs.default.scripts]
+lint = [
+  "flake8 .",
+  "mypy lilio",
+  "black --check --diff .",
+  "isort --check-only --diff .",
+]
+format = ["isort .", "black .", "check",]
+test = ["pytest",]
+coverage = [
+  "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
+]
+
+[tool.hatch.envs.docs]
+features = ["bokeh", "docs"]
+
+[tool.hatch.envs.docs.scripts]
+build = [
+  "sphinx-build -c docs -b doctest docs docs/_build",
+  "sphinx-build -c docs -b coverage docs docs/_build",
+  "sphinx-build -c docs -b html docs docs/_build/html",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
-[tool.pylint."messages control"]
-# Suppress warnings for bad variables for specific variables:
-good-names = ["X", "x", "y"]
+[tool.mypy]
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 88
@@ -108,6 +136,14 @@ known_first_party = ["lilio"]
 src_paths = ["lilio", "tests"]
 line_length = 120
 
+[tool.flake8]
+max-line-length = 88
+ignore = [
+  "E203",  # Whitespace before ":". Not PEP8 compliant (https://github.com/psf/black/issues/315)
+  "E501",  # Line length: currently (some) docstrings do not comply.
+  "W503",  # https://peps.python.org/pep-0008/#should-a-line-break-before-or-after-a-binary-operator
+]
+
 [tool.coverage.run]
 branch = true
 source = ["lilio"]
@@ -120,16 +156,3 @@ exclude_lines = [
   "if TYPE_CHECKING:",
   "if typing.TYPE_CHECKING:"
 ]
-
-[tool.tox]
-legacy_tox_ini = """
-
-[tox]
-envlist = py38,py39,py310
-skip_missing_interpreters = true
-
-[testenv]
-commands = pytest
-extras = dev
-
-"""
