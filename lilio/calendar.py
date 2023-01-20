@@ -7,8 +7,7 @@ customized for each specific calendar.
 import copy
 import re
 import warnings
-from abc import ABC
-from abc import abstractmethod
+from os import linesep
 from typing import List
 from typing import Literal
 from typing import Tuple
@@ -27,27 +26,172 @@ PandasData = (pd.Series, pd.DataFrame)
 XArrayData = (xr.DataArray, xr.Dataset)
 
 
-class BaseCalendar(ABC):
-    """Base calendar class which serves as a template for specific implementations."""
+class Interval:
+    """Basic construction element of calendar for defining precursors and targets."""
 
-    _mapping = None
+    def __init__(
+        self,
+        role: Literal["target", "precursor"],
+        length: Union[str, dict],
+        gap: Union[str, dict] = "0d",
+    ) -> None:
+        """This is the basic construction element of the calendar.
 
-    @abstractmethod
+        The Interval is characterised by its type (either target or precursor), its
+        length and the gap between it and the previous interval of its type (or the
+        anchor date, if the interval is the first target/first precursor).
+
+        Args:
+            role: The type of interval. Either "target" or "precursor".
+            length: The length of the interval. This can either be a pandas-like
+                frequency string (e.g. "10d", "2W", or "3M"), or a pandas.DateOffset
+                compatible dictionary such as {days=10}, {weeks=2}, or
+                {months=1, weeks=2}.
+            gap: The gap between the previous interval and this interval. Valid inputs
+                are the same as the length keyword argument. Defaults to "0d".
+        """
+        self.length = length
+        self.gap = gap
+        self._role = role
+        self._target = role == "target"
+
+        self._gap_dateoffset: pd.DateOffset
+        self._length_dateoffset: pd.DateOffset
+
+        # TO DO: support lead_time
+        # self.lead_time = lead_time
+
+    @property
+    def is_target(self):
+        return self._target
+
+    @property
+    def role(self):
+        "Returns the type of interval."
+        return self._role
+
+    @property
+    def length(self):
+        "Returns the length of the interval, as a pandas.DateOffset."
+        return self._length
+
+    @length.setter
+    def length(self, value: Union[str, dict]):
+        self._length = value
+        if isinstance(value, str):
+            self._length_dateoffset = DateOffset(
+                **utils.parse_freqstr_to_dateoffset(value)
+            )
+        else:
+            self._length_dateoffset = DateOffset(**value)
+
+    @property
+    def length_dateoffset(self):
+        return self._length_dateoffset
+
+    @property
+    def gap(self):
+        """Returns the gap of the interval, as a pandas.DateOffset."""
+        return self._gap
+
+    @gap.setter
+    def gap(self, value: Union[str, dict]):
+        self._gap = value
+        if isinstance(value, str):
+            self._gap_dateoffset = DateOffset(
+                **utils.parse_freqstr_to_dateoffset(value)
+            )
+        else:
+            self._gap_dateoffset = DateOffset(**value)
+
+    @property
+    def gap_dateoffset(self):
+        return self._gap_dateoffset
+
+    def __repr__(self):
+        """String representation of the Interval class."""
+        props = [
+            ("role", self.role),
+            ("length", self.length),
+            ("gap", self.gap),
+        ]
+
+        propstr = ", ".join([f"{k}={repr(v)}" for k, v in props])
+        return f"{self.__class__.__name__}({propstr})"
+
+
+class Calendar:
+    """Build a calendar from scratch with basic construction elements."""
+
     def __init__(
         self,
         anchor: str,
-    ) -> None:
-        """For initializing calendars, the following five variables will be required."""
+        allow_overlap: bool = False,
+        mapping: Union[
+            None,
+            MappingYears,
+            MappingData,
+        ] = None,
+        intervals: Union[None, List[Interval]] = None,
+    ):
+        """Instantiate a basic container for building calendar using basic blocks.
+
+        This is a highly flexible calendar which allows the user to build their own
+        calendar with the basic building blocks of target and precursor periods.
+
+        Users have the freedom to create calendar with customized intervals, gap
+        between intervals, and even overlapped intervals. They need to manage the
+        calendar themselves.
+
+        Args:
+            anchor: String denoting the anchor date. The following inputs are valid:
+                    - "MM-DD" for a month and day. E.g. "12-31".
+                    - "MM" for only a month, e.g. "4" for March.
+                    - English names and abbreviations of months. E.g. "December" or "jan".
+                    - "Www" for a week number, e.g. "W05" for the fifth week of the year.
+                    - "Www-D" for a week number plus day of week. E.g. "W01-4" for the
+                        first thursday of the year.
+            allow_overlap: If overlapping intervals between years is allowed or not.
+                Default behaviour is False, which means that anchor years will be
+                skipped to avoid data being shared between anchor years.
+            mapping: Calendar mapping. Input in the form: ("years", 2000, 2020) or
+                ("data", pd.Timestamp("2000-01-01"), pd.Timestamp("2020-01-01")). The
+                calendar mapping is usually set with the `map_years` or `map_to_data`
+                methods.
+            intervals: A list of Interval objects that should be appended to the
+                calendar when it is initialized.
+
+        Example:
+            Instantiate a custom calendar and appending target/precursor periods.
+
+            >>> import lilio.time
+            >>> calendar = lilio.time.CustomCalendar(anchor="12-31")
+            >>> calendar
+            CustomCalendar(
+                anchor='12-31',
+                allow_overlap=False,
+                mapping=None,
+                intervals=None
+            )
+
+        """
         self._anchor, self._anchor_fmt = self._parse_anchor(anchor)
+        self._allow_overlap = allow_overlap
         self.targets: List[Interval] = []
         self.precursors: List[Interval] = []
 
         self._first_year: Union[None, int] = None
         self._last_year: Union[None, int] = None
 
-        self.n_targets = 0
-        self._max_lag: int = 0
-        self._allow_overlap: bool = False
+        if intervals is not None:
+            # pylint: disable=expression-not-assigned
+            [self._append(iv) for iv in intervals]
+
+        self._set_mapping(mapping)
+
+    @property
+    def n_targets(self):
+        return len(self.targets)
 
     @property
     def anchor(self):
@@ -71,6 +215,46 @@ class BaseCalendar(ABC):
                 f"allow_overlap should be either True or False, not {value}"
                 f"of type {type(value)}"
             )
+
+    def add_intervals(
+        self,
+        role: Literal["target", "precursor"],
+        length: str,
+        gap: str = "0d",
+        n: int = 1,
+    ) -> None:
+        """Add one or more intervals to the calendar.
+
+        The interval can be a target or a precursor, and can be defined by its length,
+        a possible gap between this interval and the preceding interval.
+
+        Args:
+            role: Either a 'target' or 'precursor' interval(s).
+            length: The length of the interval(s), in a format of '5d' for five days, '2W'
+                for two weeks, or '1M' for one month.
+            gap: The gap between this interval and the preceding target/precursor
+                interval. Same format as the length argument.
+            n: The number of intervals which should be added to the calendar. Defaults
+                to 1.
+        """
+        if not isinstance(n, int):
+            raise ValueError(
+                "Please input an 'int' type for the 'n' argument." f" Not a {type(n)}."
+            )
+        if n <= 0:
+            raise ValueError(
+                "The number of intervals 'n' has to be 1 or greater, " f"not '{n}'."
+            )
+
+        if role in ["target", "precursor"]:
+            for _ in range(n):
+                self._append(Interval(role, length, gap))
+        else:
+            raise ValueError(
+                f"Type '{role}' is not a valid interval type. Please "
+                "choose between 'target' and 'precursor'"
+            )
+
 
     def _get_anchor(self, year: int) -> pd.Timestamp:
         """Method to generate an anchor timestamp for your specific calendar.
@@ -361,18 +545,38 @@ class BaseCalendar(ABC):
         """Displays the intervals the Calendar will generate for the current setup.
 
         Returns:
-            pd.Dataframe: Dataframe containing the calendar intervals, with the target
-                periods labelled.
+            pd.Dataframe: Dataframe containing the calendar intervals.
         """
         return self.get_intervals()
 
     def __repr__(self) -> str:
         """String representation of the Calendar."""
-        props = ", ".join(
-            [f"{k}={v}" for k, v in self.__dict__.items() if not k.startswith("_")]
-        )
-        calendar_name = self.__class__.__name__
-        return f"{calendar_name}({props})"
+        intervals = self.targets + self.precursors
+        if len(intervals) == 0:
+            intervals_str = repr(None)
+        else:
+            intervals_str = (
+                f"[{linesep}\t\t"
+                + f",{linesep}\t\t".join([repr(iv) for iv in intervals])
+                + f"{linesep}\t]"
+            )
+
+        if self._mapping == "years":
+            mapping = ("years", self._first_year, self._last_year)
+        elif self._mapping == "data":
+            mapping = ("data", self._first_timestamp, self._last_timestamp)
+        else:
+            mapping = None
+
+        props = [
+            ("anchor", repr(self.anchor)),
+            ("allow_overlap", repr(self.allow_overlap)),
+            ("mapping", repr(mapping)),
+            ("intervals", intervals_str),
+        ]
+
+        propstr = f"{linesep}\t" + f",{linesep}\t".join([f"{k}={v}" for k, v in props])
+        return f"{self.__class__.__name__}({propstr}{linesep})".replace("\t", "    ")
 
     #  pylint: disable=too-many-arguments
     def visualize(
@@ -460,97 +664,3 @@ class BaseCalendar(ABC):
     def flat(self) -> pd.DataFrame:
         """Returns the flattened intervals."""
         return self.get_intervals().stack()  # type: ignore
-
-
-class Interval:
-    """Basic construction element of calendar for defining precursors and targets."""
-
-    def __init__(
-        self,
-        role: Literal["target", "precursor"],
-        length: Union[str, dict],
-        gap: Union[str, dict] = "0d",
-    ) -> None:
-        """This is the basic construction element of the calendar.
-
-        The Interval is characterised by its type (either target or precursor), its
-        length and the gap between it and the previous interval of its type (or the
-        anchor date, if the interval is the first target/first precursor).
-
-        Args:
-            role: The type of interval. Either "target" or "precursor".
-            length: The length of the interval. This can either be a pandas-like
-                frequency string (e.g. "10d", "2W", or "3M"), or a pandas.DateOffset
-                compatible dictionary such as {days=10}, {weeks=2}, or
-                {months=1, weeks=2}.
-            gap: The gap between the previous interval and this interval. Valid inputs
-                are the same as the length keyword argument. Defaults to "0d".
-        """
-        self.length = length
-        self.gap = gap
-        self._role = role
-        self._target = role == "target"
-
-        self._gap_dateoffset: pd.DateOffset
-        self._length_dateoffset: pd.DateOffset
-
-        # TO DO: support lead_time
-        # self.lead_time = lead_time
-
-    @property
-    def is_target(self):
-        return self._target
-
-    @property
-    def role(self):
-        "Returns the type of interval."
-        return self._role
-
-    @property
-    def length(self):
-        "Returns the length of the interval, as a pandas.DateOffset."
-        return self._length
-
-    @length.setter
-    def length(self, value: Union[str, dict]):
-        self._length = value
-        if isinstance(value, str):
-            self._length_dateoffset = DateOffset(
-                **utils.parse_freqstr_to_dateoffset(value)
-            )
-        else:
-            self._length_dateoffset = DateOffset(**value)
-
-    @property
-    def length_dateoffset(self):
-        return self._length_dateoffset
-
-    @property
-    def gap(self):
-        """Returns the gap of the interval, as a pandas.DateOffset."""
-        return self._gap
-
-    @gap.setter
-    def gap(self, value: Union[str, dict]):
-        self._gap = value
-        if isinstance(value, str):
-            self._gap_dateoffset = DateOffset(
-                **utils.parse_freqstr_to_dateoffset(value)
-            )
-        else:
-            self._gap_dateoffset = DateOffset(**value)
-
-    @property
-    def gap_dateoffset(self):
-        return self._gap_dateoffset
-
-    def __repr__(self):
-        """String representation of the Interval class."""
-        props = [
-            ("role", self.role),
-            ("length", self.length),
-            ("gap", self.gap),
-        ]
-
-        propstr = ", ".join([f"{k}={repr(v)}" for k, v in props])
-        return f"{self.__class__.__name__}({propstr})"
