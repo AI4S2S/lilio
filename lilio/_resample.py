@@ -1,19 +1,10 @@
-from typing import TYPE_CHECKING
 from typing import Union
 from typing import overload
 import numpy as np
 import pandas as pd
 import xarray as xr
+from lilio.calendar import Calendar
 from . import utils
-
-
-if TYPE_CHECKING:
-    from lilio.time import AdventCalendar
-    from lilio.time import Calendar
-    from lilio.time import MonthlyCalendar
-    from lilio.time import WeeklyCalendar
-
-    Calendars = Union[Calendar, AdventCalendar, WeeklyCalendar, MonthlyCalendar]
 
 
 PandasData = (pd.Series, pd.DataFrame)
@@ -222,20 +213,20 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
 
 @overload
 def resample(
-    mapped_calendar: "Calendars", input_data: Union[xr.DataArray, xr.Dataset]
+    mapped_calendar: Calendar, input_data: Union[xr.DataArray, xr.Dataset]
 ) -> xr.Dataset:
     ...
 
 
 @overload
 def resample(
-    mapped_calendar: "Calendars", input_data: Union[pd.Series, pd.DataFrame]
+    mapped_calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     ...
 
 
 def resample(
-    mapped_calendar: "Calendars",
+    mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Resample input data to the calendar frequency.
@@ -273,7 +264,7 @@ def resample(
         >>> import lilio.time
         >>> import pandas as pd
         >>> import numpy as np
-        >>> cal = lilio.time.AdventCalendar(anchor="12-31", freq="180d")
+        >>> cal = lilio.time.daily_calendar(anchor="12-31", freq="180d")
         >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)

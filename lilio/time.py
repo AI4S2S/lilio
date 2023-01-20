@@ -10,21 +10,26 @@ between train and test sets.
 
 Example:
     >>> import lilio.time
-    >>>
-    >>> # Countdown the weeks until New Year's Eve
-    >>> calendar = lilio.time.AdventCalendar(anchor="12-31", freq="7d")
+    >>> # Countdown the 4 weeks until New Year's Eve
+    >>> calendar = lilio.time.Calendar(anchor="12-31")
+    >>> calendar.add_intervals("target", "1d")
+    >>> calendar.add_intervals("precursor", "4W", n=4)
     >>> calendar # doctest: +NORMALIZE_WHITESPACE
-    AdventCalendar(
+    Calendar(
         anchor='12-31',
-        freq='7d',
-        n_targets=1,
-        max_lag=0,
         allow_overlap=False,
-        mapping=None
+        mapping=None,
+        intervals=[
+            Interval(role='target', length='1d', gap='0d'),
+            Interval(role='precursor', length='4W', gap='0d'),
+            Interval(role='precursor', length='4W', gap='0d'),
+            Interval(role='precursor', length='4W', gap='0d'),
+            Interval(role='precursor', length='4W', gap='0d')
+        ]
     )
 
     >>> # Get the 180-day periods leading up to New Year's eve for the year 2020
-    >>> calendar = lilio.time.AdventCalendar(anchor="12-31", freq="180d")
+    >>> calendar = lilio.time.daily_calendar(anchor="12-31", freq="180d")
     >>> calendar = calendar.map_years(2020, 2020)
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE
     i_interval                         -1                         1
@@ -32,7 +37,7 @@ Example:
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
     >>> # Get the 180-day periods leading up to New Year's eve for 2020 - 2022 inclusive.
-    >>> calendar = lilio.time.AdventCalendar(anchor="12-31", freq="180d")
+    >>> calendar = lilio.time.daily_calendar(anchor="12-31", freq="180d")
     >>> calendar = calendar.map_years(2020, 2022)
     >>> # note the leap year:
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE

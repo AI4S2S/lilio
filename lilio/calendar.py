@@ -256,7 +256,6 @@ class Calendar:
                 "choose between 'target' and 'precursor'"
             )
 
-
     def _get_anchor(self, year: int) -> pd.Timestamp:
         """Method to generate an anchor timestamp for your specific calendar.
 

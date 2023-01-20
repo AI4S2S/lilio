@@ -23,9 +23,9 @@ class TestPlots:
     custom_cal_tar.add_intervals("target", "10d")
 
     calendars = [
-        time.AdventCalendar(anchor="12-31", freq="60d"),
-        time.MonthlyCalendar(anchor="December", freq="1M"),
-        time.WeeklyCalendar(anchor="W40", freq="2W"),
+        time.daily_calendar(anchor="12-31", freq="60d"),
+        time.monthly_calendar(anchor="December", freq="1M"),
+        time.weekly_calendar(anchor="W40", freq="2W"),
         custom_cal_pre,
         custom_cal_tar,
     ]
@@ -57,7 +57,7 @@ class TestPlots:
         plt.close("all")
 
     def test_visualize_unmapped(self, isinteractive):
-        time.AdventCalendar(anchor="12-31").visualize(interactive=isinteractive)
+        time.daily_calendar(anchor="12-31").visualize(interactive=isinteractive)
         plt.close("all")
 
 
@@ -70,8 +70,8 @@ class TestPlotsSingle:
 
     @pytest.fixture(autouse=True)
     def dummy_calendar(self):
-        "Dummy that will only test for AdventCalendar (to avoid excess testing)"
-        cal = time.AdventCalendar(anchor="12-31", freq="60d")
+        "Dummy that will only test for daily_calendar (to avoid excess testing)"
+        cal = time.daily_calendar(anchor="12-31", freq="60d")
         return cal.map_years(2018, 2021)
 
     def test_bokeh_kwargs(self, dummy_calendar):

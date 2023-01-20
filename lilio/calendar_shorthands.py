@@ -1,4 +1,5 @@
 import re
+import pandas as pd
 from .calendar import Calendar
 
 
@@ -41,7 +42,7 @@ def daily_calendar(
 
         >>> import lilio.time
         >>> calendar = lilio.time.daily_calendar(anchor='12-25', freq="3d", max_lag=3)
-        >>> calendar
+        >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12-25',
             allow_overlap=False,
@@ -57,19 +58,15 @@ def daily_calendar(
     """
     if not re.fullmatch(r"\d*d", freq):
         raise ValueError("Please input a frequency in the form of '2d'")
-    n_freq = int(freq.replace("d", ""))
+    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(freq)
+    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    n_precursors = n_intervals - n_targets
 
-    cal = Calendar(
-        anchor=anchor,
-        allow_overlap=allow_overlap
-        )
+    cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
     cal.add_intervals(role="target", length=freq, n=n_targets)
-    cal.add_intervals(
-        role="precursor",
-        length=freq,
-        n=(365//n_freq - n_targets if max_lag==0 else max_lag)
-    )
+    if n_precursors > 0:
+        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
 
     return cal
 
@@ -116,7 +113,7 @@ def weekly_calendar(
 
         >>> import lilio.time
         >>> calendar = lilio.time.weekly_calendar(anchor="W40", freq="1W", max_lag=2)
-        >>> calendar
+        >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='W40-1',
             allow_overlap=False,
@@ -131,19 +128,15 @@ def weekly_calendar(
     """
     if not re.fullmatch(r"\d*W", freq):
         raise ValueError("Please input a frequency in the form of '4W'")
-    n_freq = int(freq.replace("W", ""))
+    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(freq)
+    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    n_precursors = n_intervals - n_targets
 
-    cal = Calendar(
-        anchor=anchor,
-        allow_overlap=allow_overlap
-        )
+    cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
     cal.add_intervals(role="target", length=freq, n=n_targets)
-    cal.add_intervals(
-        role="precursor",
-        length=freq,
-        n=(52//n_freq - n_targets if max_lag==0 else max_lag)
-    )
+    if n_precursors > 0:
+        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
 
     return cal
 
@@ -187,7 +180,7 @@ def monthly_calendar(
 
         >>> import lilio.time
         >>> calendar = lilio.time.monthly_calendar(anchor='Dec', freq="3M")
-        >>> calendar
+        >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12',
             allow_overlap=False,
@@ -203,18 +196,14 @@ def monthly_calendar(
     """
     if not re.fullmatch(r"\d*M", freq):
         raise ValueError("Please input a frequency in the form of '2M'")
-    n_freq = int(freq.replace("M", ""))
+    periods_per_year = 12 / int(freq.replace("M", ""))
+    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    n_precursors = n_intervals - n_targets
 
-    cal = Calendar(
-        anchor=anchor,
-        allow_overlap=allow_overlap
-        )
+    cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
     cal.add_intervals(role="target", length=freq, n=n_targets)
-    cal.add_intervals(
-        role="precursor",
-        length=freq,
-        n=(12//n_freq - n_targets if max_lag==0 else max_lag)
-    )
+    if n_precursors > 0:
+        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
 
     return cal

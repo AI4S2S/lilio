@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
-from lilio.time import AdventCalendar
 from lilio.time import Calendar
+from lilio.time import daily_calendar
 from lilio.time import resample
 
 
@@ -17,11 +17,11 @@ class TestResample:
     # Define all required inputs as fixtures:
     @pytest.fixture(autouse=True)
     def dummy_calendar(self):
-        return AdventCalendar(anchor="10-15", freq="180d")
+        return daily_calendar(anchor="10-15", freq="180d")
 
     @pytest.fixture(autouse=True, params=[1, 2, 3])
     def dummy_calendar_targets(self, request):
-        return AdventCalendar(anchor="5-10", freq="100d", n_targets=request.param)
+        return daily_calendar(anchor="5-10", freq="100d", n_targets=request.param)
 
     @pytest.fixture(params=["20151020", "20191015"])
     def dummy_series(self, request):
@@ -134,9 +134,10 @@ class TestResample:
         np.testing.assert_array_equal(resampled_data["target"].values, expected[::-1])  # type: ignore
 
     def test_allow_overlap_dataframe(self):
-        calendar = AdventCalendar(anchor="10-15", freq="100d")
-        calendar.max_lag = 5
-        calendar.allow_overlap = True
+        calendar = daily_calendar(
+            anchor="10-15", freq="100d", max_lag=5, allow_overlap=True
+        )
+
         time_index = pd.date_range("20151101", "20211101", freq="50d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index)
@@ -159,14 +160,14 @@ class TestResample:
             resample(cal, dataset)
 
     def test_low_freq_dataframe(self, dummy_dataframe):
-        cal = AdventCalendar(anchor="10-15", freq="1d")
+        cal = daily_calendar(anchor="10-15", freq="1d")
         dataframe, _ = dummy_dataframe
         cal = cal.map_to_data(dataframe)
         with pytest.warns(UserWarning):
             resample(cal, dataframe)
 
     def test_low_freq_dataset(self, dummy_dataset):
-        cal = AdventCalendar(anchor="10-15", freq="1d")
+        cal = daily_calendar(anchor="10-15", freq="1d")
         dataset, _ = dummy_dataset
         cal = cal.map_to_data(dataset)
         with pytest.warns(UserWarning):
@@ -175,7 +176,7 @@ class TestResample:
     def test_1day_freq_dataframe(self):
         # Will test the regular expression match and pre-pending of '1' in the
         # check_input_frequency utility function
-        calendar = AdventCalendar(anchor="10-15", freq="1d")
+        calendar = daily_calendar(anchor="10-15", freq="1d")
         time_index = pd.date_range("20191101", "20211101", freq="1d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index, name="data1")

@@ -4,11 +4,11 @@ from typing import Literal
 import numpy as np
 import pandas as pd
 import pytest
+import xarray as xr
 from pandas.tseries.offsets import DateOffset
 from lilio.time import Calendar
 from lilio.time import Interval
 from lilio.time import daily_calendar
-import xarray as xr
 
 
 def interval(start, end, closed: Literal["left", "right", "both", "neither"] = "left"):
@@ -275,6 +275,7 @@ class TestAnchorKwarg:
         with pytest.raises(ValueError):
             _ = Calendar(anchor=test_input)
 
+
 class TestMap:
     """Test map to year(s)/data methods"""
 
@@ -432,8 +433,7 @@ class TestMap:
 
     @pytest.mark.parametrize("max_lag,expected_index,expected_size", max_lag_edge_cases)
     def test_max_lag_skip_years(self, max_lag, expected_index, expected_size):
-        calendar = daily_calendar(anchor="12-31", freq="5d")
-        calendar.max_lag = max_lag
+        calendar = daily_calendar(anchor="12-31", freq="5d", max_lag=max_lag)
         calendar = calendar.map_years(2018, 2019)
 
         np.testing.assert_array_equal(
