@@ -4,12 +4,13 @@ from typing import Dict
 from typing import List
 from typing import Union
 import xarray as xr
-import lilio
+from . import calendar
 from . import utils
+from ._resample import resample
 
 
 def _gap_shift(
-    interval: lilio.Interval, shift: Union[str, Dict[str, int]]
+    interval: calendar.Interval, shift: Union[str, Dict[str, int]]
 ) -> Dict[str, int]:
     """
     Shift a calendar interval's gap property by the given amount.
@@ -44,8 +45,8 @@ def _gap_shift(
 
 
 def calendar_shifter(
-    calendar: lilio.Calendar, shift: Union[str, dict]
-) -> lilio.Calendar:
+    calendar: calendar.Calendar, shift: Union[str, dict]
+) -> calendar.Calendar:
     """Shift a Calendar instance by a given time offset.
 
     Instead of shifting the anchor date, this function shifts two things in reference
@@ -93,8 +94,8 @@ def calendar_shifter(
 
 
 def staggered_calendar(
-    calendar: lilio.Calendar, shift: Union[str, dict], n_shifts: int
-) -> List[lilio.Calendar]:
+    calendar: calendar.Calendar, shift: Union[str, dict], n_shifts: int
+) -> List[calendar.Calendar]:
     """Shift a Calendar instance by a given time offset n times to create a list of
     shifted calendars.
 
@@ -172,7 +173,7 @@ def calendar_list_resampler(
     Returns:
         resampled xr.Dataset
     """
-    ds_r = xr.concat([lilio.resample(cal, ds) for cal in cal_list], dim=dim_name)
+    ds_r = xr.concat([resample(cal, ds) for cal in cal_list], dim=dim_name)
     ds_r = ds_r.assign_coords({dim_name: ds_r[dim_name].values})
 
     return ds_r
