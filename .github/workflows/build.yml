@@ -58,4 +58,4 @@ jobs:
       - name: Upgrade pip and install hatch
         run: python3 -m pip install --upgrade pip hatch
       - name: Check style against standards
-        run: hatch lint
+        run: hatch run lint
