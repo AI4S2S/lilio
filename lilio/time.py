@@ -55,10 +55,9 @@ Example:
 
 """
 
-# pylint: disable=unused-import
-from ._resample import resample
-from .calendar import Calendar
-from .calendar import Interval
-from .calendar_shorthands import daily_calendar
-from .calendar_shorthands import monthly_calendar
-from .calendar_shorthands import weekly_calendar
+from ._resample import resample  # noqa: F401 (unused import)
+from .calendar import Calendar  # noqa: F401
+from .calendar import Interval  # noqa: F401
+from .calendar_shorthands import daily_calendar  # noqa: F401
+from .calendar_shorthands import monthly_calendar  # noqa: F401
+from .calendar_shorthands import weekly_calendar  # noqa: F401
