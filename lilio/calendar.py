@@ -187,6 +187,7 @@ class Calendar:
             # pylint: disable=expression-not-assigned
             [self._append(iv) for iv in intervals]
 
+        self._mapping: Union[None, str]
         self._set_mapping(mapping)
 
     @property
@@ -482,7 +483,7 @@ class Calendar:
 
     def _set_mapping(self, mapping):
         if mapping is None:
-            pass  # NOSONAR
+            self._mapping = None
         elif mapping[0] == "years":
             self.map_years(mapping[1], mapping[2])
         elif mapping[0] == "data":
