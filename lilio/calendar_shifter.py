@@ -12,8 +12,7 @@ from ._resample import resample
 def _gap_shift(
     interval: calendar.Interval, shift: Union[str, Dict[str, int]]
 ) -> Dict[str, int]:
-    """
-    Shift a calendar interval's gap property by the given amount.
+    """Shift a calendar interval's gap property by the given amount.
 
     Args:
         gap: the pandas DateOffset from a calendar interval's `gap` property.
@@ -66,6 +65,7 @@ def calendar_shifter(
 
     Example:
         Shift a calendar by a given dateoffset.
+
         >>> import lilio
         >>> cal = lilio.Calendar(anchor='07-01')
         >>> cal.add_intervals("target", "7d")
@@ -96,10 +96,7 @@ def calendar_shifter(
 def staggered_calendar(
     calendar: calendar.Calendar, shift: Union[str, dict], n_shifts: int
 ) -> List[calendar.Calendar]:
-    """Shift a Calendar instance by a given time offset n times to create a list of
-    shifted calendars.
-
-    We call this list a staggered calendar.
+    """Create a staggered calendar list by shifting a calendar by an offset n-times.
 
     Args:
         calendar: an lilio.Calendar instance
@@ -111,13 +108,14 @@ def staggered_calendar(
     Example:
         Shift an input calendar n times by a given dateoffset and return a list of these
         shifted calendars.
+
         >>> import lilio
         >>> cal = lilio.Calendar(anchor="07-01")
         >>> cal.add_intervals("target", "7d")
         >>> cal.add_intervals("precursor", "7d", gap="14d")
         >>> cal.add_intervals("precursor", "7d", n=3)
-        >>> cal_shifted = cal_stagger(cal, "7d", 1)
-        >>> cal_shifted
+        >>> cal_shifted = lilio.calendar_shifter.staggered_calendar(cal, "7d", 1)
+        >>> cal_shifted # doctest: +NORMALIZE_WHITESPACE
         [Calendar(
             anchor='07-01',
             allow_overlap=False,
@@ -163,8 +161,10 @@ def staggered_calendar(
 def calendar_list_resampler(
     cal_list: list, ds: xr.Dataset, dim_name: str = "step"
 ) -> xr.Dataset:
-    """Resample a dataset to every calendar in a list of calendars and concatenate them
-    along dimension 'step' into an xarray Dataset.
+    """Resample a dataset to every calendar in a list of calendars.
+
+    The resampled calendars will be concatenated along a dimension (default name 'step')
+    into a single xarray Dataset.
 
     Args:
         cal_list: list of shifted custom calendars
