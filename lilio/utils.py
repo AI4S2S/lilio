@@ -39,7 +39,7 @@ def check_time_dim_xarray(data) -> None:
 
 
 def check_time_dim_pandas(data) -> None:
-    """Utility function to check if pandas data has an index with time data."""
+    """Check if pandas data has an index with time data."""
     if not isinstance(data.index, pd.DatetimeIndex):
         raise ValueError("The input data does not have a datetime index.")
 

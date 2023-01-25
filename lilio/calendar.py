@@ -21,7 +21,7 @@ _PandasData = (pd.Series, pd.DataFrame)
 
 
 class Interval:
-    """Basic construction element of calendar for defining precursors and targets. """
+    """Basic construction element of calendar for defining precursors and targets."""
 
     def __init__(
         self,
@@ -149,6 +149,11 @@ class Calendar:
         Users have the freedom to create calendar with customized intervals, gap
         between intervals, and even overlapped intervals. They need to manage the
         calendar themselves.
+
+        Some shorthand calendars, such as a `daily_calendar`, `weekly_calendar` and
+        `monthly_calendar` are available in lilio.calendar_shorthands. These can be used
+        to easily construct basic calendars with only a few parameters, but do not have
+        the flexibility that this calendar builder module provides.
 
         Args:
             anchor: String denoting the anchor date. The following inputs are valid:

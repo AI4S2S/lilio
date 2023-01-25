@@ -60,12 +60,12 @@ Example:
 
 import logging
 from . import calendar_shifter
-from .resampling import resample  # noqa: F401 (unused import)
 from .calendar import Calendar  # noqa: F401
 from .calendar import Interval  # noqa: F401
 from .calendar_shorthands import daily_calendar  # noqa: F401
 from .calendar_shorthands import monthly_calendar  # noqa: F401
 from .calendar_shorthands import weekly_calendar  # noqa: F401
+from .resampling import resample  # noqa: F401 (unused import)
 
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
