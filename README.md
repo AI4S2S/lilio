@@ -87,7 +87,7 @@ For convenience, Lilio offers a few shorthands for standard of calendars e.g.
 [`monthly_calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar_shorthands/index.html#lilio.calendar_shorthands.monthly_calendar)
 and
 [`weekly_calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar_shorthands/index.html#lilio.calendar_shorthands.weekly_calendar).
-However, you can also create very complex calendars by calling
+However, you can also create custom calendars by calling
 [`Calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar/index.html#lilio.calendar.Calendar)
 directly.
 
