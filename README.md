@@ -54,8 +54,9 @@ certain lag. This is how we like to structure our data for ML applications.
 
 ![Conceptual illustration of Lilio Calendar](docs/assets/images/calendar_concept.png)
 
-We define the "anchor date" to be between the target and precursor periods. All
-other intervals are expressed as offsets to this anchor date. Conveniently, this
+We define the "anchor date" to be between the target and precursor periods
+(strictly speaking, it is the start of the first target interval). All other
+intervals are expressed as offsets to this anchor date. Conveniently, this
 eliminates any ambiguity related to leap years.
 
 Here's a calendar generated with Lilio:
@@ -89,7 +90,8 @@ and
 [`weekly_calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar_shorthands/index.html#lilio.calendar_shorthands.weekly_calendar).
 However, you can also create custom calendars by calling
 [`Calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar/index.html#lilio.calendar.Calendar)
-directly.
+directly. For a nice walkthrough, see [this example
+notebook](https://github.com/AI4S2S/lilio/blob/main/notebooks/all_about_the_calendar.ipynb).
 
 <!---
 ## Tutorials
