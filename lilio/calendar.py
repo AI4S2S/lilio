@@ -14,11 +14,10 @@ from . import _plot
 from . import utils
 
 
-MappingYears = Tuple[Literal["years"], int, int]
-MappingData = Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
+_MappingYears = Tuple[Literal["years"], int, int]
+_MappingData = Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
 
-PandasData = (pd.Series, pd.DataFrame)
-XArrayData = (xr.DataArray, xr.Dataset)
+_PandasData = (pd.Series, pd.DataFrame)
 
 
 class Interval:
@@ -137,8 +136,8 @@ class Calendar:
         allow_overlap: bool = False,
         mapping: Union[
             None,
-            MappingYears,
-            MappingData,
+            _MappingYears,
+            _MappingData,
         ] = None,
         intervals: Union[None, List[Interval]] = None,
     ):
@@ -452,7 +451,7 @@ class Calendar:
         utils.check_timeseries(input_data)
 
         # check the datetime order of input data
-        if isinstance(input_data, PandasData):
+        if isinstance(input_data, _PandasData):
             self._first_timestamp = input_data.index.min()
             self._last_timestamp = input_data.index.max()
         else:

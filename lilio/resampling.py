@@ -8,8 +8,7 @@ from lilio.calendar import Calendar
 from . import utils
 
 
-PandasData = (pd.Series, pd.DataFrame)
-XArrayData = (xr.DataArray, xr.Dataset)
+_PandasData = (pd.Series, pd.DataFrame)
 
 
 def _mark_target_period(
@@ -33,7 +32,7 @@ def _mark_target_period(
         Input data with boolean marked target periods, similar data format as
             given inputs.
     """
-    if isinstance(input_data, PandasData):
+    if isinstance(input_data, _PandasData):
         input_data["target"] = np.ones(input_data.index.size, dtype=bool)
         input_data["target"] = input_data["target"].where(
             input_data["i_interval"] > 0, other=False
@@ -288,7 +287,7 @@ def resample(
     # TO DO: add this check when all calendars are rebased on the CustomCalendar
     # utils.check_input_frequency(mapped_calendar, input_data)
 
-    if isinstance(input_data, PandasData):
+    if isinstance(input_data, _PandasData):
         resampled_data = _resample_pandas(mapped_calendar, input_data)
     else:
         if isinstance(input_data, xr.DataArray):
