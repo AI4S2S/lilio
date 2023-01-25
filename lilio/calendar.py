@@ -1,4 +1,4 @@
-"""Lilio's main Calendar module"""
+"""Lilio's main Calendar module."""
 import copy
 import re
 import warnings
@@ -22,7 +22,7 @@ XArrayData = (xr.DataArray, xr.Dataset)
 
 
 class Interval:
-    """Basic construction element of calendar for defining precursors and targets."""
+    """Basic construction element of calendar for defining precursors and targets. """
 
     def __init__(
         self,
@@ -30,7 +30,7 @@ class Interval:
         length: Union[str, dict],
         gap: Union[str, dict] = "0d",
     ) -> None:
-        """This is the basic construction element of the calendar.
+        """Constructs the basic element of the calendar.
 
         The Interval is characterised by its type (either target or precursor), its
         length and the gap between it and the previous interval of its type (or the
@@ -44,6 +44,19 @@ class Interval:
                 {months=1, weeks=2}.
             gap: The gap between the previous interval and this interval. Valid inputs
                 are the same as the length keyword argument. Defaults to "0d".
+
+        Example:
+            >>> from lilio import Interval
+            >>> iv = Interval("target", length="7d")
+            >>> iv
+            Interval(role='target', length='7d', gap='0d')
+
+            You can modify the interval's properties in-place:
+
+            >>> iv.gap = "1W"
+            >>> iv
+            Interval(role='target', length='7d', gap='1W')
+
         """
         self.length = length
         self.gap = gap
@@ -160,9 +173,9 @@ class Calendar:
             Instantiate a custom calendar and appending target/precursor periods.
 
             >>> import lilio
-            >>> calendar = lilio.CustomCalendar(anchor="12-31")
-            >>> calendar
-            CustomCalendar(
+            >>> calendar = lilio.Calendar(anchor="12-31")
+            >>> calendar  # doctest: +NORMALIZE_WHITESPACE
+            Calendar(
                 anchor='12-31',
                 allow_overlap=False,
                 mapping=None,

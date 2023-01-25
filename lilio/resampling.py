@@ -12,7 +12,7 @@ PandasData = (pd.Series, pd.DataFrame)
 XArrayData = (xr.DataArray, xr.Dataset)
 
 
-def mark_target_period(
+def _mark_target_period(
     input_data: Union[pd.DataFrame, xr.Dataset]
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Mark interval periods that fall within the given number of target periods.
@@ -47,7 +47,7 @@ def mark_target_period(
     return input_data
 
 
-def resample_bins_constructor(
+def _resample_bins_constructor(
     intervals: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     """Restructures the interval object into a tidy DataFrame.
@@ -80,7 +80,7 @@ def resample_bins_constructor(
     return bins
 
 
-def contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
+def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     """Checks elementwise if the intervals contain the timestamps.
     Will return a boolean array of the shape (n_timestamps, n_intervals).
 
@@ -102,7 +102,7 @@ def contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     return a & b
 
 
-def create_means_matrix(intervals, timestamps):
+def _create_means_matrix(intervals, timestamps):
     """Creates a matrix to be used to compute the mean data value of each interval.
 
     E.g.: `means = np.dot(matrix, data)`.
@@ -114,11 +114,11 @@ def create_means_matrix(intervals, timestamps):
     Returns:
         np.ndarray: 2-D array that can will compute the mean.
     """
-    matrix = contains(pd.IntervalIndex(intervals), timestamps).astype(float)
+    matrix = _contains(pd.IntervalIndex(intervals), timestamps).astype(float)
     return matrix / matrix.sum(axis=1, keepdims=True)
 
 
-def resample_pandas(
+def _resample_pandas(
     calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     """Internal function to handle resampling of Pandas data.
@@ -135,8 +135,8 @@ def resample_pandas(
         name = "data" if input_data.name is None else input_data.name
         input_data = pd.DataFrame(input_data.rename(name))
 
-    data = resample_bins_constructor(calendar.get_intervals())
-    means_matrix = create_means_matrix(data.interval.values, input_data.index.values)
+    data = _resample_bins_constructor(calendar.get_intervals())
+    means_matrix = _create_means_matrix(data.interval.values, input_data.index.values)
 
     for colname in input_data.columns:
         data[colname] = np.dot(means_matrix, input_data[colname])
@@ -145,7 +145,7 @@ def resample_pandas(
 
 
 # pylint: disable=too-many-locals
-def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
+def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
     """Internal function to handle resampling of xarray data.
 
     Args:
@@ -180,7 +180,7 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
     if stacking_dims:
         da_coords["allstack"] = input_data_time["allstack"]
 
-    contains_matrix = contains(
+    contains_matrix = _contains(
         pd.IntervalIndex(data["interval"].values), input_data_time["time"].values
     )
 
@@ -289,14 +289,14 @@ def resample(
     # utils.check_input_frequency(mapped_calendar, input_data)
 
     if isinstance(input_data, PandasData):
-        resampled_data = resample_pandas(mapped_calendar, input_data)
+        resampled_data = _resample_pandas(mapped_calendar, input_data)
     else:
         if isinstance(input_data, xr.DataArray):
             input_data.name = "data" if input_data.name is None else input_data.name
             input_data = input_data.to_dataset()
-        resampled_data = resample_dataset(mapped_calendar, input_data)
+        resampled_data = _resample_dataset(mapped_calendar, input_data)
 
     utils.check_empty_intervals(resampled_data)
 
     # mark target periods before returning the resampled data
-    return mark_target_period(resampled_data)
+    return _mark_target_period(resampled_data)

@@ -6,7 +6,7 @@ from typing import Union
 import xarray as xr
 from . import calendar
 from . import utils
-from ._resample import resample
+from .resampling import resample
 
 
 def _gap_shift(
@@ -67,12 +67,12 @@ def calendar_shifter(
         Shift a calendar by a given dateoffset.
 
         >>> import lilio
-        >>> cal = lilio.Calendar(anchor='07-01')
+        >>> cal = lilio.Calendar(anchor="07-01")
         >>> cal.add_intervals("target", "7d")
         >>> cal.add_intervals("precursor", "7d", gap="14d")
-        >>> cal.add_intervals("precursor", "7d, n=3)
-        >>> cal_shifted = cal_shifter(cal, '7d')
-        >>> cal_shifted
+        >>> cal.add_intervals("precursor", "7d", n=3)
+        >>> cal_shifted = lilio.calendar_shifter.calendar_shifter(cal, "7d")
+        >>> cal_shifted  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='07-01',
             allow_overlap=False,
@@ -82,7 +82,7 @@ def calendar_shifter(
                 Interval(role='precursor', length='7d', gap={'days': 7}),
                 Interval(role='precursor', length='7d', gap='0d'),
                 Interval(role='precursor', length='7d', gap='0d'),
-                Interval(role='precursor', length='7d', gap='0d'),
+                Interval(role='precursor', length='7d', gap='0d')
             ]
         )
     """
@@ -115,7 +115,7 @@ def staggered_calendar(
         >>> cal.add_intervals("precursor", "7d", gap="14d")
         >>> cal.add_intervals("precursor", "7d", n=3)
         >>> cal_shifted = lilio.calendar_shifter.staggered_calendar(cal, "7d", 1)
-        >>> cal_shifted # doctest: +NORMALIZE_WHITESPACE
+        >>> cal_shifted  # doctest: +NORMALIZE_WHITESPACE
         [Calendar(
             anchor='07-01',
             allow_overlap=False,

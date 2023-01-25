@@ -7,8 +7,8 @@ attention to the treatment of adjacent cycles, we avoid information leakage
 between train and test sets.
 
 Example:
+    Countdown the 4 weeks until New Year's Eve
     >>> import lilio
-    >>> # Countdown the 4 weeks until New Year's Eve
     >>> calendar = lilio.Calendar(anchor="12-31")
     >>> calendar.add_intervals("target", "1d")
     >>> calendar.add_intervals("precursor", "4W", n=4)
@@ -26,7 +26,7 @@ Example:
         ]
     )
 
-    >>> # Get the 180-day periods leading up to New Year's eve for the year 2020
+    Get the 180-day periods leading up to New Year's eve for the year 2020
     >>> calendar = lilio.daily_calendar(anchor="12-31", freq="180d")
     >>> calendar = calendar.map_years(2020, 2020)
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE
@@ -34,7 +34,7 @@ Example:
     anchor_year
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
-    >>> # Get the 180-day periods leading up to New Year's eve for 2020 - 2022 inclusive.
+    Get the 180-day periods leading up to New Year's eve for 2020 - 2022 inclusive.
     >>> calendar = lilio.daily_calendar(anchor="12-31", freq="180d")
     >>> calendar = calendar.map_years(2020, 2022)
     >>> # note the leap year:
@@ -45,7 +45,7 @@ Example:
     2021         [2021-07-04, 2021-12-31)  [2021-12-31, 2022-06-29)
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
-    >>> # To get a stacked representation:
+    To get a stacked representation:
     >>> calendar.map_years(2020, 2022).flat
     anchor_year  i_interval
     2022         -1            [2022-07-04, 2022-12-31)
@@ -60,7 +60,7 @@ Example:
 
 import logging
 from . import calendar_shifter
-from ._resample import resample  # noqa: F401 (unused import)
+from .resampling import resample  # noqa: F401 (unused import)
 from .calendar import Calendar  # noqa: F401
 from .calendar import Interval  # noqa: F401
 from .calendar_shorthands import daily_calendar  # noqa: F401
@@ -77,7 +77,7 @@ __version__ = "0.2.1"
 __all__ = [
     "Calendar",
     "Interval",
-    "resample",
+    "resampling",
     "daily_calendar",
     "monthly_calendar",
     "weekly_calendar",
