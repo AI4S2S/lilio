@@ -1,26 +1,17 @@
-from typing import TYPE_CHECKING
+"""The implementation of the resampling methods for use with the Calendar"""
 from typing import Union
 from typing import overload
 import numpy as np
 import pandas as pd
 import xarray as xr
+from lilio.calendar import Calendar
 from . import utils
 
 
-if TYPE_CHECKING:
-    from lilio.time import AdventCalendar
-    from lilio.time import Calendar
-    from lilio.time import MonthlyCalendar
-    from lilio.time import WeeklyCalendar
-
-    Calendars = Union[Calendar, AdventCalendar, WeeklyCalendar, MonthlyCalendar]
+_PandasData = (pd.Series, pd.DataFrame)
 
 
-PandasData = (pd.Series, pd.DataFrame)
-XArrayData = (xr.DataArray, xr.Dataset)
-
-
-def mark_target_period(
+def _mark_target_period(
     input_data: Union[pd.DataFrame, xr.Dataset]
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Mark interval periods that fall within the given number of target periods.
@@ -41,7 +32,7 @@ def mark_target_period(
         Input data with boolean marked target periods, similar data format as
             given inputs.
     """
-    if isinstance(input_data, PandasData):
+    if isinstance(input_data, _PandasData):
         input_data["target"] = np.ones(input_data.index.size, dtype=bool)
         input_data["target"] = input_data["target"].where(
             input_data["i_interval"] > 0, other=False
@@ -55,7 +46,7 @@ def mark_target_period(
     return input_data
 
 
-def resample_bins_constructor(
+def _resample_bins_constructor(
     intervals: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     """Restructures the interval object into a tidy DataFrame.
@@ -88,7 +79,7 @@ def resample_bins_constructor(
     return bins
 
 
-def contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
+def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     """Checks elementwise if the intervals contain the timestamps.
     Will return a boolean array of the shape (n_timestamps, n_intervals).
 
@@ -110,7 +101,7 @@ def contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     return a & b
 
 
-def create_means_matrix(intervals, timestamps):
+def _create_means_matrix(intervals, timestamps):
     """Creates a matrix to be used to compute the mean data value of each interval.
 
     E.g.: `means = np.dot(matrix, data)`.
@@ -122,11 +113,11 @@ def create_means_matrix(intervals, timestamps):
     Returns:
         np.ndarray: 2-D array that can will compute the mean.
     """
-    matrix = contains(pd.IntervalIndex(intervals), timestamps).astype(float)
+    matrix = _contains(pd.IntervalIndex(intervals), timestamps).astype(float)
     return matrix / matrix.sum(axis=1, keepdims=True)
 
 
-def resample_pandas(
+def _resample_pandas(
     calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     """Internal function to handle resampling of Pandas data.
@@ -143,8 +134,8 @@ def resample_pandas(
         name = "data" if input_data.name is None else input_data.name
         input_data = pd.DataFrame(input_data.rename(name))
 
-    data = resample_bins_constructor(calendar.get_intervals())
-    means_matrix = create_means_matrix(data.interval.values, input_data.index.values)
+    data = _resample_bins_constructor(calendar.get_intervals())
+    means_matrix = _create_means_matrix(data.interval.values, input_data.index.values)
 
     for colname in input_data.columns:
         data[colname] = np.dot(means_matrix, input_data[colname])
@@ -153,7 +144,7 @@ def resample_pandas(
 
 
 # pylint: disable=too-many-locals
-def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
+def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
     """Internal function to handle resampling of xarray data.
 
     Args:
@@ -188,7 +179,7 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
     if stacking_dims:
         da_coords["allstack"] = input_data_time["allstack"]
 
-    contains_matrix = contains(
+    contains_matrix = _contains(
         pd.IntervalIndex(data["interval"].values), input_data_time["time"].values
     )
 
@@ -222,20 +213,20 @@ def resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
 
 @overload
 def resample(
-    mapped_calendar: "Calendars", input_data: Union[xr.DataArray, xr.Dataset]
+    mapped_calendar: Calendar, input_data: Union[xr.DataArray, xr.Dataset]
 ) -> xr.Dataset:
     ...
 
 
 @overload
 def resample(
-    mapped_calendar: "Calendars", input_data: Union[pd.Series, pd.DataFrame]
+    mapped_calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     ...
 
 
 def resample(
-    mapped_calendar: "Calendars",
+    mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Resample input data to the calendar frequency.
@@ -270,15 +261,15 @@ def resample(
         Assuming the input data is pd.DataFrame containing random values with index
         from 2021-11-11 to 2021-11-01 at daily frequency.
 
-        >>> import lilio.time
+        >>> import lilio
         >>> import pandas as pd
         >>> import numpy as np
-        >>> cal = lilio.time.AdventCalendar(anchor="12-31", freq="180d")
+        >>> cal = lilio.daily_calendar(anchor="12-31", freq="180d")
         >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)
         >>> cal = cal.map_to_data(input_data)
-        >>> bins = lilio.time.resample(cal, input_data)
+        >>> bins = lilio.resample(cal, input_data)
         >>> bins # doctest: +NORMALIZE_WHITESPACE
             anchor_year  i_interval                  interval   data  target
         0          2019          -1  [2019-07-04, 2019-12-31)   14.5   False
@@ -296,15 +287,15 @@ def resample(
     # TO DO: add this check when all calendars are rebased on the CustomCalendar
     # utils.check_input_frequency(mapped_calendar, input_data)
 
-    if isinstance(input_data, PandasData):
-        resampled_data = resample_pandas(mapped_calendar, input_data)
+    if isinstance(input_data, _PandasData):
+        resampled_data = _resample_pandas(mapped_calendar, input_data)
     else:
         if isinstance(input_data, xr.DataArray):
             input_data.name = "data" if input_data.name is None else input_data.name
             input_data = input_data.to_dataset()
-        resampled_data = resample_dataset(mapped_calendar, input_data)
+        resampled_data = _resample_dataset(mapped_calendar, input_data)
 
     utils.check_empty_intervals(resampled_data)
 
     # mark target periods before returning the resampled data
-    return mark_target_period(resampled_data)
+    return _mark_target_period(resampled_data)

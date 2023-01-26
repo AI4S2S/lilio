@@ -62,6 +62,8 @@ todo_include_todos = False
 # -- Use autoapi.extension to run sphinx-apidoc -------
 
 autoapi_dirs = ["../lilio"]
+autoapi_python_class_content = "both"
+autoapi_options = ["members", "undoc-members", "imported-members"]
 
 # -- Options for HTML output ----------------------------------------------
 

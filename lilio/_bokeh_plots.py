@@ -1,3 +1,4 @@
+"""Calendar plotting implementations (bokeh specific code)"""
 import sys
 import numpy as np
 from bokeh import plotting

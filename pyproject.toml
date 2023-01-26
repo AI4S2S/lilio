@@ -98,8 +98,8 @@ lint = [
   "black --check --diff .",
   "isort --check-only --diff .",
 ]
-format = ["isort .", "black .", "check",]
-test = ["pytest",]
+format = ["isort .", "black .", "lint",]
+test = ["pytest ./lilio/ ./tests/ --doctest-modules",]
 coverage = [
   "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
 ]
@@ -109,7 +109,6 @@ features = ["bokeh", "docs"]
 
 [tool.hatch.envs.docs.scripts]
 build = [
-  "sphinx-build -c docs -b doctest docs docs/_build",
   "sphinx-build -c docs -b coverage docs docs/_build",
   "sphinx-build -c docs -b html docs docs/_build/html",
 ]
