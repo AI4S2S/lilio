@@ -18,8 +18,9 @@ def daily_calendar(
     cycle time of one year.
 
     Args:
-        anchor: String in the form "12-31" for December 31st. Effectively the origin
-            of the calendar. It will countdown to this date.
+        anchor: String in the form "12-31" for December 31st. The first target interval
+            will contain the anchor, while the precursor intervals are built back in
+            time starting at this date.
         length: The length of every target and precursor period.
         n_targets: integer specifying the number of target intervals in a period.
         n_precursors: Sets the maximum number of precursors of the Calendar. If
@@ -80,16 +81,17 @@ def weekly_calendar(
 ) -> Calendar:
     """Instantiate a basic monthly calendar with minimal configuration.
 
-    Set up the calendar with given freq ending exactly on the anchor week.
-    The index will extend back in time as many weeks as fit within the
-    cycle time of one year (i.e. 52).
+    Set up a quick calendar revolving around intervals with week-based lengths.
+    The precursor intervals will extend back in time with as many intervals as fit
+    within the cycle time of one year (i.e. 52 - n_targets).
 
     Note that the difference between this calendar and the daily_calendar revolves
     around the use of calendar weeks (Monday - Sunday), instead of 7-day periods.
 
     Args:
-        anchor: Str in the form of "40W", denoting the week number. Effectively the
-            origin of the calendar. It will countdown to this week.
+        anchor: Str in the form of "40W", denoting the week number. The first target
+            interval will contain the anchor, while the precursor intervals are built
+            back in time starting from this week.
         length: The length of every precursor and target interval, e.g. '2W'.
         n_targets: integer specifying the number of target intervals in a period.
         n_precursors: Sets the maximum number of precursors of the Calendar. If
@@ -112,7 +114,7 @@ def weekly_calendar(
         december.
 
         >>> import lilio
-        >>> calendar = lilio.weekly_calendar(anchor="W40", freq="1W", max_lag=2)
+        >>> calendar = lilio.weekly_calendar(anchor="W40", length="1W", n_precursors=2)
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='W40-1',
@@ -143,25 +145,27 @@ def weekly_calendar(
 
 def monthly_calendar(
     anchor: str,
-    freq: str = "1M",
+    length: str = "1M",
     n_targets: int = 1,
-    max_lag: int = 0,
+    n_precursors: int = 0,
     allow_overlap: bool = False,
 ) -> Calendar:
     """Instantiate a basic monthly calendar with minimal configuration.
 
-    Set up the calendar with given freq ending exactly on the anchor month.
-    The index will extend back in time as many periods as fit within the
+    Set up a quick calendar revolving around intervals with month-based lengths.
+    The intervals will extend back in time with as many intervals as fit within the
     cycle time of one year.
 
     Args:
-        anchor: Str in the form 'January' or 'Jan'. Effectively the origin
-            of the calendar. It will countdown to this month.
-        freq: Frequency of the calendar, in the form '1M', '2M', etc.
+        anchor: Str in the form 'January' or 'Jan'. he first target interval
+            will contain the anchor, while the precursor intervals are built back in
+            time starting at this Month.
+        length: The length of every target and precursor period, in the form '1M',
+            '2M', etc.
         n_targets: integer specifying the number of target intervals in a period.
-        max_lag: Sets the maximum number of lag periods after the target period. If
-            `0`, the maximum lag will be determined by how many fit in each anchor year.
-            If a maximum lag is provided, the intervals can either only cover part
+        n_precursors: Sets the maximum number of precursors of the Calendar. If
+            `0`, the amount will be determined by how many fit in each anchor year.
+            If a value is provided, the intervals can either only cover part
             of the year, or extend over multiple years. In case of a large max_lag
             number where the intervals extend over multiple years, anchor years will
             be skipped to avoid overlapping intervals. To allow overlapping
@@ -179,7 +183,7 @@ def monthly_calendar(
         december.
 
         >>> import lilio
-        >>> calendar = lilio.monthly_calendar(anchor='Dec', freq="3M")
+        >>> calendar = lilio.monthly_calendar(anchor='Dec', length="3M")
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12',
@@ -194,16 +198,16 @@ def monthly_calendar(
         )
 
     """
-    if not re.fullmatch(r"\d*M", freq):
+    if not re.fullmatch(r"\d*M", length):
         raise ValueError("Please input a frequency in the form of '2M'")
-    periods_per_year = 12 / int(freq.replace("M", ""))
-    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    periods_per_year = 12 / int(length.replace("M", ""))
+    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
-    cal.add_intervals(role="target", length=freq, n=n_targets)
+    cal.add_intervals(role="target", length=length, n=n_targets)
     if n_precursors > 0:
-        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
+        cal.add_intervals(role="precursor", length=length, n=n_precursors)
 
     return cal

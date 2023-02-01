@@ -264,7 +264,7 @@ def resample(
         >>> import lilio
         >>> import pandas as pd
         >>> import numpy as np
-        >>> cal = lilio.daily_calendar(anchor="12-31", freq="180d")
+        >>> cal = lilio.daily_calendar(anchor="12-31", length="180d")
         >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)

@@ -24,7 +24,7 @@ class TestPlots:
 
     calendars = [
         lilio.daily_calendar(anchor="12-31", length="60d"),
-        lilio.monthly_calendar(anchor="December", freq="1M"),
+        lilio.monthly_calendar(anchor="December", length="1M"),
         lilio.weekly_calendar(anchor="W40", length="2W"),
         custom_cal_pre,
         custom_cal_tar,
