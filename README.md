@@ -62,7 +62,7 @@ eliminates any ambiguity related to leap years.
 Here's a calendar generated with Lilio:
 
 ```py
->>> calendar = lilio.daily_calendar(anchor="11-30", freq='180d')
+>>> calendar = lilio.daily_calendar(anchor="11-30", length='180d')
 >>> calendar = calendar.map_years(2020, 2021)
 >>> calendar.show()
 i_interval                         -1                         1

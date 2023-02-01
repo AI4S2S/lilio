@@ -20,6 +20,7 @@ Table of contents
 
     notebooks/all_about_the_calendar.ipynb
     notebooks/tutorial_resampling_data.ipynb
+    notebooks/calendar_shorthands.ipynb
     notebooks/tutorial_calendar_shifter.ipynb
 
 .. toctree::
