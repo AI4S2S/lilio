@@ -60,7 +60,9 @@ def daily_calendar(
     if not re.fullmatch(r"\d*d", length):
         raise ValueError("Please input a frequency in the form of '2d'")
     periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(length)
-    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    n_intervals = (
+        (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    )
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
@@ -131,7 +133,9 @@ def weekly_calendar(
     if not re.fullmatch(r"\d*W", length):
         raise ValueError("Please input a frequency in the form of '4W'")
     periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(length)
-    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    n_intervals = (
+        (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    )
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
@@ -201,7 +205,9 @@ def monthly_calendar(
     if not re.fullmatch(r"\d*M", length):
         raise ValueError("Please input a frequency in the form of '2M'")
     periods_per_year = 12 / int(length.replace("M", ""))
-    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    n_intervals = (
+        (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
+    )
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
