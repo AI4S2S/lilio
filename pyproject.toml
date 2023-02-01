@@ -149,6 +149,8 @@ ignore = [
 convention = "google"
 add-select = [
   "D401",  # First line should be in imperative mood
+  "D400",  # First line should end in a period.
+  "D404",  # First word of the docstring should not be 'This'
 ]
 
 [tool.coverage.run]
