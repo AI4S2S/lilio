@@ -1,4 +1,4 @@
-"""Calendar plotting implementations (bokeh specific code)"""
+"""Calendar plotting implementations (bokeh specific code)."""
 import sys
 import numpy as np
 from bokeh import plotting
@@ -6,7 +6,7 @@ from ._plot import generate_plot_data
 
 
 def _generate_rectangle(figure: plotting.Figure, source: plotting.ColumnDataSource):
-    """Adds intervals to the figure as rectangles.
+    """Add intervals to the figure as rectangles.
 
     Args:
         figure: Bokeh figure in which the rectangles should be added.
@@ -48,7 +48,6 @@ def _bokeh_visualization(
     Returns:
         plotting.Figure
     """
-
     if add_yticklabels:
         tooltips = [
             ("Interval", "@desc"),
@@ -111,6 +110,17 @@ def bokeh_visualization(
     add_yticklabels: bool = True,
     **kwargs,
 ) -> None:
+    """Visualization routine for generating a calendar visualization with Bokeh.
+
+    Args:
+        calendar: Mapped calendar which should be visualized.
+        n_years: Number of years which should be displayed (most recent years only).
+        relative_dates: If False, absolute dates will be used. If True, each anchor year
+                        is aligned by the anchor date, so that all anchor years line up
+                        vertically.
+        add_yticklabels: If the years should be displayed on the y-axis ticks.
+        **kwargs: Any other kwargs that should be passed to bokeh.plotting.figure()
+    """
     bokeh_fig = _bokeh_visualization(
         calendar, n_years, relative_dates, add_yticklabels, **kwargs
     )
