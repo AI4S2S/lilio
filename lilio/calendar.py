@@ -207,12 +207,12 @@ class Calendar:
 
     @property
     def n_targets(self):
-        """Access the number of targets."""
+        """Returns the number of targets."""
         return len(self.targets)
 
     @property
     def anchor(self):
-        """Access the anchor."""
+        """Returns the anchor."""
         return self._anchor
 
     @anchor.setter
@@ -221,7 +221,7 @@ class Calendar:
 
     @property
     def allow_overlap(self):
-        """Access allow overlap."""
+        """Returns the allow_overlap: if overlapping intervals are allowed or not."""
         return self._allow_overlap
 
     @allow_overlap.setter
