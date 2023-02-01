@@ -147,6 +147,9 @@ ignore = [
 
 [tool.pydocstyle]
 convention = "google"
+add-select = [
+  "D401",  # First line should be in imperative mood
+]
 
 [tool.coverage.run]
 branch = true

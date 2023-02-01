@@ -12,8 +12,10 @@ PandasData = (pd.Series, pd.DataFrame)
 XArrayData = (xr.DataArray, xr.Dataset)
 
 
-def check_timeseries(data) -> None:
-    """Utility function to check input data.
+def check_timeseries(
+    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+    ) -> None:
+    """Check if input data contains valid time data.
 
     Checks if:
      - Input data is pd.Dataframe/pd.Series/xr.Dataset/xr.DataArray.
@@ -29,7 +31,7 @@ def check_timeseries(data) -> None:
 
 
 def check_time_dim_xarray(data) -> None:
-    """Utility function to check if xarray data has a time dimensions with time data."""
+    """Check if an xarray data has a time dimensions with time data."""
     if "time" not in data.dims:
         raise ValueError(
             "The input DataArray/Dataset does not contain a `time` dimension"
@@ -45,7 +47,7 @@ def check_time_dim_pandas(data) -> None:
 
 
 def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
-    """Utility to check for empty intervals in data.
+    """Check for empty intervals in pandas data.
 
     Note: For the Dataset, all values within a certain interval, anchor_year combination
     have to be NaN, to allow for, e.g., empty gridcells in a latitude/longitude grid.
@@ -78,7 +80,7 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
 
 
 def check_input_frequency(calendar, data):
-    """Checks the frequency of (input) data.
+    """Check the frequency of (input) data.
 
     Note: Pandas and xarray have the builtin function `infer_freq`, but this function is
     not robust enough for our purpose, so we have to manually infer the frequency if the
@@ -107,7 +109,7 @@ def check_input_frequency(calendar, data):
 
 
 def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
-    """Converts pandas intervals to bounds in a xarray Dataset.
+    """Convert pandas intervals to bounds in a xarray Dataset.
 
     pd.Interval objects cannot be written to netCDF. To allow writing the
     calendar-resampled data to netCDF these intervals have to be converted to bounds.
@@ -139,7 +141,7 @@ def assert_bokeh_available():
 
 
 def get_month_names() -> Dict:
-    """Generates a dictionary with English lowercase month names and abbreviations.
+    """Generate a dictionary with English lowercase month names and abbreviations.
 
     Returns:
         Dictionary containing the English names of the months, including their
@@ -174,7 +176,7 @@ def get_month_names() -> Dict:
 
 
 def check_month_day(month: int, day: int = 1):
-    """Checks if the input day/month combination is valid.
+    """Check if the input day/month combination is valid.
 
     Months must be between 1 and 12, and days must be within 1 and 28/30/31 (depending
     on the month).
@@ -208,7 +210,7 @@ def check_month_day(month: int, day: int = 1):
 
 
 def check_week_day(week: int, day: int = 1):
-    """Validates the week and day numbers."""
+    """Validate the week and day numbers."""
     if week == 53:
         raise ValueError(
             "Incorrect anchor input. "
@@ -225,7 +227,7 @@ def check_week_day(week: int, day: int = 1):
 
 
 def parse_freqstr_to_dateoffset(time_str):
-    """Parses the user-input time strings.
+    """Parse the user-input time strings.
 
     Args:
         time_str: Time length string in the right formatting.

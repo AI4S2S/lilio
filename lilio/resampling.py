@@ -80,7 +80,7 @@ def _resample_bins_constructor(
 
 
 def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
-    """Checks elementwise if the intervals contain the timestamps.
+    """Check elementwise if the intervals contain the timestamps.
 
     Will return a boolean array of the shape (n_timestamps, n_intervals).
 
@@ -103,7 +103,7 @@ def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
 
 
 def _create_means_matrix(intervals, timestamps):
-    """Creates a matrix to be used to compute the mean data value of each interval.
+    """Create a matrix to be used to compute the mean data value of each interval.
 
     E.g.: `means = np.dot(matrix, data)`.
 
@@ -121,7 +121,7 @@ def _create_means_matrix(intervals, timestamps):
 def _resample_pandas(
     calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
-    """Internal function to handle resampling of Pandas data.
+    """Resample Pandas data.
 
     Args:
         input_data (pd.Series or pd.DataFrame): Data provided by the user to the
@@ -146,7 +146,7 @@ def _resample_pandas(
 
 # pylint: disable=too-many-locals
 def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
-    """Internal function to handle resampling of xarray data.
+    """Resample xarray data.
 
     Args:
         input_data (xr.DataArray or xr.Dataset): Data provided by the user to the

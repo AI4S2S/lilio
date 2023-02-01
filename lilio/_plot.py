@@ -121,7 +121,7 @@ def generate_plot_data(
 
 
 def plot_rectangles(ax: plt.Axes, data: Dict, show_length: bool):
-    """Generates rectangles from the input data.
+    """Generate rectangles from the input data.
 
     Args:
         ax: Axis in which the rectangles should be shown.

@@ -6,7 +6,7 @@ from ._plot import generate_plot_data
 
 
 def _generate_rectangle(figure: plotting.Figure, source: plotting.ColumnDataSource):
-    """Adds intervals to the figure as rectangles.
+    """Add intervals to the figure as rectangles.
 
     Args:
         figure: Bokeh figure in which the rectangles should be added.
