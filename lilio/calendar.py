@@ -70,17 +70,17 @@ class Interval:
 
     @property
     def is_target(self):
-        """Returns whether this Intervals is a target interval."""
+        """Return whether this Intervals is a target interval."""
         return self._target
 
     @property
     def role(self):
-        """Returns the type of interval."""
+        """Return the type of interval."""
         return self._role
 
     @property
     def length(self):
-        """Returns the length of the interval, as a pandas.DateOffset."""
+        """Return the length of the interval, as a pandas.DateOffset."""
         return self._length
 
     @length.setter
@@ -95,7 +95,7 @@ class Interval:
 
     @property
     def length_dateoffset(self):
-        """Returns the length property as a dateoffset."""
+        """Return the length property as a dateoffset."""
         return self._length_dateoffset
 
     @property
@@ -207,12 +207,12 @@ class Calendar:
 
     @property
     def n_targets(self):
-        """Returns the number of targets."""
+        """Return the number of targets."""
         return len(self.targets)
 
     @property
     def anchor(self):
-        """Returns the anchor."""
+        """Return the anchor."""
         return self._anchor
 
     @anchor.setter
