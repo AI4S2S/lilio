@@ -6,15 +6,41 @@
 .. include:: ../README.md
    :parser: myst_parser.sphinx_
 
-.. toctree::
-  :maxdepth: 2
-  :caption: Contents:
-  :hidden:
+Table of contents
+*****************
 
-  Readme <readme_link>
-  Developer Readme <README.dev.md>
-  Contribution guide <CONTRIBUTING.md>
-  Changelog <changelog_link>
+.. toctree::
+    :maxdepth: 2
+
+    Readme <readme_link>
+
+.. toctree::
+    :caption: Example Notebooks
+    :maxdepth: 2
+
+    notebooks/all_about_the_calendar.ipynb
+    notebooks/tutorial_resampling_data.ipynb
+    notebooks/tutorial_calendar_shifter.ipynb
+
+.. toctree::
+    :caption: Technical information
+    :maxdepth: 2
+
+    Developer Readme <README.dev.md>
+    Contributing guide <contributing_link>
+    Changelog <CHANGELOG.md>
+    API reference <autoapi/index.rst>
+
+.. toctree::
+    :caption: Quick links
+
+    Lilio on Github <https://github.com/ai4s2s/lilio>
+
+.. toctree::
+    :maxdepth: 0
+    :hidden:
+
+    Code of Conduct <CODE_OF_CONDUCT.md>
 
 Indices and tables
 ==================
