@@ -74,6 +74,7 @@ dev = [
   "black",
   "isort",
   "mypy==0.981",
+  "pydocstyle",
   "pytest",
   "pytest-cov",
 ]
@@ -94,6 +95,7 @@ features = ["dev", "bokeh"]
 [tool.hatch.envs.default.scripts]
 lint = [
   "flake8 .",
+  "pydocstye",
   "mypy lilio",
   "black --check --diff .",
   "isort --check-only --diff .",
@@ -142,6 +144,9 @@ ignore = [
   "E501",  # Line length: currently (some) docstrings do not comply.
   "W503",  # https://peps.python.org/pep-0008/#should-a-line-break-before-or-after-a-binary-operator
 ]
+
+[tool.pydocstyle]
+convention = "google"
 
 [tool.coverage.run]
 branch = true
