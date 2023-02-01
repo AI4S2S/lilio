@@ -1,4 +1,4 @@
-"""The implementation of the resampling methods for use with the Calendar"""
+"""The implementation of the resampling methods for use with the Calendar."""
 from typing import Union
 from typing import overload
 import numpy as np
@@ -81,6 +81,7 @@ def _resample_bins_constructor(
 
 def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     """Checks elementwise if the intervals contain the timestamps.
+
     Will return a boolean array of the shape (n_timestamps, n_intervals).
 
     Args:
@@ -155,7 +156,6 @@ def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
         xr.Dataset: Dataset containing the intervals and data resampled to
             these intervals.
     """
-
     data = calendar.flat.to_xarray().rename("interval")
     data = data.to_dataset()
     data = data.stack(anch_int=("anchor_year", "i_interval"))

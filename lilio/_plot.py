@@ -1,4 +1,4 @@
-"""Calendar plotting implementations (general and matplotlib)"""
+"""Calendar plotting implementations (general and matplotlib)."""
 from typing import Dict
 import matplotlib.pyplot as plt
 import numpy as np
@@ -163,7 +163,7 @@ def matplotlib_visualization(
     add_yticklabels: bool = True,
     ax=None,
 ):
-    """Visualization routine for generating a calendar visualization with Bokeh.
+    """Visualization routine for generating a calendar visualization with Matplotlib.
 
     Args:
         calendar: Mapped calendar which should be visualized.
@@ -172,7 +172,10 @@ def matplotlib_visualization(
                         is aligned by the anchor date, so that all anchor years line up
                         vertically.
         show_length: If the length of every periods should be displayed. Defaults False.
+        add_legend: Add a legend to the plot. Defaults to True.
         add_yticklabels: If the years should be displayed on the y-axis ticks.
+        ax: If a matplotlib axis object is passed, the plot will be generated in that
+            axis. Otherwise a new figure is generated.
     """
     if ax is None:
         fig, ax = plt.subplots(figsize=(7, 4))

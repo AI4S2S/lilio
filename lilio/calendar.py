@@ -70,16 +70,17 @@ class Interval:
 
     @property
     def is_target(self):
+        """Returns whether this Intervals is a target interval."""
         return self._target
 
     @property
     def role(self):
-        "Returns the type of interval."
+        """Returns the type of interval."""
         return self._role
 
     @property
     def length(self):
-        "Returns the length of the interval, as a pandas.DateOffset."
+        """Returns the length of the interval, as a pandas.DateOffset."""
         return self._length
 
     @length.setter
@@ -94,6 +95,7 @@ class Interval:
 
     @property
     def length_dateoffset(self):
+        """Returns the length property as a dateoffset."""
         return self._length_dateoffset
 
     @property
@@ -113,6 +115,7 @@ class Interval:
 
     @property
     def gap_dateoffset(self):
+        """Get the gap property as a dateoffset."""
         return self._gap_dateoffset
 
     def __repr__(self):
@@ -204,11 +207,12 @@ class Calendar:
 
     @property
     def n_targets(self):
+        """Access the number of targets."""
         return len(self.targets)
 
     @property
     def anchor(self):
-        "Makes anchor a property so it easier to access."
+        """Access the anchor."""
         return self._anchor
 
     @anchor.setter
@@ -217,6 +221,7 @@ class Calendar:
 
     @property
     def allow_overlap(self):
+        """Access allow overlap."""
         return self._allow_overlap
 
     @allow_overlap.setter
@@ -508,7 +513,7 @@ class Calendar:
             )
 
     def _rename_intervals(self, intervals: pd.DataFrame) -> pd.DataFrame:
-        """Adds target labels to the header row of the intervals.
+        """Add target labels to the header row of the intervals.
 
         Args:
             intervals (pd.Dataframe): Dataframe with intervals.
@@ -516,7 +521,6 @@ class Calendar:
         Returns:
             pd.Dataframe: Dataframe with target periods labelled, sorted by i_interval value.
         """
-
         # rename precursors
         intervals = intervals.rename(
             columns={

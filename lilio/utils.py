@@ -1,4 +1,4 @@
-"""Commonly used utility functions for Lilio"""
+"""Commonly used utility functions for Lilio."""
 import re
 import warnings
 from typing import Dict
@@ -183,7 +183,6 @@ def check_month_day(month: int, day: int = 1):
         month: Month number
         day: Day number. Defaults to 1.
     """
-
     if month in {1, 3, 5, 7, 8, 10, 12}:
         if (day < 1) or (day > 31):
             raise ValueError(
@@ -209,6 +208,7 @@ def check_month_day(month: int, day: int = 1):
 
 
 def check_week_day(week: int, day: int = 1):
+    """Validates the week and day numbers."""
     if week == 53:
         raise ValueError(
             "Incorrect anchor input. "
