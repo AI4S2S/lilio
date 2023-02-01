@@ -229,7 +229,7 @@ def resample(
     mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> Union[pd.DataFrame, xr.Dataset]:
-    """Resample input data to the calendar frequency.
+    """Resample input data to the Calendar's intervals.
 
     Pass a pandas Series/DataFrame with a datetime axis, or an
     xarray DataArray/Dataset with a datetime coordinate called 'time'.

@@ -6,25 +6,25 @@ from .calendar import Calendar
 
 def daily_calendar(
     anchor: str,
-    freq: str = "1d",
+    length: str = "1d",
     n_targets: int = 1,
-    max_lag: int = 0,
+    n_precursors: int = 0,
     allow_overlap: bool = False,
 ) -> Calendar:
     """Instantiate a basic daily calendar with minimal configuration.
 
-    Set up the calendar with given freq ending exactly on the anchor date.
-    The index will extend back in time as many periods as fit within the
+    Set up a quick calendar revolving around intervals with day-based lengths.
+    The intervals will extend back in time with as many intervals as fit within the
     cycle time of one year.
 
     Args:
         anchor: String in the form "12-31" for December 31st. Effectively the origin
             of the calendar. It will countdown to this date.
-        freq: Frequency of the calendar.
+        length: The length of every target and precursor period.
         n_targets: integer specifying the number of target intervals in a period.
-        max_lag: Sets the maximum number of lag periods after the target period. If
-            `0`, the maximum lag will be determined by how many fit in each anchor year.
-            If a maximum lag is provided, the intervals can either only cover part
+        n_precursors: Sets the maximum number of precursors of the Calendar. If
+            `0`, the amount will be determined by how many fit in each anchor year.
+            If a value is provided, the intervals can either only cover part
             of the year, or extend over multiple years. In case of a large max_lag
             number where the intervals extend over multiple years, anchor years will
             be skipped to avoid overlapping intervals. To allow overlapping
@@ -38,11 +38,10 @@ def daily_calendar(
         An instantiated Calendar built according to the input kwarg specifications
 
     Example:
-        Instantiate a calendar counting down the quarters (3 month periods) from
-        december.
+        Instantiate a calendar counting towards Christmas in 3-days steps.
 
         >>> import lilio
-        >>> calendar = lilio.daily_calendar(anchor='12-25', freq="3d", max_lag=3)
+        >>> calendar = lilio.daily_calendar(anchor='12-25', length="3d", n_precursors=3)
         >>> calendar  # doctest: +NORMALIZE_WHITESPACE
         Calendar(
             anchor='12-25',
@@ -57,26 +56,26 @@ def daily_calendar(
         )
 
     """
-    if not re.fullmatch(r"\d*d", freq):
+    if not re.fullmatch(r"\d*d", length):
         raise ValueError("Please input a frequency in the form of '2d'")
-    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(freq)
-    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(length)
+    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
-    cal.add_intervals(role="target", length=freq, n=n_targets)
+    cal.add_intervals(role="target", length=length, n=n_targets)
     if n_precursors > 0:
-        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
+        cal.add_intervals(role="precursor", length=length, n=n_precursors)
 
     return cal
 
 
 def weekly_calendar(
     anchor: str,
-    freq: str = "1W",
+    length: str = "1W",
     n_targets: int = 1,
-    max_lag: int = 0,
+    n_precursors: int = 0,
     allow_overlap: bool = False,
 ) -> Calendar:
     """Instantiate a basic monthly calendar with minimal configuration.
@@ -91,11 +90,11 @@ def weekly_calendar(
     Args:
         anchor: Str in the form of "40W", denoting the week number. Effectively the
             origin of the calendar. It will countdown to this week.
-        freq: Frequency of the calendar, e.g. '2W'.
+        length: The length of every precursor and target interval, e.g. '2W'.
         n_targets: integer specifying the number of target intervals in a period.
-        max_lag: Sets the maximum number of lag periods after the target period. If
-            `0`, the maximum lag will be determined by how many fit in each anchor year.
-            If a maximum lag is provided, the intervals can either only cover part
+        n_precursors: Sets the maximum number of precursors of the Calendar. If
+            `0`, the amount will be determined by how many fit in each anchor year.
+            If a value is provided, the intervals can either only cover part
             of the year, or extend over multiple years. In case of a large max_lag
             number where the intervals extend over multiple years, anchor years will
             be skipped to avoid overlapping intervals. To allow overlapping
@@ -127,17 +126,17 @@ def weekly_calendar(
         )
 
     """
-    if not re.fullmatch(r"\d*W", freq):
+    if not re.fullmatch(r"\d*W", length):
         raise ValueError("Please input a frequency in the form of '4W'")
-    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(freq)
-    n_intervals = (max_lag + n_targets) if max_lag > 0 else int(periods_per_year)
+    periods_per_year = pd.Timedelta("365days") / pd.to_timedelta(length)
+    n_intervals = (n_precursors + n_targets) if n_precursors > 0 else int(periods_per_year)
     n_precursors = n_intervals - n_targets
 
     cal = Calendar(anchor=anchor, allow_overlap=allow_overlap)
 
-    cal.add_intervals(role="target", length=freq, n=n_targets)
+    cal.add_intervals(role="target", length=length, n=n_targets)
     if n_precursors > 0:
-        cal.add_intervals(role="precursor", length=freq, n=n_precursors)
+        cal.add_intervals(role="precursor", length=length, n=n_precursors)
 
     return cal
 

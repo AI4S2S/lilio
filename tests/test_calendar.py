@@ -280,7 +280,7 @@ class TestMap:
     """Test map to year(s)/data methods"""
 
     def test_map_years(self):
-        cal = daily_calendar(anchor="12-31", freq="180d")
+        cal = daily_calendar(anchor="12-31", length="180d")
         cal.map_years(2020, 2021)
         expected = np.array(
             [
@@ -297,7 +297,7 @@ class TestMap:
         assert np.array_equal(cal.get_intervals(), expected)
 
     def test_map_years_single(self):
-        cal = daily_calendar(anchor="12-31", freq="180d")
+        cal = daily_calendar(anchor="12-31", length="180d")
         cal.map_years(2020, 2020)
         expected = np.array(
             [
@@ -311,7 +311,7 @@ class TestMap:
 
     def test_map_to_data_edge_case_last_year(self):
         # test the edge value when the input could not cover the anchor date
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         # single year covered
         time_index = pd.date_range("20191020", "20211001", freq="60d")
         test_data = np.random.random(len(time_index))
@@ -329,7 +329,7 @@ class TestMap:
 
     def test_map_to_data_single_year_coverage(self):
         # test the single year coverage
-        cal = daily_calendar(anchor="6-30", freq="180d")
+        cal = daily_calendar(anchor="6-30", length="180d")
         # multiple years covered
         time_index = pd.date_range("20210101", "20211231", freq="7d")
         test_data = np.random.random(len(time_index))
@@ -349,7 +349,7 @@ class TestMap:
 
     def test_map_to_data_edge_case_first_year(self):
         # test the edge value when the input covers the anchor date
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         # multiple years covered
         time_index = pd.date_range("20191010", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
@@ -373,7 +373,7 @@ class TestMap:
 
     def test_map_to_data_input_time_backward(self):
         # test when the input data has reverse order time index
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         time_index = pd.date_range("20201010", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index[::-1])
@@ -392,7 +392,7 @@ class TestMap:
 
     def test_map_to_data_xarray_input(self):
         # test when the input data has reverse order time index
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         time_index = pd.date_range("20201010", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
         dataarray = xr.DataArray(data=test_data, coords={"time": time_index})
@@ -408,7 +408,7 @@ class TestMap:
         assert np.all(cal.get_intervals() == expected)
 
     def test_missing_time_dim(self):
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         time_index = pd.date_range("20191020", "20211001", freq="60d")
         test_data = np.random.random(len(time_index))
         dataframe = pd.DataFrame(test_data, index=time_index)
@@ -417,7 +417,7 @@ class TestMap:
             cal.map_to_data(dataset)
 
     def test_non_time_dim(self):
-        cal = daily_calendar(anchor="10-15", freq="180d")
+        cal = daily_calendar(anchor="10-15", length="180d")
         time_index = pd.date_range("20191020", "20211001", freq="60d")
         test_data = np.random.random(len(time_index))
         dataframe = pd.DataFrame(test_data, index=time_index)
@@ -433,7 +433,7 @@ class TestMap:
 
     @pytest.mark.parametrize("max_lag,expected_index,expected_size", max_lag_edge_cases)
     def test_max_lag_skip_years(self, max_lag, expected_index, expected_size):
-        calendar = daily_calendar(anchor="12-31", freq="5d", max_lag=max_lag)
+        calendar = daily_calendar(anchor="12-31", length="5d", n_precursors=max_lag)
         calendar = calendar.map_years(2018, 2019)
 
         np.testing.assert_array_equal(
