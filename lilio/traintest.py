@@ -24,12 +24,12 @@ XAndY = Tuple[XType, XType, xr.DataArray, xr.DataArray]
 XMaybeY = Iterable[Union[XOnly, XAndY]]
 
 
-class CoordinateMismatch(Exception):
-    """Custom exception for unmatching coordinates"""
+class CoordinateMismatchError(Exception):
+    """Custom exception for unmatching coordinates."""
 
 
 def _all_equal(arrays):
-    """Return true if all arrays are equal"""
+    """Return true if all arrays are equal."""
     try:
         arrays = iter(arrays)
         first = next(arrays)
@@ -38,29 +38,31 @@ def _all_equal(arrays):
         return True
 
 
-class TrainTestSplit():
-    """Split (multiple) xr.DataArrays across a given dimension.
+class TrainTestSplit:
+    """Split (multiple) xr.DataArrays across a given dimension."""
 
-    Calling `split()` on this object returns an iterator that allows passing in
-    multiple input arrays at once. They need to have matching coordinates along
-    the given dimension.
-
-    For an overview of the sklearn Splitter Classes see:
-    https://scikit-learn.org/stable/modules/classes.html#module-sklearn.model_selection
-
-    Args:
-        splitter (SplitterClass): Initialized splitter class, much have a
-            `fit(X)` method which splits up `X` into multiple folds of
-            train/test data.
-    """
     def __init__(self, splitter: Type[CVtype]) -> None:
+        """Split (multiple) xr.DataArrays across a given dimension.
+
+        Calling `split()` on this object returns an iterator that allows passing in
+        multiple input arrays at once. They need to have matching coordinates along
+        the given dimension.
+
+        For an overview of the sklearn Splitter Classes see:
+        https://scikit-learn.org/stable/modules/classes.html#module-sklearn.model_selection
+
+        Args:
+            splitter (SplitterClass): Initialized splitter class, much have a
+                `fit(X)` method which splits up `X` into multiple folds of
+                train/test data.
+        """
         self.splitter = splitter
 
     def split(
         self,
         *x_args: xr.DataArray,
         y: Optional[xr.DataArray] = None,
-        dim: str = "anchor_year"
+        dim: str = "anchor_year",
     ) -> XMaybeY:
         """Iterate over splits.
 
@@ -81,21 +83,21 @@ class TrainTestSplit():
             try:
                 coords.append(x[dim])
             except KeyError as err:
-                raise CoordinateMismatch(
+                raise CoordinateMismatchError(
                     f"Not all input data arrays have the {dim} dimension."
                 ) from err
 
         if not _all_equal(coords):
-            raise CoordinateMismatch(
-                f"Input arrays are not equal along {dim} dimension."
-                )
-
-        if y is not None and not np.array_equal(y[dim], x[dim]):
-            raise CoordinateMismatch(
+            raise CoordinateMismatchError(
                 f"Input arrays are not equal along {dim} dimension."
             )
 
-        if x[dim].size <=1:
+        if y is not None and not np.array_equal(y[dim], x[dim]):
+            raise CoordinateMismatchError(
+                f"Input arrays are not equal along {dim} dimension."
+            )
+
+        if x[dim].size <= 1:
             raise ValueError(
                 f"Invalid input: need at least 2 values along dimension {dim}"
             )

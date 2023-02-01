@@ -81,7 +81,7 @@ def test_kfold_different_xcoords(dummy_data):
     x1 = x1.isel(anchor_year=slice(1, None, None))
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
 
-    with pytest.raises(lilio.traintest.CoordinateMismatch):
+    with pytest.raises(lilio.traintest.CoordinateMismatchError):
         next(cv.split(x1, x2))
 
 
