@@ -14,7 +14,7 @@ XArrayData = (xr.DataArray, xr.Dataset)
 
 def check_timeseries(
     data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
-    ) -> None:
+) -> None:
     """Check if input data contains valid time data.
 
     Checks if:

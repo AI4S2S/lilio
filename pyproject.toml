@@ -95,7 +95,7 @@ features = ["dev", "bokeh"]
 [tool.hatch.envs.default.scripts]
 lint = [
   "flake8 .",
-  "pydocstye lilio",
+  "pydocstyle lilio",
   "mypy lilio",
   "black --check --diff .",
   "isort --check-only --diff .",
