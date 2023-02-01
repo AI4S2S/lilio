@@ -29,7 +29,7 @@ class Interval:
         length: Union[str, dict],
         gap: Union[str, dict] = "0d",
     ) -> None:
-        """Constructs the basic element of the calendar.
+        """Construct the basic element of the calendar.
 
         The Interval is characterised by its type (either target or precursor), its
         length and the gap between it and the previous interval of its type (or the
@@ -70,16 +70,17 @@ class Interval:
 
     @property
     def is_target(self):
+        """Return whether this Intervals is a target interval."""
         return self._target
 
     @property
     def role(self):
-        "Returns the type of interval."
+        """Return the type of interval."""
         return self._role
 
     @property
     def length(self):
-        "Returns the length of the interval, as a pandas.DateOffset."
+        """Return the length of the interval, as a pandas.DateOffset."""
         return self._length
 
     @length.setter
@@ -94,6 +95,7 @@ class Interval:
 
     @property
     def length_dateoffset(self):
+        """Return the length property as a dateoffset."""
         return self._length_dateoffset
 
     @property
@@ -113,10 +115,11 @@ class Interval:
 
     @property
     def gap_dateoffset(self):
+        """Get the gap property as a dateoffset."""
         return self._gap_dateoffset
 
     def __repr__(self):
-        """String representation of the Interval class."""
+        """Return a string representation of the Interval class."""
         props = [
             ("role", self.role),
             ("length", self.length),
@@ -204,11 +207,12 @@ class Calendar:
 
     @property
     def n_targets(self):
+        """Return the number of targets."""
         return len(self.targets)
 
     @property
     def anchor(self):
-        "Makes anchor a property so it easier to access."
+        """Return the anchor."""
         return self._anchor
 
     @anchor.setter
@@ -217,6 +221,7 @@ class Calendar:
 
     @property
     def allow_overlap(self):
+        """Returns the allow_overlap: if overlapping intervals are allowed or not."""
         return self._allow_overlap
 
     @allow_overlap.setter
@@ -269,7 +274,7 @@ class Calendar:
             )
 
     def _get_anchor(self, year: int) -> pd.Timestamp:
-        """Method to generate an anchor timestamp for your specific calendar.
+        """Generate an anchor timestamp for your specific calendar.
 
         The method should return the exact timestamp of the end of the anchor_year's
         0 interval, e.g., for the AdventCalendar:
@@ -286,7 +291,7 @@ class Calendar:
         )
 
     def _parse_anchor(self, anchor_str: str) -> Tuple[str, str]:
-        """Parses the user-input anchor.
+        """Parse the user-input anchor.
 
         Args:
             anchor_str: Anchor string in the right formatting.
@@ -328,7 +333,7 @@ class Calendar:
             self.precursors.append(interval)
 
     def _map_year(self, year: int) -> pd.Series:
-        """Internal routine to return a concrete IntervalIndex for the given year.
+        """Return a concrete IntervalIndex for the given year.
 
         Since our calendars are used to study periodic events, they are first
         instantiated without specific year(s). This method adds a specific year
@@ -412,7 +417,7 @@ class Calendar:
         return skip_years
 
     def map_years(self, start: int, end: int):
-        """Adds a start and end year mapping to the calendar.
+        """Add a start and end year mapping to the calendar.
 
         If the start and end years are the same, the intervals for only that single
         year are returned by calendar.get_intervals().
@@ -508,7 +513,7 @@ class Calendar:
             )
 
     def _rename_intervals(self, intervals: pd.DataFrame) -> pd.DataFrame:
-        """Adds target labels to the header row of the intervals.
+        """Add target labels to the header row of the intervals.
 
         Args:
             intervals (pd.Dataframe): Dataframe with intervals.
@@ -516,7 +521,6 @@ class Calendar:
         Returns:
             pd.Dataframe: Dataframe with target periods labelled, sorted by i_interval value.
         """
-
         # rename precursors
         intervals = intervals.rename(
             columns={
@@ -533,7 +537,7 @@ class Calendar:
         return intervals.sort_index(axis=1)
 
     def get_intervals(self) -> pd.DataFrame:
-        """Method to retrieve updated intervals from the Calendar object."""
+        """Retrieve updated intervals from the Calendar object."""
         if self._mapping is None:
             raise ValueError(
                 "Cannot retrieve intervals without map_years or "
@@ -554,7 +558,7 @@ class Calendar:
         return intervals.sort_index(axis=0, ascending=False)
 
     def show(self) -> pd.DataFrame:
-        """Displays the intervals the Calendar will generate for the current setup.
+        """Display the intervals the Calendar will generate for the current setup.
 
         Returns:
             pd.Dataframe: Dataframe containing the calendar intervals.
@@ -562,7 +566,7 @@ class Calendar:
         return self.get_intervals()
 
     def __repr__(self) -> str:
-        """String representation of the Calendar."""
+        """Return a string representation of the Calendar."""
         intervals = self.targets + self.precursors
         if len(intervals) == 0:
             intervals_str = repr(None)
@@ -601,7 +605,7 @@ class Calendar:
         ax=None,
         **bokeh_kwargs,
     ) -> None:
-        """Plots a visualization of the current calendar setup, to aid in user setup.
+        """Plot a visualization of the current calendar setup, to aid in user setup.
 
         Note: The interactive visualization requires the `bokeh` package to be installed
         in the active Python environment.

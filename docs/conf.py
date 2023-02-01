@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = "lilio"
-copyright = "2022, Netherlands eScience Center"
+copyright = "2022, Netherlands eScience Center"  # noqa
 author = "Yang Liu"
 
 # The version info for the project you're documenting, acts as replacement for

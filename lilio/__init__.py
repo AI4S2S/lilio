@@ -1,5 +1,4 @@
-"""
-lilio: Calendar generator for machine learning with timeseries data
+"""lilio: Calendar generator for machine learning with timeseries data.
 
 Time indices are anchored to the target period of interest. By keeping
 observations from the same cycle (typically 1 year) together and paying close

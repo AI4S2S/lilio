@@ -74,6 +74,7 @@ dev = [
   "black",
   "isort",
   "mypy==0.981",
+  "pydocstyle",
   "pytest",
   "pytest-cov",
 ]
@@ -96,6 +97,7 @@ features = ["dev", "bokeh"]
 [tool.hatch.envs.default.scripts]
 lint = [
   "flake8 .",
+  "pydocstyle lilio",
   "mypy lilio",
   "black --check --diff .",
   "isort --check-only --diff .",
@@ -142,6 +144,14 @@ ignore = [
   "E203",  # Whitespace before ":". Not PEP8 compliant (https://github.com/psf/black/issues/315)
   "E501",  # Line length: currently (some) docstrings do not comply.
   "W503",  # https://peps.python.org/pep-0008/#should-a-line-break-before-or-after-a-binary-operator
+]
+
+[tool.pydocstyle]
+convention = "google"
+add-select = [
+  "D401",  # First line should be in imperative mood
+  "D400",  # First line should end in a period.
+  "D404",  # First word of the docstring should not be 'This'
 ]
 
 [tool.coverage.run]
