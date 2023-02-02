@@ -59,7 +59,7 @@ dependencies = [
   "pandas",
   "matplotlib",
   "xarray",
-  "sklearn",
+  "scikit-learn",
 ]
 dynamic = ["version"]
 
