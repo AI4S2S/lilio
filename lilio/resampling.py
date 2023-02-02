@@ -248,7 +248,8 @@ def _resample_dataset(
 
     data = data.unstack().set_coords(["interval"])
     data = utils.convert_interval_to_bounds(data)
-    return data.transpose("anchor_year", "i_interval", ...)
+    data = data.transpose("anchor_year", "i_interval", ...)
+    return data.sortby("anchor_year", "i_interval")
 
 
 @overload
