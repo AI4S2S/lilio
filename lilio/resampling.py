@@ -168,8 +168,7 @@ def _resample_pandas(
 
     data = _resample_bins_constructor(calendar.get_intervals())
     contains_matrix = _contains(
-        pd.IntervalIndex(data.interval.values),
-        input_data.index.values
+        pd.IntervalIndex(data.interval.values), input_data.index.values
     )
 
     for colname in input_data.columns:
@@ -183,10 +182,8 @@ def _resample_pandas(
 
 # pylint: disable=too-many-locals
 def _resample_dataset(
-    calendar: Calendar,
-    input_data: xr.Dataset,
-    how: ResamplingMethod
-    ) -> xr.Dataset:
+    calendar: Calendar, input_data: xr.Dataset, how: ResamplingMethod
+) -> xr.Dataset:
     """Resample xarray data.
 
     Args:
@@ -271,7 +268,7 @@ def resample(
 def resample(
     mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
-    how: ResamplingMethod = "mean"
+    how: ResamplingMethod = "mean",
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Resample input data to the calendar frequency.
 
@@ -280,6 +277,12 @@ def resample(
     It will return the same object with the datetimes resampled onto
     the Calendar's Index by binning the data into the Calendar's intervals
     and calculating the mean of each bin.
+
+    The default behavior is to calculate the mean for each interval. However, many other
+    statistics can be calculated, namely:
+        - mean, min, max, median
+        - std, var, ptp (peak-to-peak)
+        - nanmean, nanmedian, nanstd, nanvar
 
     Note: this function is intended for upscaling operations, which means
     the calendar frequency is larger than the original frequency of input data (e.g.
@@ -294,6 +297,7 @@ def resample(
             named 'time' containing datetime values.
         how: Which method for resampling should be used. The following are supported:
             mean, min, max, median, and std.
+
     Raises:
         UserWarning: If the calendar frequency is smaller than the frequency of
             input data
