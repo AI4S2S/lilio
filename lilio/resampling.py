@@ -25,6 +25,10 @@ ResamplingMethod = Literal[
     "nanmedian",
     "nanstd",
     "nanvar",
+    "sum",
+    "nansum",
+    "size",
+    "count_nonzero",
 ]
 VALID_METHODS = typing.get_args(ResamplingMethod)
 
@@ -126,22 +130,6 @@ def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     else:
         b = np.less(timestamps, interval_index.right.values[np.newaxis].T)
     return a & b
-
-
-def _create_means_matrix(intervals, timestamps):
-    """Create a matrix to be used to compute the mean data value of each interval.
-
-    E.g.: `means = np.dot(matrix, data)`.
-
-    Args:
-        intervals: A 1-D array-like containing the pd.Interval objects.
-        timestamps: A 1-D array containing the timestamps of the input data.
-
-    Returns:
-        np.ndarray: 2-D array that can will compute the mean.
-    """
-    matrix = _contains(pd.IntervalIndex(intervals), timestamps).astype(float)
-    return matrix / matrix.sum(axis=1, keepdims=True)
 
 
 def _resample_pandas(
@@ -284,6 +272,10 @@ def resample(
         - mean, min, max, median
         - std, var, ptp (peak-to-peak)
         - nanmean, nanmedian, nanstd, nanvar
+        - sum, nansum, size, count_nonzero
+    "size" will compute the number of datapoints that are in each interval, and can be
+    used to check if the input data is of a sufficiently high resolution to be resampled
+    to the calendar.
 
     Note: this function is intended for upscaling operations, which means
     the calendar frequency is larger than the original frequency of input data (e.g.
