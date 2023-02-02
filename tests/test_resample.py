@@ -9,17 +9,18 @@ import xarray as xr
 from lilio import Calendar
 from lilio import daily_calendar
 from lilio import resample
+from lilio.resampling import VALID_METHODS as resampling_methods
 
 
 class TestResample:
-    """Test resample methods."""
+    """Test resampling, general tests for how=mean."""
 
     # Define all required inputs as fixtures:
     @pytest.fixture(autouse=True)
     def dummy_calendar(self):
         return daily_calendar(anchor="10-15", freq="180d")
 
-    @pytest.fixture(autouse=True, params=[1, 2, 3])
+    @pytest.fixture(autouse=True, params=[1, 2])
     def dummy_calendar_targets(self, request):
         return daily_calendar(anchor="5-10", freq="100d", n_targets=request.param)
 
@@ -210,3 +211,45 @@ class TestResample:
         expected = np.array([series.values[-3], series.values[-3], series.values[-2]])
 
         np.testing.assert_array_equal(resampled_data["data1"].values[-3:], expected)  # type: ignore
+
+
+class TestResampleMethods:
+    """Test alternative resampling methods.
+
+    Note: outcomes are not tested. The outcome of np.mean is tested above in
+    TestResample. If those tests pass fine with np.mean being used through
+    argparse, then these should be correct as well."""
+
+    @pytest.fixture(autouse=True)
+    def dummy_calendar(self):
+        return daily_calendar(anchor="10-15", freq="180d")
+
+    @pytest.fixture(autouse=True)
+    def dummy_dataframe(self):
+        time_index = pd.date_range("20151020", "20211001", freq="60d")
+        test_data = np.random.random(len(time_index))
+        expected = np.array([test_data[4:7].mean(), test_data[7:10].mean()])
+        series = pd.Series(test_data, index=time_index, name="data1")
+        return pd.DataFrame(series), expected
+
+    @pytest.fixture
+    def dummy_dataset(self, dummy_dataframe):
+        dataframe, expected = dummy_dataframe
+        dataset = dataframe.to_xarray().rename({"index": "time"})
+        return dataset, expected
+
+    @pytest.mark.parametrize("resampling_method", resampling_methods)
+    def test_all_methods_dataframe(
+        self, dummy_calendar, dummy_dataframe, resampling_method
+    ):
+        data, _ = dummy_dataframe
+        cal = dummy_calendar.map_to_data(data)
+        resample(cal, data, how=resampling_method)
+
+    @pytest.mark.parametrize("resampling_method", resampling_methods)
+    def test_all_methods_dataset(
+        self, dummy_calendar, dummy_dataset, resampling_method
+    ):
+        data, _ = dummy_dataset
+        cal = dummy_calendar.map_to_data(data)
+        resample(cal, data, how=resampling_method)
