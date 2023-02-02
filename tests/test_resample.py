@@ -9,7 +9,7 @@ import xarray as xr
 from lilio import Calendar
 from lilio import daily_calendar
 from lilio import resample
-from lilio.resampling import VALID_METHODS as resampling_methods
+from lilio.resampling import VALID_METHODS
 
 
 class TestResample:
@@ -238,7 +238,7 @@ class TestResampleMethods:
         dataset = dataframe.to_xarray().rename({"index": "time"})
         return dataset, expected
 
-    @pytest.mark.parametrize("resampling_method", resampling_methods)
+    @pytest.mark.parametrize("resampling_method", VALID_METHODS)
     def test_all_methods_dataframe(
         self, dummy_calendar, dummy_dataframe, resampling_method
     ):
@@ -246,7 +246,7 @@ class TestResampleMethods:
         cal = dummy_calendar.map_to_data(data)
         resample(cal, data, how=resampling_method)
 
-    @pytest.mark.parametrize("resampling_method", resampling_methods)
+    @pytest.mark.parametrize("resampling_method", VALID_METHODS)
     def test_all_methods_dataset(
         self, dummy_calendar, dummy_dataset, resampling_method
     ):
