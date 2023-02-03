@@ -26,7 +26,7 @@ Example:
     )
 
     Get the 180-day periods leading up to New Year's eve for the year 2020
-    >>> calendar = lilio.daily_calendar(anchor="12-31", freq="180d")
+    >>> calendar = lilio.daily_calendar(anchor="12-31", length="180d")
     >>> calendar = calendar.map_years(2020, 2020)
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE
     i_interval                         -1                         1
@@ -34,7 +34,7 @@ Example:
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
     Get the 180-day periods leading up to New Year's eve for 2020 - 2022 inclusive.
-    >>> calendar = lilio.daily_calendar(anchor="12-31", freq="180d")
+    >>> calendar = lilio.daily_calendar(anchor="12-31", length="180d")
     >>> calendar = calendar.map_years(2020, 2022)
     >>> # note the leap year:
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE
