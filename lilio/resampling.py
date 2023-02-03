@@ -259,7 +259,7 @@ def resample(
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
     how: ResamplingMethod = "mean",
 ) -> Union[pd.DataFrame, xr.Dataset]:
-    """Resample input data to the calendar frequency.
+    """Resample input data to the Calendar's intervals.
 
     Pass a pandas Series/DataFrame with a datetime axis, or an
     xarray DataArray/Dataset with a datetime coordinate called 'time'.
@@ -306,7 +306,7 @@ def resample(
         >>> import lilio
         >>> import pandas as pd
         >>> import numpy as np
-        >>> cal = lilio.daily_calendar(anchor="12-31", freq="180d")
+        >>> cal = lilio.daily_calendar(anchor="12-31", length="180d")
         >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)

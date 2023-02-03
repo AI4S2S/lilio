@@ -23,9 +23,9 @@ class TestPlots:
     custom_cal_tar.add_intervals("target", "10d")
 
     calendars = [
-        lilio.daily_calendar(anchor="12-31", freq="60d"),
-        lilio.monthly_calendar(anchor="December", freq="1M"),
-        lilio.weekly_calendar(anchor="W40", freq="2W"),
+        lilio.daily_calendar(anchor="12-31", length="60d"),
+        lilio.monthly_calendar(anchor="December", length="1M"),
+        lilio.weekly_calendar(anchor="W40", length="2W"),
         custom_cal_pre,
         custom_cal_tar,
     ]
@@ -71,7 +71,7 @@ class TestPlotsSingle:
     @pytest.fixture(autouse=True)
     def dummy_calendar(self):
         "Dummy that will only test for daily_calendar (to avoid excess testing)"
-        cal = lilio.daily_calendar(anchor="12-31", freq="60d")
+        cal = lilio.daily_calendar(anchor="12-31", length="60d")
         return cal.map_years(2018, 2021)
 
     def test_bokeh_kwargs(self, dummy_calendar):
