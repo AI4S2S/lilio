@@ -91,7 +91,7 @@ and
 However, you can also create custom calendars by calling
 [`Calendar`](https://lilio.readthedocs.io/en/latest/autoapi/lilio/calendar/index.html#lilio.calendar.Calendar)
 directly. For a nice walkthrough, see [this example
-notebook](https://github.com/AI4S2S/lilio/blob/main/notebooks/all_about_the_calendar.ipynb).
+notebook](https://lilio.readthedocs.io/en/latest/notebooks/all_about_the_calendar.html).
 
 <!---
 ## Tutorials
