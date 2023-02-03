@@ -7,6 +7,7 @@ between train and test sets.
 
 Example:
     Countdown the 4 weeks until New Year's Eve
+
     >>> import lilio
     >>> calendar = lilio.Calendar(anchor="12-31")
     >>> calendar.add_intervals("target", "1d")
@@ -26,6 +27,7 @@ Example:
     )
 
     Get the 180-day periods leading up to New Year's eve for the year 2020
+
     >>> calendar = lilio.daily_calendar(anchor="12-31", length="180d")
     >>> calendar = calendar.map_years(2020, 2020)
     >>> calendar.show() # doctest: +NORMALIZE_WHITESPACE
@@ -34,6 +36,7 @@ Example:
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
     Get the 180-day periods leading up to New Year's eve for 2020 - 2022 inclusive.
+
     >>> calendar = lilio.daily_calendar(anchor="12-31", length="180d")
     >>> calendar = calendar.map_years(2020, 2022)
     >>> # note the leap year:
@@ -45,6 +48,7 @@ Example:
     2020         [2020-07-04, 2020-12-31)  [2020-12-31, 2021-06-29)
 
     To get a stacked representation:
+
     >>> calendar.map_years(2020, 2022).flat
     anchor_year  i_interval
     2022         -1            [2022-07-04, 2022-12-31)
