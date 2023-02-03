@@ -273,6 +273,7 @@ def resample(
         - std, var, ptp (peak-to-peak)
         - nanmean, nanmedian, nanstd, nanvar
         - sum, nansum, size, count_nonzero
+
     "size" will compute the number of datapoints that are in each interval, and can be
     used to check if the input data is of a sufficiently high resolution to be resampled
     to the calendar.

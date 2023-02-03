@@ -222,7 +222,7 @@ class TestResampleMethods:
 
     @pytest.fixture(autouse=True)
     def dummy_calendar(self):
-        return daily_calendar(anchor="10-15", freq="180d")
+        return daily_calendar(anchor="10-15", length="180d")
 
     @pytest.fixture(autouse=True)
     def dummy_dataframe(self):
