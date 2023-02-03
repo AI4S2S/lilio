@@ -19,7 +19,7 @@ def dummy_data():
     y = xr.DataArray(np.random.randn(n), coords=time_coord, name="y")
 
     # Map data to calendar and store for later reference
-    calendar = lilio.daily_calendar(anchor="10-15", freq="180d")
+    calendar = lilio.daily_calendar(anchor="10-15", length="180d")
     calendar.map_to_data(x1)
     x1 = lilio.resample(calendar, x1)
     x2 = lilio.resample(calendar, x2)

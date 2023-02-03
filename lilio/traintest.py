@@ -103,7 +103,7 @@ class TrainTestSplit:
             )
 
         # Now we know that all inputs are equal.
-        for (train_indices, test_indices) in self.splitter.split(x[dim]):
+        for train_indices, test_indices in self.splitter.split(x[dim]):
             if len(x_args) == 1:
                 x_train: XType = x.isel({dim: train_indices})
                 x_test: XType = x.isel({dim: test_indices})
