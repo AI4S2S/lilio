@@ -52,7 +52,7 @@ In Lilio, calendars are 2-dimensional. Each row (year) represents a unique
 observation, whereas each column corresponds to a precursor period with a
 certain lag. This is how we like to structure our data for ML applications.
 
-![Conceptual illustration of Lilio Calendar](docs/assets/images/calendar_concept.png)
+![Conceptual illustration of Lilio Calendar](https://raw.githubusercontent.com/AI4S2S/lilio/main/docs/assets/images/calendar_concept.png)
 
 We define the "anchor date" to be between the target and precursor periods
 (strictly speaking, it is the start of the first target interval). All other
