@@ -78,6 +78,7 @@ dev = [
   "pydocstyle",
   "pytest",
   "pytest-cov",
+  "ruff",
 ]
 docs = [  # Required for ReadTheDocs
   "myst_parser",
@@ -128,32 +129,41 @@ line-length = 88
 target-version = ['py38', 'py39', 'py310']
 include = '\.pyi?$'
 
-[tool.isort]
-py_version=39
-skip = [".gitignore", ".dockerignore"]
-skip_glob = ["docs/*"]
-force_single_line = true
-lines_after_imports = 2
-no_lines_before = ["FUTURE","STDLIB","THIRDPARTY","FIRSTPARTY","LOCALFOLDER"]
-known_first_party = ["lilio"]
-src_paths = ["lilio", "tests"]
-line_length = 120
-
-[tool.flake8]
-max-line-length = 88
-ignore = [
-  "E203",  # Whitespace before ":". Not PEP8 compliant (https://github.com/psf/black/issues/315)
-  "E501",  # Line length: currently (some) docstrings do not comply.
-  "W503",  # https://peps.python.org/pep-0008/#should-a-line-break-before-or-after-a-binary-operator
+[tool.ruff]
+select = [
+  "E",  # pycodestyle
+  "F",  # pyflakes
+  "B",  # flake8-bugbear
+  "D",  # pydocstyle
+  "C",  # mccabe complexity
+  "I",  # isort
+  "UP",  # pyupgrade (upgrade syntax to current syntax)
 ]
-
-[tool.pydocstyle]
-convention = "google"
-add-select = [
+extend-select = [
   "D401",  # First line should be in imperative mood
   "D400",  # First line should end in a period.
   "D404",  # First word of the docstring should not be 'This'
 ]
+ignore = ["E501"]
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["A", "B", "C", "D", "E", "F"]
+unfixable = []
+line-length = 88
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+target-version = "py38"
+
+[tool.ruff.pydocstyle]
+convention = "google"
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.isort]
+known-first-party = ["lilio"]
+force-single-line = true
+lines-after-imports = 2
+no-lines-before = ["future","standard-library","third-party","first-party","local-folder"]
 
 [tool.coverage.run]
 branch = true
