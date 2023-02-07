@@ -1,5 +1,6 @@
 """The implementation of the resampling methods for use with the Calendar."""
 import typing
+from typing import Callable
 from typing import Literal
 from typing import Union
 from typing import overload
@@ -135,20 +136,21 @@ def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
 def _resample_pandas(
     calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame],
-    how: ResamplingMethod,
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]],
 ) -> pd.DataFrame:
     """Resample Pandas data.
 
     Args:
         calendar: Mapped Lilio Calendar object.
         input_data: Data provided by the user to the `resample` function
-        how: Which resampling method should be used.
+        how: Which resampling method should be used. Can also be a function that takes a
+            single input argument and has a single output argument.
 
     Returns:
         pd.DataFrame: DataFrame containing the intervals and data resampled to
             these intervals.
     """
-    resampling_method = getattr(np, how)
+    resampling_method = getattr(np, how) if isinstance(how, str) else how
 
     if isinstance(input_data, pd.Series):
         name = "data" if input_data.name is None else input_data.name
@@ -170,7 +172,9 @@ def _resample_pandas(
 
 # pylint: disable=too-many-locals
 def _resample_dataset(
-    calendar: Calendar, input_data: xr.Dataset, how: ResamplingMethod
+    calendar: Calendar,
+    input_data: xr.Dataset,
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]],
 ) -> xr.Dataset:
     """Resample xarray data.
 
@@ -178,13 +182,14 @@ def _resample_dataset(
         calendar: A mapped Lilio Calendar object
         input_data (xr.DataArray or xr.Dataset): Data provided by the user to the
             `resample` function
-        how: Which resampling method should be used.
+        how: Which resampling method should be used. Can also be a function that takes a
+            single input argument and has a single output argument.
 
     Returns:
         xr.Dataset: Dataset containing the intervals and data resampled to
             these intervals.
     """
-    resampling_method = getattr(np, how)
+    resampling_method = getattr(np, how) if isinstance(how, str) else how
     data = calendar.flat.to_xarray().rename("interval")
     data = data.to_dataset()
     data = data.stack(anch_int=("anchor_year", "i_interval"))
@@ -257,7 +262,7 @@ def resample(
 def resample(
     mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
-    how: ResamplingMethod = "mean",
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]] = "mean",
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Resample input data to the Calendar's intervals.
 
@@ -289,8 +294,14 @@ def resample(
         input_data: Input data for resampling. For a Pandas object its index must be
             either a pandas.DatetimeIndex. An xarray object requires a dimension
             named 'time' containing datetime values.
-        how: Which method for resampling should be used. The following are supported:
-            mean, min, max, median, and std.
+        how: Which method for resampling should be used. Either a string or function.
+            The following methods are supported as a string input:
+                mean, min, max, median
+                std, var, ptp (peak-to-peak)
+                nanmean, nanmedian, nanstd, nanvar
+                sum, nansum, size, count_nonzero
+            Alternatively, a function can be passed. For example
+            `resample(how=np.mean)`.
 
     Raises:
         UserWarning: If the calendar frequency is smaller than the frequency of
@@ -325,7 +336,8 @@ def resample(
     if intervals is None:
         raise ValueError("Generate a calendar map before calling resample")
 
-    _check_valid_resampling_methods(how)
+    if isinstance(how, str):
+        _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
 
     if isinstance(input_data, _PandasData):

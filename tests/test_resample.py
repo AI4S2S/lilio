@@ -253,3 +253,17 @@ class TestResampleMethods:
         data, _ = dummy_dataset
         cal = dummy_calendar.map_to_data(data)
         resample(cal, data, how=resampling_method)
+
+    def test_func_input_dataframe(
+        self, dummy_calendar, dummy_dataframe
+    ):
+        data, _ = dummy_dataframe
+        cal = dummy_calendar.map_to_data(data)
+        resample(cal, data, how=np.mean)
+
+    def test_func_input_dataset(
+        self, dummy_calendar, dummy_dataset
+    ):
+        data, _ = dummy_dataset
+        cal = dummy_calendar.map_to_data(data)
+        resample(cal, data, how=np.mean)
