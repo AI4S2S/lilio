@@ -74,7 +74,7 @@ dev = [
   "pep8-naming",  # flake8 plugin, checks PEP8 naming conventions
   "black",
   "isort",
-  "mypy==0.981",
+  "mypy",
   "pydocstyle",
   "pytest",
   "pytest-cov",
