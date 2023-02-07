@@ -327,9 +327,6 @@ def resample(
 
     _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
-    # This check is still valid for all calendars with `freq`, but not for CustomCalendar
-    # TO DO: add this check when all calendars are rebased on the CustomCalendar
-    # utils.check_input_frequency(mapped_calendar, input_data)
 
     if isinstance(input_data, _PandasData):
         resampled_data = _resample_pandas(mapped_calendar, input_data, how)
