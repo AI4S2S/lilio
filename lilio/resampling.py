@@ -1,4 +1,7 @@
 """The implementation of the resampling methods for use with the Calendar."""
+import typing
+from typing import Callable
+from typing import Literal
 from typing import Union
 from typing import overload
 import numpy as np
@@ -9,6 +12,34 @@ from . import utils
 
 
 _PandasData = (pd.Series, pd.DataFrame)
+
+# List of numpy statistical methods, with a single input argument and a single output.
+ResamplingMethod = Literal[
+    "mean",
+    "min",
+    "max",
+    "median",
+    "std",
+    "var",
+    "ptp",
+    "nanmean",
+    "nanmedian",
+    "nanstd",
+    "nanvar",
+    "sum",
+    "nansum",
+    "size",
+    "count_nonzero",
+]
+VALID_METHODS = typing.get_args(ResamplingMethod)
+
+
+def _check_valid_resampling_methods(method: ResamplingMethod):
+    """Check if a method is valid as a (numpy) resampling method."""
+    if method not in VALID_METHODS:
+        raise ValueError(
+            f"{method} is not a valid resampling method. Choose from: {VALID_METHODS}"
+        )
 
 
 def _mark_target_period(
@@ -102,60 +133,63 @@ def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     return a & b
 
 
-def _create_means_matrix(intervals, timestamps):
-    """Create a matrix to be used to compute the mean data value of each interval.
-
-    E.g.: `means = np.dot(matrix, data)`.
-
-    Args:
-        intervals: A 1-D array-like containing the pd.Interval objects.
-        timestamps: A 1-D array containing the timestamps of the input data.
-
-    Returns:
-        np.ndarray: 2-D array that can will compute the mean.
-    """
-    matrix = _contains(pd.IntervalIndex(intervals), timestamps).astype(float)
-    return matrix / matrix.sum(axis=1, keepdims=True)
-
-
 def _resample_pandas(
-    calendar, input_data: Union[pd.Series, pd.DataFrame]
+    calendar: Calendar,
+    input_data: Union[pd.Series, pd.DataFrame],
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]],
 ) -> pd.DataFrame:
     """Resample Pandas data.
 
     Args:
-        input_data (pd.Series or pd.DataFrame): Data provided by the user to the
-            `resample` function
+        calendar: Mapped Lilio Calendar object.
+        input_data: Data provided by the user to the `resample` function
+        how: Which resampling method should be used. Can also be a function that takes a
+            single input argument and has a single output argument.
 
     Returns:
         pd.DataFrame: DataFrame containing the intervals and data resampled to
             these intervals.
     """
+    resampling_method = getattr(np, how) if isinstance(how, str) else how
+
     if isinstance(input_data, pd.Series):
         name = "data" if input_data.name is None else input_data.name
         input_data = pd.DataFrame(input_data.rename(name))
 
     data = _resample_bins_constructor(calendar.get_intervals())
-    means_matrix = _create_means_matrix(data.interval.values, input_data.index.values)
+    contains_matrix = _contains(
+        pd.IntervalIndex(data.interval.values), input_data.index.values
+    )
 
     for colname in input_data.columns:
-        data[colname] = np.dot(means_matrix, input_data[colname])
+        resampled_data = np.zeros(contains_matrix.shape[0])
+        for i, row in enumerate(contains_matrix):
+            resampled_data[i] = resampling_method(input_data[colname].values[row])
+        data[colname] = resampled_data
 
     return data
 
 
 # pylint: disable=too-many-locals
-def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
+def _resample_dataset(
+    calendar: Calendar,
+    input_data: xr.Dataset,
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]],
+) -> xr.Dataset:
     """Resample xarray data.
 
     Args:
+        calendar: A mapped Lilio Calendar object
         input_data (xr.DataArray or xr.Dataset): Data provided by the user to the
             `resample` function
+        how: Which resampling method should be used. Can also be a function that takes a
+            single input argument and has a single output argument.
 
     Returns:
         xr.Dataset: Dataset containing the intervals and data resampled to
             these intervals.
     """
+    resampling_method = getattr(np, how) if isinstance(how, str) else how
     data = calendar.flat.to_xarray().rename("interval")
     data = data.to_dataset()
     data = data.stack(anch_int=("anchor_year", "i_interval"))
@@ -192,8 +226,7 @@ def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
         # (n_intervals * n_anchor_years), making it the most reliably small dim.
         _data = input_data_time[var].values
         for j, row in enumerate(contains_matrix):
-            # Note: next line allows for np.median / np.max etc. To be implemented later
-            resampled_data[j, :] = np.mean(_data[row], axis=0)
+            resampled_data[j, :] = resampling_method(_data[row], axis=0)
 
         resampled_data = np.squeeze(resampled_data)  # in case of (1, n) resampled data
 
@@ -208,7 +241,8 @@ def _resample_dataset(calendar, input_data: xr.Dataset) -> xr.Dataset:
 
     data = data.unstack().set_coords(["interval"])
     data = utils.convert_interval_to_bounds(data)
-    return data.transpose("anchor_year", "i_interval", ...)
+    data = data.transpose("anchor_year", "i_interval", ...)
+    return data.sortby("anchor_year", "i_interval")
 
 
 @overload
@@ -228,6 +262,7 @@ def resample(
 def resample(
     mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
+    how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]] = "mean",
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Resample input data to the Calendar's intervals.
 
@@ -236,6 +271,17 @@ def resample(
     It will return the same object with the datetimes resampled onto
     the Calendar's Index by binning the data into the Calendar's intervals
     and calculating the mean of each bin.
+
+    The default behavior is to calculate the mean for each interval. However, many other
+    statistics can be calculated, namely:
+        - mean, min, max, median
+        - std, var, ptp (peak-to-peak)
+        - nanmean, nanmedian, nanstd, nanvar
+        - sum, nansum, size, count_nonzero
+
+    "size" will compute the number of datapoints that are in each interval, and can be
+    used to check if the input data is of a sufficiently high resolution to be resampled
+    to the calendar.
 
     Note: this function is intended for upscaling operations, which means
     the calendar frequency is larger than the original frequency of input data (e.g.
@@ -248,6 +294,14 @@ def resample(
         input_data: Input data for resampling. For a Pandas object its index must be
             either a pandas.DatetimeIndex. An xarray object requires a dimension
             named 'time' containing datetime values.
+        how: Which method for resampling should be used. Either a string or function.
+            The following methods are supported as a string input:
+                mean, min, max, median
+                std, var, ptp (peak-to-peak)
+                nanmean, nanmedian, nanstd, nanvar
+                sum, nansum, size, count_nonzero
+            Alternatively, a function can be passed. For example
+            `resample(how=np.mean)`.
 
     Raises:
         UserWarning: If the calendar frequency is smaller than the frequency of
@@ -282,18 +336,17 @@ def resample(
     if intervals is None:
         raise ValueError("Generate a calendar map before calling resample")
 
+    if isinstance(how, str):
+        _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
-    # This check is still valid for all calendars with `freq`, but not for CustomCalendar
-    # TO DO: add this check when all calendars are rebased on the CustomCalendar
-    # utils.check_input_frequency(mapped_calendar, input_data)
 
     if isinstance(input_data, _PandasData):
-        resampled_data = _resample_pandas(mapped_calendar, input_data)
+        resampled_data = _resample_pandas(mapped_calendar, input_data, how)
     else:
         if isinstance(input_data, xr.DataArray):
             input_data.name = "data" if input_data.name is None else input_data.name
             input_data = input_data.to_dataset()
-        resampled_data = _resample_dataset(mapped_calendar, input_data)
+        resampled_data = _resample_dataset(mapped_calendar, input_data, how)
 
     utils.check_empty_intervals(resampled_data)
 

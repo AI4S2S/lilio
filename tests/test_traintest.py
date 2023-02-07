@@ -22,6 +22,7 @@ def dummy_data():
     calendar = lilio.daily_calendar(anchor="10-15", length="180d")
     calendar.map_to_data(x1)
     x1 = lilio.resample(calendar, x1)
+    print(x1)
     x2 = lilio.resample(calendar, x2)
     y = lilio.resample(calendar, y)
     return x1, x2, y
@@ -32,8 +33,8 @@ def test_kfold_x(dummy_data):
     x1, _, _ = dummy_data
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
     x_train, x_test = next(cv.split(x1))
-    expected_train = [2019, 2018, 2017, 2016]
-    expected_test = [2022, 2021, 2020]
+    expected_train = [2019, 2020, 2021, 2022]
+    expected_test = [2016, 2017, 2018]
     assert np.array_equal(x_train.anchor_year, expected_train)
     xr.testing.assert_equal(x_test, x1.sel(anchor_year=expected_test))
 
@@ -43,8 +44,8 @@ def test_kfold_xy(dummy_data):
     x1, _, y = dummy_data
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
     x_train, x_test, y_train, y_test = next(cv.split(x1, y=y))
-    expected_train = [2019, 2018, 2017, 2016]
-    expected_test = [2022, 2021, 2020]
+    expected_train = [2019, 2020, 2021, 2022]
+    expected_test = [2016, 2017, 2018]
 
     assert np.array_equal(x_train.anchor_year, expected_train)
     xr.testing.assert_equal(x_test, x1.sel(anchor_year=expected_test))
@@ -57,8 +58,8 @@ def test_kfold_xxy(dummy_data):
     x1, x2, y = dummy_data
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
     x_train, x_test, y_train, y_test = next(cv.split(x1, x2, y=y))
-    expected_train = [2019, 2018, 2017, 2016]
-    expected_test = [2022, 2021, 2020]
+    expected_train = [2019, 2020, 2021, 2022]
+    expected_test = [2016, 2017, 2018]
 
     assert np.array_equal(x_train[0].anchor_year, expected_train)
     xr.testing.assert_equal(x_test[1], x2.sel(anchor_year=expected_test))
@@ -90,6 +91,6 @@ def test_custom_dim(dummy_data):
     x = x1.rename(anchor_year="custom_coord")
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
     x_train, _ = next(cv.split(x, dim="custom_coord"))
-    expected_train = [2019, 2018, 2017, 2016]
+    expected_train = [2019, 2020, 2021, 2022]
 
     assert np.array_equal(x_train.custom_coord, expected_train)
