@@ -98,11 +98,9 @@ features = ["dev", "bokeh"]
 
 [tool.hatch.envs.default.scripts]
 lint = [
-  "flake8 .",
-  "pydocstyle lilio",
+  "ruff check lilio",
   "mypy lilio",
   "black --check --diff .",
-  "isort --check-only --diff .",
 ]
 format = ["isort .", "black .", "lint",]
 test = ["pytest ./lilio/ ./tests/ --doctest-modules",]
