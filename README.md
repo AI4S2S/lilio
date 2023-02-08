@@ -1,6 +1,6 @@
 # lilio: Calendar generator for machine learning with timeseries data
 
-<img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/lilio/main/docs/assets/images/ai4s2s_logo.png">
+<img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/lilio/main/docs/assets/images/lilio_logo.png">
 
 
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio)
