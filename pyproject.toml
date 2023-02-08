@@ -93,9 +93,10 @@ features = ["dev", "bokeh"]
 lint = [
   "ruff check lilio",
   "mypy lilio",
+  "isort --check-only --diff .",
   "black --check --diff .",
 ]
-format = ["black .", "lint",]
+format = ["isort .", "black .", "lint",]
 test = ["pytest ./lilio/ ./tests/ --doctest-modules",]
 coverage = [
   "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
@@ -127,7 +128,7 @@ select = [
   "B",  # flake8-bugbear
   "D",  # pydocstyle
   "C",  # mccabe complexity
-  "I",  # isort
+#  "I",  # isort (autosort not working correctly, disabled for now).
   "N",  # PEP8-naming
   "UP",  # pyupgrade (upgrade syntax to current syntax)
   "PLE",  # Pylint error https://github.com/charliermarsh/ruff#error-ple
@@ -157,11 +158,23 @@ convention = "google"
 [tool.ruff.mccabe]
 max-complexity = 10
 
-[tool.ruff.isort]
-known-first-party = ["lilio"]
-force-single-line = true
-lines-after-imports = 2
-no-lines-before = ["future","standard-library","third-party","first-party","local-folder"]
+# Configuration for when ruff's import sorting is fixed.
+# [tool.ruff.isort]
+# known-first-party = ["lilio"]
+# force-single-line = true
+# lines-after-imports = 2
+# no-lines-before = ["future","standard-library","third-party","first-party","local-folder"]
+
+[tool.isort]
+py_version=39
+skip = [".gitignore", ".dockerignore"]
+skip_glob = ["docs/*"]
+force_single_line = true
+lines_after_imports = 2
+no_lines_before = ["FUTURE","STDLIB","THIRDPARTY","FIRSTPARTY","LOCALFOLDER"]
+known_first_party = ["lilio"]
+src_paths = ["lilio", "tests"]
+line_length = 120
 
 [tool.coverage.run]
 branch = true
