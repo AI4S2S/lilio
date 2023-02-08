@@ -6,6 +6,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+
+## 0.3.0 (2022-02-08)
+
+First release of Lilio as a split off from `s2spy`.
+
+Lilio generates calendars to resample timeseries into training and target data for machine learning.
+It is named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) of the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar).
+
+### Fixed
+- Fixed a bug in Matplotlib calendar visualization related to the anchor date.
+
+### Changed
+- The `CustomCalendar` has been renamed to `Calendar`.
+- The `AdventCalendar`, `MonthlyCalendar` and `WeeklyCalendar` have been removed as classes. Instead there are functions that generate a standard `Calendar`.
+
+### Added
+- Resampling now supports many methods (e.g. median, min, std) as well as user-defined functions.
+- A "calendar shifter" to create a list of staggered calendars.
+
+### Dev changes
+- Lilio makes use of ['hatch'](https://hatch.pypa.io/) now.
+  - Building the package has moved to hatchling
+  - Environments and scripts are set up to handle linting and docs building.
+- Ruff is now used as a linter.
+- Notebooks have been moved to the docs folder. Notebooks needs to be cleaned to pass the CI.
+
 ## 0.2.1 (2022-09-02)
 
 ### Fixed
