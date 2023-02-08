@@ -15,6 +15,7 @@ def _gap_shift(
     """Shift a calendar interval's gap property by the given amount.
 
     Args:
+        interval: The interval that will be shifted
         gap: the pandas DateOffset from a calendar interval's `gap` property.
         shift: the shift for the gap, in the form of a pandas-like frequency
             string (e.g. "10d", "2W", or "3M"), or a pandas.DateOffset compatible
@@ -161,17 +162,19 @@ def staggered_calendar(
 def calendar_list_resampler(
     cal_list: list, ds: xr.Dataset, dim_name: str = "step"
 ) -> xr.Dataset:
-    """Resample a dataset to every calendar in a list of calendars.
+    """Return a dataset, resampled to every calendar in a list of calendars.
 
-    The resampled calendars will be concatenated along a dimension (default name 'step')
-    into a single xarray Dataset.
+    The resampled calendars will be concatenated along a new dimension (with the default
+    name 'step') into a single xarray Dataset.
 
     Args:
-        cal_list: list of shifted custom calendars
-        ds: dataset to resample
+        cal_list: List of calendars.
+        ds: Dataset to resample.
+        dim_name: The name of the new dimension that will be added to the output
+            dataset.
 
     Returns:
-        resampled xr.Dataset
+        Resampled xr.Dataset
     """
     ds_r = xr.concat([resample(cal, ds) for cal in cal_list], dim=dim_name)
     ds_r = ds_r.assign_coords({dim_name: ds_r[dim_name].values})

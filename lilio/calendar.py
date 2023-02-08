@@ -594,8 +594,7 @@ class Calendar:
         propstr = f"{linesep}\t" + f",{linesep}\t".join([f"{k}={v}" for k, v in props])
         return f"{self.__class__.__name__}({propstr}{linesep})".replace("\t", "    ")
 
-    #  pylint: disable=too-many-arguments
-    def visualize(
+    def visualize(  # noqa: PLR0913 (too-many-arguments)
         self,
         n_years: int = 3,
         interactive: bool = False,
