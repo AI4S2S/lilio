@@ -67,18 +67,12 @@ dynamic = ["version"]
 dev = [
   "bump2version",
   "hatch",
-  "flake8",
-  "flake8-pyproject",  # Allows flake8 configuration through this file
-  "pyflakes",  # flake8 plugin, checks for errors in code
-  "mccabe",  # flake8 plugin, checks code complexity
-  "pep8-naming",  # flake8 plugin, checks PEP8 naming conventions
+  "ruff",
   "black",
   "isort",
-  "mypy==0.981",
-  "pydocstyle",
+  "mypy",
   "pytest",
   "pytest-cov",
-  "ruff",
 ]
 docs = [  # Required for ReadTheDocs
   "myst_parser",
@@ -135,14 +129,21 @@ select = [
   "D",  # pydocstyle
   "C",  # mccabe complexity
   "I",  # isort
+  "N",  # PEP8-naming
   "UP",  # pyupgrade (upgrade syntax to current syntax)
+  "PLE",  # Pylint error https://github.com/charliermarsh/ruff#error-ple
+  "PLR",  # Pylint refactor (e.g. too-many-arguments)
+  "PLW",  # Pylint warning (useless-else-on-loop)
 ]
 extend-select = [
   "D401",  # First line should be in imperative mood
   "D400",  # First line should end in a period.
   "D404",  # First word of the docstring should not be 'This'
 ]
-ignore = ["E501"]
+ignore = [
+  "E501",  # Line length: fails on many docstrings (needs fixing).
+  "PLR2004",  # magic value used in comparsion (i.e. `if ndays == 28: month_is_feb`).
+]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
 fixable = ["A", "B", "C", "D", "E", "F"]
 unfixable = []

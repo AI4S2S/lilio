@@ -153,8 +153,7 @@ def plot_rectangles(ax: plt.Axes, data: Dict, show_length: bool):
             )
 
 
-# pylint: disable=too-many-arguments
-def matplotlib_visualization(
+def matplotlib_visualization(  # noqa: PLR0913 (too-many-arguments)
     calendar,
     n_years: int,
     relative_dates: bool,
