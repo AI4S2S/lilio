@@ -6,6 +6,7 @@
 [![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio)
 [![github license badge](https://img.shields.io/github/license/AI4S2S/lilio)](https://github.com/AI4S2S/lilio)
 [![rsd badge](https://img.shields.io/badge/rsd-lilio-blue)](https://research-software-directory.org/software/lilio)
+[![DOI](https://zenodo.org/badge/588084019.svg)](https://zenodo.org/badge/latestdoi/588084019)
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
 [![Documentation Status](https://readthedocs.org/projects/ai4s2s/badge/?version=latest)](https://ai4s2s.readthedocs.io/en/latest/?badge=latest)
 [![build](https://github.com/AI4S2S/lilio/actions/workflows/build.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/build.yml)
