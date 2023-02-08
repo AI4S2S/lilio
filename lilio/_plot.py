@@ -1,4 +1,5 @@
 """Calendar plotting implementations (general and matplotlib)."""
+import typing
 from typing import Dict
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,6 +7,10 @@ import pandas as pd
 from matplotlib import dates as mdates
 from matplotlib.patches import Patch
 from matplotlib.patches import Rectangle
+
+
+if typing.TYPE_CHECKING:
+    from lilio.calendar import Calendar
 
 
 def make_color_array(n_targets: int, n_intervals: int) -> np.ndarray:
@@ -76,7 +81,7 @@ def _get_widths(
 
 
 def generate_plot_data(
-    calendar,
+    calendar: "Calendar",
     relative_dates: bool,
     year: int,
     year_intervals: pd.Series,
@@ -84,6 +89,7 @@ def generate_plot_data(
     """Util to generate the plotting data, containing all variables to plot.
 
     Args:
+        calendar: The calendar you want to plot.
         relative_dates: If False, absolute dates will be used. If True, each anchor year
                         is aligned by the anchor date, so that all anchor years line up
                         vertically.

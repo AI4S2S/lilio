@@ -1,8 +1,13 @@
 """Calendar plotting implementations (bokeh specific code)."""
 import sys
+import typing
 import numpy as np
 from bokeh import plotting
 from ._plot import generate_plot_data
+
+
+if typing.TYPE_CHECKING:
+    from lilio.calendar import Calendar
 
 
 def _generate_rectangle(figure: plotting.Figure, source: plotting.ColumnDataSource):
@@ -29,7 +34,7 @@ def _generate_rectangle(figure: plotting.Figure, source: plotting.ColumnDataSour
 
 
 def _bokeh_visualization(
-    calendar,
+    calendar: "Calendar",
     n_years: int,
     relative_dates: bool,
     add_yticklabels: bool = True,
@@ -44,6 +49,7 @@ def _bokeh_visualization(
                         is aligned by the anchor date, so that all anchor years line up
                         vertically.
         add_yticklabels: If the years should be displayed on the y-axis ticks.
+        **kwargs: Keyword arguments that should be passed to Bokeh's plotting.figure.
 
     Returns:
         plotting.Figure
