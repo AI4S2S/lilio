@@ -23,6 +23,7 @@ It is named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) 
 
 ### Added
 - Resampling now supports many methods (e.g. median, min, std) as well as user-defined functions.
+- A "calendar shifter" to create a list of staggered calendars.
 
 ### Dev changes
 - Lilio makes use of ['hatch'](https://hatch.pypa.io/) now.
