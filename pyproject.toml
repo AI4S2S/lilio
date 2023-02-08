@@ -68,6 +68,7 @@ dev = [
   "bump2version",
   "hatch",
   "ruff",
+  "isort",
   "black",
   "mypy",
   "pytest",
