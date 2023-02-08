@@ -32,6 +32,12 @@ authors:
     given-names: Jannes
     affiliation: "Vrije Universiteit Amsterdam"
 
+  - 
+    family-names: Alidoost
+    given-names: Fakhereh
+    orcid: "https://orcid.org/0000-0001-8407-6472"
+    affiliation: "Netherlands eScience Center"
+
 date-released: 2022-09-02
 version: "0.3.0"
 repository-code: "https://github.com/AI4S2S/lilio"
