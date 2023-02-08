@@ -239,16 +239,19 @@ def _resample_dataset(
     else:
         data = xr.merge([data] + resampled_vars)
 
-    data = data.unstack().set_coords(["interval"])
+    data = data.unstack()
     data = utils.convert_interval_to_bounds(data)
     data = data.transpose("anchor_year", "i_interval", ...)
     return data.sortby("anchor_year", "i_interval")
 
 
 @overload
-def resample(
-    mapped_calendar: Calendar, input_data: Union[xr.DataArray, xr.Dataset]
-) -> xr.Dataset:
+def resample(mapped_calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset:
+    ...
+
+
+@overload
+def resample(mapped_calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray:
     ...
 
 
@@ -263,7 +266,7 @@ def resample(
     mapped_calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
     how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]] = "mean",
-) -> Union[pd.DataFrame, xr.Dataset]:
+) -> Union[pd.DataFrame, xr.DataArray, xr.Dataset]:
     """Resample input data to the Calendar's intervals.
 
     Pass a pandas Series/DataFrame with a datetime axis, or an
@@ -342,13 +345,19 @@ def resample(
 
     if isinstance(input_data, _PandasData):
         resampled_data = _resample_pandas(mapped_calendar, input_data, how)
+    elif isinstance(input_data, xr.DataArray):
+        da_name = "data" if input_data.name is None else input_data.name
+        input_data.name = da_name
+        resampled_data = _resample_dataset(
+            mapped_calendar, input_data.to_dataset(), how
+        )
     else:
-        if isinstance(input_data, xr.DataArray):
-            input_data.name = "data" if input_data.name is None else input_data.name
-            input_data = input_data.to_dataset()
         resampled_data = _resample_dataset(mapped_calendar, input_data, how)
 
     utils.check_empty_intervals(resampled_data)
 
-    # mark target periods before returning the resampled data
-    return _mark_target_period(resampled_data)
+    resampled_data = _mark_target_period(resampled_data)
+
+    if isinstance(input_data, xr.DataArray):
+        return resampled_data[da_name]
+    return resampled_data

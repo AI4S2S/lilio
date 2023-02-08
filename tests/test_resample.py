@@ -101,7 +101,7 @@ class TestResample:
         dataarray, expected = dummy_dataarray
         cal = dummy_calendar.map_to_data(dataarray)
         resampled_data = resample(cal, dataarray)
-        testing_vals = resampled_data["data1"].isel(anchor_year=0)
+        testing_vals = resampled_data.isel(anchor_year=0)
         np.testing.assert_allclose(testing_vals, expected)
 
     def test_dataset(self, dummy_calendar, dummy_dataset):

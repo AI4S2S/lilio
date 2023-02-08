@@ -122,10 +122,22 @@ def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
     Returns:
         Input data with the intervals converted to bounds.
     """
-    stacked = data.stack(coord=["anchor_year", "i_interval"])
-    bounds = np.array([[val.left, val.right] for val in stacked.interval.values])
-    stacked["interval"] = (("coord", "bounds"), bounds)
-    return stacked.unstack("coord")
+    data = data.stack(coord=["anchor_year", "i_interval"])
+    bounds = np.array([[val.left, val.right] for val in data.interval.values])
+    data["left_bound"] = ("coord", bounds[:, 0])
+    data["right_bound"] = ("coord", bounds[:, 1])
+    data["left_bound"].attrs = {
+        "name": "Left bound of the interval",
+        "closed": "True",
+    }
+    data["right_bound"].attrs = {
+        "name": "Right bound of the interval",
+        "closed": "False",
+    }
+    data = data.unstack("coord")
+    data = data.drop_vars(["interval"])
+    data = data.set_coords(["left_bound", "right_bound"])
+    return data
 
 
 def assert_bokeh_available():

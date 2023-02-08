@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- `lilio.resample` will now return a xr.DataArray if the input is an xr.DataArray.
+- For compatibility with DataArray output, the Dataset/DataArray returned by resample now has the coordinates "left_bound" and "right_bound" instead of a single "intervals" coordinate with the "bounds" dimension.
 
 ## 0.3.0 (2022-02-08)
 
