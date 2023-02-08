@@ -69,7 +69,6 @@ dev = [
   "hatch",
   "ruff",
   "black",
-  "isort",
   "mypy",
   "pytest",
   "pytest-cov",
@@ -96,7 +95,7 @@ lint = [
   "mypy lilio",
   "black --check --diff .",
 ]
-format = ["isort .", "black .", "lint",]
+format = ["black .", "lint",]
 test = ["pytest ./lilio/ ./tests/ --doctest-modules",]
 coverage = [
   "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
