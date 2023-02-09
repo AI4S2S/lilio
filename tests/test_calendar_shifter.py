@@ -12,7 +12,7 @@ from lilio import calendar_shifter
 class TestCalendarShifter:
     """Test the calendar shifter methods."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         cal = Calendar(anchor="12-31")
         cal.add_intervals("target", "7d")
@@ -20,7 +20,7 @@ class TestCalendarShifter:
         cal.add_intervals("precursor", "7d")
         return cal
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_data(self):
         time_index = pd.date_range("20211001", "20220501", freq="1d")
         np.random.seed(0)

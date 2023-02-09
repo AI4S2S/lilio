@@ -246,24 +246,24 @@ def _resample_dataset(
 
 
 @overload
-def resample(mapped_calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset:
+def resample(calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset:
     ...
 
 
 @overload
-def resample(mapped_calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray:
+def resample(calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray:
     ...
 
 
 @overload
 def resample(
-    mapped_calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
+    calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     ...
 
 
 def resample(
-    mapped_calendar: Calendar,
+    calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
     how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]] = "mean",
 ) -> Union[pd.DataFrame, xr.DataArray, xr.Dataset]:
@@ -293,7 +293,7 @@ def resample(
     "NaN".
 
     Args:
-        mapped_calendar: Calendar object with either a map_year or map_to_data mapping.
+        calendar: Calendar object with either a map_year or map_to_data mapping.
         input_data: Input data for resampling. For a Pandas object its index must be
             either a pandas.DatetimeIndex. An xarray object requires a dimension
             named 'time' containing datetime values.
@@ -334,25 +334,22 @@ def resample(
         2          2020          -1  [2020-07-04, 2020-12-31)  305.5   False
         3          2020           1  [2020-12-31, 2021-06-29)  485.5    True
     """
-    intervals = mapped_calendar.get_intervals()
-
-    if intervals is None:
+    if calendar.mapping is None:
         raise ValueError("Generate a calendar map before calling resample")
 
     if isinstance(how, str):
         _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
+    utils.check_input_frequency(calendar, input_data)
 
     if isinstance(input_data, _PandasData):
-        resampled_data = _resample_pandas(mapped_calendar, input_data, how)
+        resampled_data = _resample_pandas(calendar, input_data, how)
     elif isinstance(input_data, xr.DataArray):
         da_name = "data" if input_data.name is None else input_data.name
         input_data.name = da_name
-        resampled_data = _resample_dataset(
-            mapped_calendar, input_data.to_dataset(), how
-        )
+        resampled_data = _resample_dataset(calendar, input_data.to_dataset(), how)
     else:
-        resampled_data = _resample_dataset(mapped_calendar, input_data, how)
+        resampled_data = _resample_dataset(calendar, input_data, how)
 
     utils.check_empty_intervals(resampled_data)
 

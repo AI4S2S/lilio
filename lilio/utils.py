@@ -1,11 +1,16 @@
 """Commonly used utility functions for Lilio."""
 import re
+import typing
 import warnings
 from typing import Dict
 from typing import Union
 import numpy as np
 import pandas as pd
 import xarray as xr
+
+
+if typing.TYPE_CHECKING:
+    from lilio import Calendar
 
 
 PandasData = (pd.Series, pd.DataFrame)
@@ -22,11 +27,11 @@ def check_timeseries(
      - Input data has a time index (pd), or a dim named `time` containing datetime
        values
     """
-    if not isinstance(data, PandasData + XArrayData):
+    if not isinstance(data, (pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset)):
         raise ValueError("The input data is neither a pandas or xarray object")
-    if isinstance(data, PandasData):
+    if isinstance(data, (pd.Series, pd.DataFrame)):
         check_time_dim_pandas(data)
-    elif isinstance(data, XArrayData):
+    elif isinstance(data, (xr.DataArray, xr.Dataset)):
         check_time_dim_xarray(data)
 
 
@@ -79,15 +84,12 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
     return None
 
 
-def check_input_frequency(calendar, data):
-    """Check the frequency of (input) data.
-
-    Note: Pandas and xarray have the builtin function `infer_freq`, but this function is
-    not robust enough for our purpose, so we have to manually infer the frequency if the
-    builtin one fails.
-    """
+def infer_input_data_freq(
+    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+) -> pd.Timedelta:
+    """Infer the frequency of the input data, for comparison with the calendar freq."""
     if isinstance(data, PandasData):
-        data_freq = pd.infer_freq(data.index)  # type: ignore
+        data_freq = pd.infer_freq(data.index)
         if data_freq is None:  # Manually infer the frequency
             data_freq = np.min(data.index.values[1:] - data.index.values[:-1])
     else:
@@ -99,12 +101,52 @@ def check_input_frequency(calendar, data):
         data_freq.replace("-", "")
         if not re.match(r"\d+\D", data_freq):
             data_freq = "1" + data_freq
+    return pd.Timedelta(data_freq)
 
-    if pd.Timedelta(calendar.freq) < pd.Timedelta(data_freq):
+
+def replace_month_length(length: str) -> str:
+    """Replace month lengths with an equivalent length in days."""
+    smallest_month = 28
+    ndays = int(length[:-1]) * smallest_month
+    return f"{ndays}d"
+
+
+def get_smallest_calendar_freq(calendar: "Calendar") -> pd.Timedelta:
+    """Return the smallest length of the calendar's intervals as a Timedelta."""
+    intervals = calendar.targets + calendar.precursors
+    lengthstr = [iv.length for iv in intervals]
+    lengthstr = [replace_month_length(ln) if ln[-1] == "M" else ln for ln in lengthstr]
+    lengths = [pd.Timedelta(ln) for ln in lengthstr]
+    return min(lengths)
+
+
+def check_input_frequency(
+    calendar: "Calendar", data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+):
+    """Compare the frequency of (input) data to the frequency of the calendar.
+
+    Note: Pandas and xarray have the builtin function `infer_freq`, but this function is
+    not robust enough for our purpose, so we have to manually infer the frequency if the
+    builtin one fails.
+    """
+    data_freq = infer_input_data_freq(data)
+    calendar_freq = get_smallest_calendar_freq(calendar)
+
+    if calendar_freq < data_freq:
+        raise ValueError(
+            "The data is of a lower time resolution than the calendar. "
+            "This would lead to incorrect data and/or NaN values in the resampled data."
+            " Please make the Calendar's intervals larger, or use data of a higher time"
+            " resolution."
+            f"\nInfered data frequency: {str(data_freq)} < calendar frequency "
+            f"{str(calendar_freq)}"
+        )
+    if calendar_freq < 2 * data_freq:
         warnings.warn(
-            """Target frequency is smaller than the original frequency.
-            The resampled data will contain NaN values, as there is no data
-            available within all intervals."""
+            "The input data frequency is very close to the Calendar's frequency. "
+            "This could lead to issues like aliasing or incorrect resampling. "
+            "If possible: make the Calendar's intervals larger, or use data of a higher"
+            " time resolution."
         )
 
 

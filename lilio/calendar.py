@@ -202,7 +202,7 @@ class Calendar:
             # pylint: disable=expression-not-assigned
             [self._append(iv) for iv in intervals]
 
-        self._mapping: Union[None, str]
+        self._mapping: Union[None, Literal["years", "data"]]
         self._set_mapping(mapping)
 
     @property
@@ -233,6 +233,11 @@ class Calendar:
                 f"allow_overlap should be either True or False, not {value}"
                 f"of type {type(value)}"
             )
+
+    @property
+    def mapping(self) -> Union[None, Literal["years", "data"]]:
+        """Return the mapping of the calendar. Either  None, "years", or "data"."""
+        return self._mapping
 
     def add_intervals(
         self,

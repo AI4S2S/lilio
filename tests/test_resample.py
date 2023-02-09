@@ -1,6 +1,7 @@
 """Tests for lilio's resample module.
 """
 import tempfile
+import warnings
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -8,6 +9,7 @@ import pytest
 import xarray as xr
 from lilio import Calendar
 from lilio import daily_calendar
+from lilio import monthly_calendar
 from lilio import resample
 from lilio.resampling import VALID_METHODS
 
@@ -16,13 +18,13 @@ class TestResample:
     """Test resampling, general tests for how=mean."""
 
     # Define all required inputs as fixtures:
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         return daily_calendar(anchor="10-15", length="180d")
 
-    @pytest.fixture(autouse=True, params=[1, 2])
+    @pytest.fixture(params=[1, 2])
     def dummy_calendar_targets(self, request):
-        return daily_calendar(anchor="5-10", length="100d", n_targets=request.param)
+        return daily_calendar(anchor="5-10", length="120d", n_targets=request.param)
 
     @pytest.fixture(params=["20151020", "20191015"])
     def dummy_series(self, request):
@@ -50,7 +52,7 @@ class TestResample:
         dataset = dataframe.to_xarray().rename({"index": "time"})
         return dataset, expected
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_multidimensional(self):
         np.random.seed(0)
         time_index = pd.date_range("20171020", "20211001", freq="15d")
@@ -147,33 +149,6 @@ class TestResample:
         # 4 anchor years are expected if overlap is allowed
         assert len(intervals.index) == 4
 
-    # Test data for missing intervals, too low frequency.
-    def test_missing_intervals_dataframe(self, dummy_calendar, dummy_dataframe):
-        dataframe, _ = dummy_dataframe
-        cal = dummy_calendar.map_years(2020, 2025)
-        with pytest.warns(UserWarning):
-            resample(cal, dataframe)
-
-    def test_missing_intervals_dataset(self, dummy_calendar, dummy_dataset):
-        dataset, _ = dummy_dataset
-        cal = dummy_calendar.map_years(2020, 2025)
-        with pytest.warns(UserWarning):
-            resample(cal, dataset)
-
-    def test_low_freq_dataframe(self, dummy_dataframe):
-        cal = daily_calendar(anchor="10-15", length="1d")
-        dataframe, _ = dummy_dataframe
-        cal = cal.map_to_data(dataframe)
-        with pytest.warns(UserWarning):
-            resample(cal, dataframe)
-
-    def test_low_freq_dataset(self, dummy_dataset):
-        cal = daily_calendar(anchor="10-15", length="1d")
-        dataset, _ = dummy_dataset
-        cal = cal.map_to_data(dataset)
-        with pytest.warns(UserWarning):
-            resample(cal, dataset)
-
     def test_1day_freq_dataframe(self):
         # Will test the regular expression match and pre-pending of '1' in the
         # check_input_frequency utility function
@@ -196,7 +171,7 @@ class TestResample:
 
     def test_overlapping(self):
         # Test to ensure overlapping intervals are accepted and correctly resampled
-        time_index = pd.date_range("20161020", "20200101", freq="60d")
+        time_index = pd.date_range("20191001", "20200101", freq="30d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index, name="data1")
 
@@ -208,9 +183,85 @@ class TestResample:
         calendar.map_to_data(series)
         resampled_data = resample(calendar, series)
 
-        expected = np.array([series.values[-3], series.values[-3], series.values[-2]])
+        expected = np.array(
+            [
+                np.mean(series.values[-5:-3]),
+                np.mean(series.values[-5:-3]),
+                np.mean(series.values[-3:-1]),
+            ]
+        )
 
-        np.testing.assert_array_equal(resampled_data["data1"].values[-3:], expected)  # type: ignore
+        np.testing.assert_array_equal(resampled_data["data1"].values[-3:], expected)
+
+    # Test data for missing intervals, too low frequency.
+    def test_missing_intervals_dataframe(self, dummy_calendar, dummy_dataframe):
+        dataframe, _ = dummy_dataframe
+        cal = dummy_calendar.map_years(2020, 2025)
+        with pytest.warns(UserWarning):
+            resample(cal, dataframe)
+
+    def test_missing_intervals_dataset(self, dummy_calendar, dummy_dataset):
+        dataset, _ = dummy_dataset
+        cal = dummy_calendar.map_years(2020, 2025)
+        with pytest.warns(UserWarning):
+            resample(cal, dataset)
+
+
+class TestResampleChecks:
+    @pytest.fixture(params=["20151020", "20191015"])
+    def dummy_dataframe(self, request):
+        time_index = pd.date_range(request.param, "20211001", freq="2d")
+        test_data = np.random.random(len(time_index))
+        expected = np.array([test_data[4:7].mean(), test_data[7:10].mean()])
+        series = pd.Series(test_data, index=time_index, name="data1")
+        return pd.DataFrame(series), expected
+
+    @pytest.fixture
+    def dummy_dataset(self, dummy_dataframe):
+        dataframe, expected = dummy_dataframe
+        dataset = dataframe.to_xarray().rename({"index": "time"})
+        return dataset, expected
+
+    def test_low_freq_warning_dataframe(self, dummy_dataframe):
+        cal = daily_calendar(anchor="10-15", length="2d")
+        dataframe, _ = dummy_dataframe
+        cal = cal.map_to_data(dataframe)
+        with pytest.warns(UserWarning):
+            resample(cal, dataframe)
+
+    def test_too_low_freq_dataframe(self, dummy_dataframe):
+        cal = daily_calendar(anchor="10-15", length="1d")
+        dataframe, _ = dummy_dataframe
+        cal = cal.map_to_data(dataframe)
+        with pytest.raises(ValueError):
+            resample(cal, dataframe)
+
+    def test_low_freq_warning_dataset(self, dummy_dataset):
+        cal = daily_calendar(anchor="10-15", length="2d")
+        dataset, _ = dummy_dataset
+        cal = cal.map_to_data(dataset)
+        with pytest.warns(UserWarning):
+            resample(cal, dataset)
+
+    def test_too_low_freq_dataset(self, dummy_dataset):
+        cal = daily_calendar(anchor="10-15", length="1d")
+        dataset, _ = dummy_dataset
+        cal = cal.map_to_data(dataset)
+        with pytest.raises(ValueError):
+            resample(cal, dataset)
+
+    def test_low_freq_month_fmt_dataframe(self):
+        time_index = pd.date_range("20181001", "20211001", freq="20d")
+        df = pd.DataFrame(
+            data={
+                "data1": np.random.random(len(time_index)),
+            },
+            index=time_index,
+        )
+        cal = monthly_calendar(anchor="10-15", length="1M")
+        cal = cal.map_to_data(df)
+        with pytest.warns(UserWarning):
+            resample(cal, df)
 
 
 class TestResampleMethods:
@@ -220,11 +271,11 @@ class TestResampleMethods:
     TestResample. If those tests pass fine with np.mean being used through
     argparse, then these should be correct as well."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         return daily_calendar(anchor="10-15", length="180d")
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_dataframe(self):
         time_index = pd.date_range("20151020", "20211001", freq="60d")
         test_data = np.random.random(len(time_index))

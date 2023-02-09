@@ -63,7 +63,7 @@ class TestInterval:
 class TestCalendar:
     """Test the (custom) Calendar methods."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         cal = Calendar(anchor="12-31")
         # append building blocks
