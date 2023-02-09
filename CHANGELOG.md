@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Changed
-- `lilio.resample` will now return a xr.DataArray if the input is an xr.DataArray.
+- `lilio.resample` will now return `xr.DataArray` if the input is `xr.DataArray`.
 - For compatibility with DataArray output, the Dataset/DataArray returned by resample now has the coordinates "left_bound" and "right_bound" instead of a single "intervals" coordinate with the "bounds" dimension.
+- If your input data has an frequency of less than _twice_ the Calendar's smallest interval length, a UserWarning will be raised.
+- If your input data has a frequency less than the Calendar's smallest interval length, a ValueError will be raised.
 
 ## 0.3.0 (2022-02-08)
 
