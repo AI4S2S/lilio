@@ -126,7 +126,9 @@ class TestResample:
         expected = np.zeros(resampled_data.index.size, dtype=bool)
         for i in range(calendar.n_targets):
             expected[i::3] = True
-        np.testing.assert_array_equal(resampled_data["target"].values, expected[::-1])  # type: ignore
+        np.testing.assert_array_equal(
+            resampled_data["is_target"].values, expected[::-1]
+        )
 
     def test_target_period_dataset(self, dummy_calendar_targets, dummy_dataset):
         ds, _ = dummy_dataset
@@ -134,7 +136,9 @@ class TestResample:
         resampled_data = resample(calendar, ds)
         expected = np.zeros(3, dtype=bool)
         expected[: dummy_calendar_targets.n_targets] = True
-        np.testing.assert_array_equal(resampled_data["target"].values, expected[::-1])  # type: ignore
+        np.testing.assert_array_equal(
+            resampled_data["is_target"].values, expected[::-1]
+        )
 
     def test_allow_overlap_dataframe(self):
         calendar = daily_calendar(
@@ -208,47 +212,40 @@ class TestResample:
 
 
 class TestResampleChecks:
-    @pytest.fixture(params=["20151020", "20191015"])
-    def dummy_dataframe(self, request):
-        time_index = pd.date_range(request.param, "20211001", freq="2d")
+    @pytest.fixture
+    def dummy_dataframe(self):
+        time_index = pd.date_range("20191015", "20211001", freq="2d")
         test_data = np.random.random(len(time_index))
-        expected = np.array([test_data[4:7].mean(), test_data[7:10].mean()])
         series = pd.Series(test_data, index=time_index, name="data1")
-        return pd.DataFrame(series), expected
+        return pd.DataFrame(series)
 
     @pytest.fixture
     def dummy_dataset(self, dummy_dataframe):
-        dataframe, expected = dummy_dataframe
-        dataset = dataframe.to_xarray().rename({"index": "time"})
-        return dataset, expected
+        return dummy_dataframe.to_xarray().rename({"index": "time"})
 
     def test_low_freq_warning_dataframe(self, dummy_dataframe):
         cal = daily_calendar(anchor="10-15", length="2d")
-        dataframe, _ = dummy_dataframe
-        cal = cal.map_to_data(dataframe)
+        cal = cal.map_to_data(dummy_dataframe)
         with pytest.warns(UserWarning):
-            resample(cal, dataframe)
+            resample(cal, dummy_dataframe)
 
     def test_too_low_freq_dataframe(self, dummy_dataframe):
         cal = daily_calendar(anchor="10-15", length="1d")
-        dataframe, _ = dummy_dataframe
-        cal = cal.map_to_data(dataframe)
+        cal = cal.map_to_data(dummy_dataframe)
         with pytest.raises(ValueError):
-            resample(cal, dataframe)
+            resample(cal, dummy_dataframe)
 
     def test_low_freq_warning_dataset(self, dummy_dataset):
         cal = daily_calendar(anchor="10-15", length="2d")
-        dataset, _ = dummy_dataset
-        cal = cal.map_to_data(dataset)
+        cal = cal.map_to_data(dummy_dataset)
         with pytest.warns(UserWarning):
-            resample(cal, dataset)
+            resample(cal, dummy_dataset)
 
     def test_too_low_freq_dataset(self, dummy_dataset):
         cal = daily_calendar(anchor="10-15", length="1d")
-        dataset, _ = dummy_dataset
-        cal = cal.map_to_data(dataset)
+        cal = cal.map_to_data(dummy_dataset)
         with pytest.raises(ValueError):
-            resample(cal, dataset)
+            resample(cal, dummy_dataset)
 
     def test_low_freq_month_fmt_dataframe(self):
         time_index = pd.date_range("20181001", "20211001", freq="20d")
@@ -262,6 +259,12 @@ class TestResampleChecks:
         cal = cal.map_to_data(df)
         with pytest.warns(UserWarning):
             resample(cal, df)
+
+    def test_reserved_names_dataframe(self, dummy_dataframe):
+        cal = daily_calendar(anchor="10-15", length="7d")
+        cal.map_to_data(dummy_dataframe)
+        with pytest.raises(ValueError, match=r".* reserved names. .*"):
+            resample(cal, dummy_dataframe.rename(columns={"data1": "anchor_year"}))
 
 
 class TestResampleMethods:

@@ -64,15 +64,15 @@ def _mark_target_period(
             given inputs.
     """
     if isinstance(input_data, _PandasData):
-        input_data["target"] = np.ones(input_data.index.size, dtype=bool)
-        input_data["target"] = input_data["target"].where(
+        input_data["is_target"] = np.ones(input_data.index.size, dtype=bool)
+        input_data["is_target"] = input_data["is_target"].where(
             input_data["i_interval"] > 0, other=False
         )
 
     else:
         # input data is xr.Dataset
         target = input_data["i_interval"] > 0
-        input_data = input_data.assign_coords(coords={"target": target})
+        input_data = input_data.assign_coords(coords={"is_target": target})
 
     return input_data
 
@@ -328,11 +328,11 @@ def resample(
         >>> cal = cal.map_to_data(input_data)
         >>> bins = lilio.resample(cal, input_data)
         >>> bins # doctest: +NORMALIZE_WHITESPACE
-            anchor_year  i_interval                  interval   data  target
-        0          2019          -1  [2019-07-04, 2019-12-31)   14.5   False
-        1          2019           1  [2019-12-31, 2020-06-28)  119.5    True
-        2          2020          -1  [2020-07-04, 2020-12-31)  305.5   False
-        3          2020           1  [2020-12-31, 2021-06-29)  485.5    True
+            anchor_year  i_interval                  interval   data  is_target
+        0          2019          -1  [2019-07-04, 2019-12-31)   14.5      False
+        1          2019           1  [2019-12-31, 2020-06-28)  119.5       True
+        2          2020          -1  [2020-07-04, 2020-12-31)  305.5      False
+        3          2020           1  [2020-12-31, 2021-06-29)  485.5       True
     """
     if calendar.mapping is None:
         raise ValueError("Generate a calendar map before calling resample")
@@ -341,6 +341,7 @@ def resample(
         _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
     utils.check_input_frequency(calendar, input_data)
+    utils.check_reserved_names(input_data)
 
     if isinstance(input_data, _PandasData):
         resampled_data = _resample_pandas(calendar, input_data, how)

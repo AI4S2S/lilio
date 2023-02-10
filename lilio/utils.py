@@ -182,6 +182,32 @@ def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
     return data
 
 
+def check_reserved_names(
+    input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+) -> None:
+    """Check if reserved names are already in the input data. E.g. "anchor_year"."""
+    reserved_names_pd = ["anchor_year", "i_interval", "is_target"]
+    reserved_names_xr = reserved_names_pd + ["left_bound", "right_bound"]
+
+    if isinstance(input_data, pd.DataFrame):
+        if any(name in input_data.columns for name in reserved_names_pd):
+            raise ValueError(
+                "The input data contains one or more reserved names. Please remove or "
+                f"rename these before continuing.\n Reserved names: {reserved_names_pd}"
+            )
+    elif isinstance(input_data, (xr.DataArray, xr.Dataset)):
+        data_names = [
+            input_data.keys()
+            if isinstance(input_data, xr.Dataset)
+            else list(input_data.coords) + [input_data.name]
+        ]
+        if any(name in data_names for name in reserved_names_xr):
+            raise ValueError(
+                "The input data contains one or more reserved names. Please remove or "
+                f"rename these before continuing.\n Reserved names: {reserved_names_xr}"
+            )
+
+
 def assert_bokeh_available():
     """Util that attempts to load the optional module bokeh."""
     try:
