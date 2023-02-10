@@ -1,7 +1,6 @@
 """Tests for lilio's resample module.
 """
 import tempfile
-import warnings
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -57,15 +56,15 @@ class TestResample:
         np.random.seed(0)
         time_index = pd.date_range("20171020", "20211001", freq="15d")
         return xr.Dataset(
-            data_vars=dict(
-                temp=(["x", "y", "time"], np.random.randn(2, 2, len(time_index))),
-                prec=(["x", "y", "time"], np.random.rand(2, 2, len(time_index))),
-            ),
-            coords=dict(
-                lon=(["x", "y"], [[-99.83, -99.32], [-99.79, -99.23]]),
-                lat=(["x", "y"], [[42.25, 42.21], [42.63, 42.59]]),
-                time=time_index,
-            ),
+            data_vars={
+                "temp": (["x", "y", "time"], np.random.randn(2, 2, len(time_index))),
+                "prec": (["x", "y", "time"], np.random.rand(2, 2, len(time_index))),
+            },
+            coords={
+                "lon": (["x", "y"], [[-99.83, -99.32], [-99.79, -99.23]]),
+                "lat": (["x", "y"], [[42.25, 42.21], [42.63, 42.59]]),
+                "time": time_index,
+            },
         )
 
     # Tests start here:

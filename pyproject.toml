@@ -92,8 +92,8 @@ features = ["dev", "bokeh"]
 
 [tool.hatch.envs.default.scripts]
 lint = [
-  "ruff check lilio",
-  "mypy lilio",
+  "ruff check .",
+  "mypy .",
   "isort --check-only --diff .",
   "black --check --diff .",
 ]
@@ -149,6 +149,7 @@ ignore = [
 fixable = ["A", "B", "C", "D", "E", "F"]
 unfixable = []
 line-length = 88
+exclude = ["docs", "build"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 target-version = "py38"
