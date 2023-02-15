@@ -1,5 +1,4 @@
-"""Tests for the lilio._bokeh_plots module.
-"""
+"""Tests for the lilio._bokeh_plots module."""
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest
@@ -13,7 +12,7 @@ mpl.use("Agg")  # required for windows
 class TestPlots:
     """Test the visualizations (rough check for errors only)."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_bokeh_file(self, tmp_path):
         bokeh_io.output_file(tmp_path / "test.html")
 
@@ -64,11 +63,11 @@ class TestPlots:
 class TestPlotsSingle:
     """Test the visualization routines, where a single calendar suffices"""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_bokeh_file(self, tmp_path):
         bokeh_io.output_file(tmp_path / "test.html")
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         "Dummy that will only test for daily_calendar (to avoid excess testing)"
         cal = lilio.daily_calendar(anchor="12-31", length="60d")

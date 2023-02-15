@@ -1,5 +1,4 @@
-"""Tests for the s2s.nwp_calendar module.
-"""
+"""Tests for the s2s.nwp_calendar module."""
 import copy
 import numpy as np
 import pandas as pd
@@ -12,7 +11,7 @@ from lilio import calendar_shifter
 class TestCalendarShifter:
     """Test the calendar shifter methods."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         cal = Calendar(anchor="12-31")
         cal.add_intervals("target", "7d")
@@ -20,25 +19,24 @@ class TestCalendarShifter:
         cal.add_intervals("precursor", "7d")
         return cal
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_data(self):
         time_index = pd.date_range("20211001", "20220501", freq="1d")
         np.random.seed(0)
         temperature = 15 + 8 * np.random.randn(2, 2, len(time_index))
         lon = [[-99.83, -99.32], [-99.79, -99.23]]
         lat = [[42.25, 42.21], [42.63, 42.59]]
-        ds = xr.Dataset(
-            data_vars=dict(
-                temperature=(["x", "y", "time"], temperature),
-            ),
-            coords=dict(
-                lon=(["x", "y"], lon),
-                lat=(["x", "y"], lat),
-                time=time_index,
-            ),
-            attrs=dict(description="Weather related data."),
+        return xr.Dataset(
+            data_vars={
+                "temperature": (["x", "y", "time"], temperature),
+            },
+            coords={
+                "lon": (["x", "y"], lon),
+                "lat": (["x", "y"], lat),
+                "time": time_index,
+            },
+            attrs={"description": "Weather related data."},
         )
-        return ds
 
     def test_calendar_shifter(self, dummy_calendar):
         shift = {"days": 7}

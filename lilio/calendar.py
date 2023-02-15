@@ -17,8 +17,6 @@ from . import utils
 _MappingYears = Tuple[Literal["years"], int, int]
 _MappingData = Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
 
-_PandasData = (pd.Series, pd.DataFrame)
-
 
 class Interval:
     """Basic construction element of calendar for defining precursors and targets."""
@@ -202,7 +200,7 @@ class Calendar:
             # pylint: disable=expression-not-assigned
             [self._append(iv) for iv in intervals]
 
-        self._mapping: Union[None, str]
+        self._mapping: Union[None, Literal["years", "data"]]
         self._set_mapping(mapping)
 
     @property
@@ -233,6 +231,11 @@ class Calendar:
                 f"allow_overlap should be either True or False, not {value}"
                 f"of type {type(value)}"
             )
+
+    @property
+    def mapping(self) -> Union[None, Literal["years", "data"]]:
+        """Return the mapping of the calendar. Either  None, "years", or "data"."""
+        return self._mapping
 
     def add_intervals(
         self,
@@ -461,7 +464,7 @@ class Calendar:
         utils.check_timeseries(input_data)
 
         # check the datetime order of input data
-        if isinstance(input_data, _PandasData):
+        if isinstance(input_data, (pd.Series, pd.DataFrame)):
             self._first_timestamp = input_data.index.min()
             self._last_timestamp = input_data.index.max()
         else:

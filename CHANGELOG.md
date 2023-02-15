@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- `lilio.resample` will now return `xr.DataArray` if the input is `xr.DataArray`.
+- For compatibility with DataArray output, the Dataset/DataArray returned by resample now has the coordinates "left_bound" and "right_bound" instead of a single "intervals" coordinate with the "bounds" dimension.
+- If your input data has an frequency of less than _twice_ the Calendar's smallest interval length, a UserWarning will be raised.
+- If your input data has a frequency less than the Calendar's smallest interval length, a ValueError will be raised.
+- In the output of `resample()`, the column/coordinate `target` has been renamed to `is_target` to avoid clashing with a possibly commonly used name by users.
+- The input data into `resample()` is now checked for the existance of reserved names, such as "anchor_year" or "i_interval", to avoid overwriting these and cause unpredictable behavior.
 
 ## 0.3.0 (2022-02-08)
 

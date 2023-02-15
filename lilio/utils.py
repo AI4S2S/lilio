@@ -1,5 +1,6 @@
 """Commonly used utility functions for Lilio."""
 import re
+import typing
 import warnings
 from typing import Dict
 from typing import Union
@@ -8,8 +9,11 @@ import pandas as pd
 import xarray as xr
 
 
-PandasData = (pd.Series, pd.DataFrame)
-XArrayData = (xr.DataArray, xr.Dataset)
+if typing.TYPE_CHECKING:
+    from lilio import Calendar
+
+
+MONTH_LENGTH = 30  # Month length for Timedelta checks.
 
 
 def check_timeseries(
@@ -22,11 +26,11 @@ def check_timeseries(
      - Input data has a time index (pd), or a dim named `time` containing datetime
        values
     """
-    if not isinstance(data, PandasData + XArrayData):
+    if not isinstance(data, (pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset)):
         raise ValueError("The input data is neither a pandas or xarray object")
-    if isinstance(data, PandasData):
+    if isinstance(data, (pd.Series, pd.DataFrame)):
         check_time_dim_pandas(data)
-    elif isinstance(data, XArrayData):
+    elif isinstance(data, (xr.DataArray, xr.Dataset)):
         check_time_dim_xarray(data)
 
 
@@ -79,15 +83,19 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
     return None
 
 
-def check_input_frequency(calendar, data):
-    """Check the frequency of (input) data.
+def infer_input_data_freq(
+    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+) -> pd.Timedelta:
+    """Infer the frequency of the input data, for comparison with the calendar freq.
 
-    Note: Pandas and xarray have the builtin function `infer_freq`, but this function is
-    not robust enough for our purpose, so we have to manually infer the frequency if the
-    builtin one fails.
+    Args:
+        data: Pandas or xarray data to infer the frequency of.
+
+    Returns:
+        a pd.Timedelta
     """
-    if isinstance(data, PandasData):
-        data_freq = pd.infer_freq(data.index)  # type: ignore
+    if isinstance(data, (pd.Series, pd.DataFrame)):
+        data_freq = pd.infer_freq(data.index)
         if data_freq is None:  # Manually infer the frequency
             data_freq = np.min(data.index.values[1:] - data.index.values[:-1])
     else:
@@ -96,15 +104,60 @@ def check_input_frequency(calendar, data):
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
     if isinstance(data_freq, str):
-        data_freq.replace("-", "")
-        if not re.match(r"\d+\D", data_freq):
+        data_freq.replace("-", "")  # Get the absolute frequency
+
+        if not re.match(r"\d+\D", data_freq):  # infer_freq can return "d" for "1d".
             data_freq = "1" + data_freq
 
-    if pd.Timedelta(calendar.freq) < pd.Timedelta(data_freq):
+        data_freq = (  # Deal with monthly timedelta case
+            replace_month_length(data_freq) if data_freq[-1] == "M" else data_freq
+        )
+    return pd.Timedelta(data_freq)
+
+
+def replace_month_length(length: str) -> str:
+    """Replace month lengths with an equivalent length in days."""
+    ndays = int(length[:-1]) * MONTH_LENGTH
+    return f"{ndays}d"
+
+
+def get_smallest_calendar_freq(calendar: "Calendar") -> pd.Timedelta:
+    """Return the smallest length of the calendar's intervals as a Timedelta."""
+    intervals = calendar.targets + calendar.precursors
+    lengthstr = [iv.length for iv in intervals]
+    lengthstr = [ln.replace("-", "") for ln in lengthstr]  # Account for neg. lengths
+    lengthstr = [replace_month_length(ln) if ln[-1] == "M" else ln for ln in lengthstr]
+    lengths = [pd.Timedelta(ln) for ln in lengthstr]
+    return min(lengths)
+
+
+def check_input_frequency(
+    calendar: "Calendar", data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+):
+    """Compare the frequency of (input) data to the frequency of the calendar.
+
+    Note: Pandas and xarray have the builtin function `infer_freq`, but this function is
+    not robust enough for our purpose, so we have to manually infer the frequency if the
+    builtin one fails.
+    """
+    data_freq = infer_input_data_freq(data)
+    calendar_freq = get_smallest_calendar_freq(calendar)
+
+    if calendar_freq < data_freq:
+        raise ValueError(
+            "The data is of a lower time resolution than the calendar. "
+            "This would lead to incorrect data and/or NaN values in the resampled data."
+            " Please make the Calendar's intervals larger, or use data of a higher time"
+            " resolution."
+            f"\nInfered data frequency: {str(data_freq)} < calendar frequency "
+            f"{str(calendar_freq)}"
+        )
+    if calendar_freq < 2 * data_freq:
         warnings.warn(
-            """Target frequency is smaller than the original frequency.
-            The resampled data will contain NaN values, as there is no data
-            available within all intervals."""
+            "The input data frequency is very close to the Calendar's frequency. "
+            "This could lead to issues like aliasing or incorrect resampling. "
+            "If possible: make the Calendar's intervals larger, or use data of a higher"
+            " time resolution."
         )
 
 
@@ -122,10 +175,48 @@ def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
     Returns:
         Input data with the intervals converted to bounds.
     """
-    stacked = data.stack(coord=["anchor_year", "i_interval"])
-    bounds = np.array([[val.left, val.right] for val in stacked.interval.values])
-    stacked["interval"] = (("coord", "bounds"), bounds)
-    return stacked.unstack("coord")
+    data = data.stack(coord=["anchor_year", "i_interval"])
+    bounds = np.array([[val.left, val.right] for val in data.interval.values])
+    data["left_bound"] = ("coord", bounds[:, 0])
+    data["right_bound"] = ("coord", bounds[:, 1])
+    data["left_bound"].attrs = {
+        "name": "Left bound of the interval",
+        "closed": "True",
+    }
+    data["right_bound"].attrs = {
+        "name": "Right bound of the interval",
+        "closed": "False",
+    }
+    data = data.unstack("coord")
+    data = data.drop_vars(["interval"])
+    data = data.set_coords(["left_bound", "right_bound"])
+    return data
+
+
+def check_reserved_names(
+    input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+) -> None:
+    """Check if reserved names are already in the input data. E.g. "anchor_year"."""
+    reserved_names_pd = ["anchor_year", "i_interval", "is_target"]
+    reserved_names_xr = reserved_names_pd + ["left_bound", "right_bound"]
+
+    if isinstance(input_data, pd.DataFrame):
+        if any(name in input_data.columns for name in reserved_names_pd):
+            raise ValueError(
+                "The input data contains one or more reserved names. Please remove or "
+                f"rename these before continuing.\n Reserved names: {reserved_names_pd}"
+            )
+    elif isinstance(input_data, (xr.DataArray, xr.Dataset)):
+        data_names = [
+            input_data.keys()
+            if isinstance(input_data, xr.Dataset)
+            else list(input_data.coords) + [input_data.name]
+        ]
+        if any(name in data_names for name in reserved_names_xr):
+            raise ValueError(
+                "The input data contains one or more reserved names. Please remove or "
+                f"rename these before continuing.\n Reserved names: {reserved_names_xr}"
+            )
 
 
 def assert_bokeh_available():

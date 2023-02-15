@@ -11,8 +11,6 @@ from lilio.calendar import Calendar
 from . import utils
 
 
-_PandasData = (pd.Series, pd.DataFrame)
-
 # List of numpy statistical methods, with a single input argument and a single output.
 ResamplingMethod = Literal[
     "mean",
@@ -63,16 +61,16 @@ def _mark_target_period(
         Input data with boolean marked target periods, similar data format as
             given inputs.
     """
-    if isinstance(input_data, _PandasData):
-        input_data["target"] = np.ones(input_data.index.size, dtype=bool)
-        input_data["target"] = input_data["target"].where(
+    if isinstance(input_data, (pd.Series, pd.DataFrame)):
+        input_data["is_target"] = np.ones(input_data.index.size, dtype=bool)
+        input_data["is_target"] = input_data["is_target"].where(
             input_data["i_interval"] > 0, other=False
         )
 
     else:
         # input data is xr.Dataset
         target = input_data["i_interval"] > 0
-        input_data = input_data.assign_coords(coords={"target": target})
+        input_data = input_data.assign_coords(coords={"is_target": target})
 
     return input_data
 
@@ -239,31 +237,34 @@ def _resample_dataset(
     else:
         data = xr.merge([data] + resampled_vars)
 
-    data = data.unstack().set_coords(["interval"])
+    data = data.unstack()
     data = utils.convert_interval_to_bounds(data)
     data = data.transpose("anchor_year", "i_interval", ...)
     return data.sortby("anchor_year", "i_interval")
 
 
 @overload
-def resample(
-    mapped_calendar: Calendar, input_data: Union[xr.DataArray, xr.Dataset]
-) -> xr.Dataset:
+def resample(calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset:
+    ...
+
+
+@overload
+def resample(calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray:
     ...
 
 
 @overload
 def resample(
-    mapped_calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
+    calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame:
     ...
 
 
 def resample(
-    mapped_calendar: Calendar,
+    calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
     how: Union[ResamplingMethod, Callable[[np.ndarray], np.ndarray]] = "mean",
-) -> Union[pd.DataFrame, xr.Dataset]:
+) -> Union[pd.DataFrame, xr.DataArray, xr.Dataset]:
     """Resample input data to the Calendar's intervals.
 
     Pass a pandas Series/DataFrame with a datetime axis, or an
@@ -290,7 +291,7 @@ def resample(
     "NaN".
 
     Args:
-        mapped_calendar: Calendar object with either a map_year or map_to_data mapping.
+        calendar: Calendar object with either a map_year or map_to_data mapping.
         input_data: Input data for resampling. For a Pandas object its index must be
             either a pandas.DatetimeIndex. An xarray object requires a dimension
             named 'time' containing datetime values.
@@ -325,30 +326,34 @@ def resample(
         >>> cal = cal.map_to_data(input_data)
         >>> bins = lilio.resample(cal, input_data)
         >>> bins # doctest: +NORMALIZE_WHITESPACE
-            anchor_year  i_interval                  interval   data  target
-        0          2019          -1  [2019-07-04, 2019-12-31)   14.5   False
-        1          2019           1  [2019-12-31, 2020-06-28)  119.5    True
-        2          2020          -1  [2020-07-04, 2020-12-31)  305.5   False
-        3          2020           1  [2020-12-31, 2021-06-29)  485.5    True
+            anchor_year  i_interval                  interval   data  is_target
+        0          2019          -1  [2019-07-04, 2019-12-31)   14.5      False
+        1          2019           1  [2019-12-31, 2020-06-28)  119.5       True
+        2          2020          -1  [2020-07-04, 2020-12-31)  305.5      False
+        3          2020           1  [2020-12-31, 2021-06-29)  485.5       True
     """
-    intervals = mapped_calendar.get_intervals()
-
-    if intervals is None:
+    if calendar.mapping is None:
         raise ValueError("Generate a calendar map before calling resample")
 
     if isinstance(how, str):
         _check_valid_resampling_methods(how)
     utils.check_timeseries(input_data)
+    utils.check_input_frequency(calendar, input_data)
+    utils.check_reserved_names(input_data)
 
-    if isinstance(input_data, _PandasData):
-        resampled_data = _resample_pandas(mapped_calendar, input_data, how)
+    if isinstance(input_data, (pd.Series, pd.DataFrame)):
+        resampled_data = _resample_pandas(calendar, input_data, how)
+    elif isinstance(input_data, xr.DataArray):
+        da_name = "data" if input_data.name is None else input_data.name
+        input_data.name = da_name
+        resampled_data = _resample_dataset(calendar, input_data.to_dataset(), how)
     else:
-        if isinstance(input_data, xr.DataArray):
-            input_data.name = "data" if input_data.name is None else input_data.name
-            input_data = input_data.to_dataset()
-        resampled_data = _resample_dataset(mapped_calendar, input_data, how)
+        resampled_data = _resample_dataset(calendar, input_data, how)
 
     utils.check_empty_intervals(resampled_data)
 
-    # mark target periods before returning the resampled data
-    return _mark_target_period(resampled_data)
+    resampled_data = _mark_target_period(resampled_data)
+
+    if isinstance(input_data, xr.DataArray):
+        return resampled_data[da_name]
+    return resampled_data

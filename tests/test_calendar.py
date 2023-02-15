@@ -44,8 +44,8 @@ class TestInterval:
         assert target.gap_dateoffset == DateOffset(weeks=2)
 
     def test_target_interval_dict(self):
-        a = dict(months=1, weeks=2, days=1)
-        b = dict(months=2, weeks=1, days=5)
+        a = {"months": 1, "weeks": 2, "days": 1}
+        b = {"months": 2, "weeks": 1, "days": 5}
         target = Interval("target", length=a, gap=b)
         assert target.length_dateoffset == DateOffset(**a)
         assert target.gap_dateoffset == DateOffset(**b)
@@ -63,7 +63,7 @@ class TestInterval:
 class TestCalendar:
     """Test the (custom) Calendar methods."""
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def dummy_calendar(self):
         cal = Calendar(anchor="12-31")
         # append building blocks

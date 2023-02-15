@@ -8,7 +8,7 @@ import lilio
 import lilio.traintest
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def dummy_data():
     # Generate random data
     n = 50
