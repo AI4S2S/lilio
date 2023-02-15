@@ -84,7 +84,7 @@ docs = [  # Required for ReadTheDocs
   "ipykernel",
 ]
 bokeh = [
-  "bokeh < 3.0.0",
+  "bokeh >= 3.0.0",
 ]
 
 [tool.hatch.envs.default]

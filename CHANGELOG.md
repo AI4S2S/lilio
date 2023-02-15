@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- Bokeh >= 3.0.0 is now required.
+
 ## 0.3.1 (2023-02-15)
 
 ### Changed

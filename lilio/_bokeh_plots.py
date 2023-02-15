@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
     from lilio.calendar import Calendar
 
 
-def _generate_rectangle(figure: plotting.Figure, source: plotting.ColumnDataSource):
+def _generate_rectangle(figure: plotting.figure, source: plotting.ColumnDataSource):
     """Add intervals to the figure as rectangles.
 
     Args:
@@ -39,7 +39,7 @@ def _bokeh_visualization(
     relative_dates: bool,
     add_yticklabels: bool = True,
     **kwargs,
-) -> plotting.Figure:
+) -> plotting.figure:
     """Visualization routine for generating a calendar visualization with Bokeh.
 
     Args:
@@ -52,7 +52,7 @@ def _bokeh_visualization(
         **kwargs: Keyword arguments that should be passed to Bokeh's plotting.figure.
 
     Returns:
-        plotting.Figure
+        plotting.figure
     """
     if add_yticklabels:
         tooltips = [
