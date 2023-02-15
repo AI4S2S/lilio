@@ -13,10 +13,6 @@ if typing.TYPE_CHECKING:
     from lilio import Calendar
 
 
-PandasData = (pd.Series, pd.DataFrame)
-XArrayData = (xr.DataArray, xr.Dataset)
-
-
 def check_timeseries(
     data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
 ) -> None:
@@ -88,7 +84,7 @@ def infer_input_data_freq(
     data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
 ) -> pd.Timedelta:
     """Infer the frequency of the input data, for comparison with the calendar freq."""
-    if isinstance(data, PandasData):
+    if isinstance(data, (pd.Series, pd.DataFrame)):
         data_freq = pd.infer_freq(data.index)
         if data_freq is None:  # Manually infer the frequency
             data_freq = np.min(data.index.values[1:] - data.index.values[:-1])

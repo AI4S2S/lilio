@@ -17,8 +17,6 @@ from . import utils
 _MappingYears = Tuple[Literal["years"], int, int]
 _MappingData = Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
 
-_PandasData = (pd.Series, pd.DataFrame)
-
 
 class Interval:
     """Basic construction element of calendar for defining precursors and targets."""
@@ -466,7 +464,7 @@ class Calendar:
         utils.check_timeseries(input_data)
 
         # check the datetime order of input data
-        if isinstance(input_data, _PandasData):
+        if isinstance(input_data, (pd.Series, pd.DataFrame)):
             self._first_timestamp = input_data.index.min()
             self._last_timestamp = input_data.index.max()
         else:

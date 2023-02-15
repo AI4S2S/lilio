@@ -11,8 +11,6 @@ from lilio.calendar import Calendar
 from . import utils
 
 
-_PandasData = (pd.Series, pd.DataFrame)
-
 # List of numpy statistical methods, with a single input argument and a single output.
 ResamplingMethod = Literal[
     "mean",
@@ -63,7 +61,7 @@ def _mark_target_period(
         Input data with boolean marked target periods, similar data format as
             given inputs.
     """
-    if isinstance(input_data, _PandasData):
+    if isinstance(input_data, (pd.Series, pd.DataFrame)):
         input_data["is_target"] = np.ones(input_data.index.size, dtype=bool)
         input_data["is_target"] = input_data["is_target"].where(
             input_data["i_interval"] > 0, other=False
@@ -343,7 +341,7 @@ def resample(
     utils.check_input_frequency(calendar, input_data)
     utils.check_reserved_names(input_data)
 
-    if isinstance(input_data, _PandasData):
+    if isinstance(input_data, (pd.Series, pd.DataFrame)):
         resampled_data = _resample_pandas(calendar, input_data, how)
     elif isinstance(input_data, xr.DataArray):
         da_name = "data" if input_data.name is None else input_data.name
