@@ -624,8 +624,8 @@ class Calendar:
                 Defaults to False (Matplotlib plotter only).
             add_legend: Toggles if a legend should be added to the plot (Matplotlib only)
             ax: Matplotlib axis object to plot the visualization into.
-            **bokeh_kwargs: Keyword arguments to pass to Bokeh's plotting.Figure. See
-                https://docs.bokeh.org/en/2.4.2/docs/reference/plotting/figure.html
+            **bokeh_kwargs: Keyword arguments to pass to Bokeh's plotting.figure. See
+                https://docs.bokeh.org/en/latest/docs/reference/plotting/figure.html
                 for a list of possible keyword arguments.
         """
         calendar = copy.deepcopy(self)
@@ -653,7 +653,7 @@ class Calendar:
                 warnings.warn(
                     "ax is only a valid keyword argument for the non-interactive "
                     "matplotlib backend. Bokeh's figure can be controlled by passing "
-                    "Bokeh Figure keyword arguments (e.g. width=800).",
+                    "Bokeh figure keyword arguments (e.g. width=800).",
                     UserWarning,
                 )
             bokeh_visualization(
