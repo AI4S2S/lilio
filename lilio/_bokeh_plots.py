@@ -94,11 +94,11 @@ def _bokeh_visualization(
     figure.yaxis.axis_label = "Anchor year"
 
     if relative_dates:
-        figure.x_range.start = (
-            np.min(data["x"]) - data["width"][np.argmin(data["x"])] / 2 - 14  # type: ignore
+        figure.x_range.start = (  # type: ignore
+            np.min(data["x"]) - data["width"][np.argmin(data["x"])] / 2 - 14
         )
-        figure.x_range.end = (
-            np.max(data["x"]) + data["width"][np.argmax(data["x"])] / 2 + 14  # type: ignore
+        figure.x_range.end = (  # type: ignore
+            np.max(data["x"]) + data["width"][np.argmax(data["x"])] / 2 + 14
         )
 
     if add_yticklabels:
