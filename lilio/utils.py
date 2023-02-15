@@ -13,6 +13,9 @@ if typing.TYPE_CHECKING:
     from lilio import Calendar
 
 
+MONTH_LENGTH = 30  # Month length for Timedelta checks.
+
+
 def check_timeseries(
     data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
 ) -> None:
@@ -83,7 +86,14 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
 def infer_input_data_freq(
     data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
 ) -> pd.Timedelta:
-    """Infer the frequency of the input data, for comparison with the calendar freq."""
+    """Infer the frequency of the input data, for comparison with the calendar freq.
+
+    Args:
+        data: Pandas or xarray data to infer the frequency of.
+
+    Returns:
+        a pd.Timedelta
+    """
     if isinstance(data, (pd.Series, pd.DataFrame)):
         data_freq = pd.infer_freq(data.index)
         if data_freq is None:  # Manually infer the frequency
@@ -94,16 +104,20 @@ def infer_input_data_freq(
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
     if isinstance(data_freq, str):
-        data_freq.replace("-", "")
-        if not re.match(r"\d+\D", data_freq):
+        data_freq.replace("-", "")  # Get the absolute frequency
+
+        if not re.match(r"\d+\D", data_freq):  # infer_freq can return "d" for "1d".
             data_freq = "1" + data_freq
+
+        data_freq = (  # Deal with monthly timedelta case
+            replace_month_length(data_freq) if data_freq[-1] == "M" else data_freq
+        )
     return pd.Timedelta(data_freq)
 
 
 def replace_month_length(length: str) -> str:
     """Replace month lengths with an equivalent length in days."""
-    smallest_month = 28
-    ndays = int(length[:-1]) * smallest_month
+    ndays = int(length[:-1]) * MONTH_LENGTH
     return f"{ndays}d"
 
 
@@ -111,6 +125,7 @@ def get_smallest_calendar_freq(calendar: "Calendar") -> pd.Timedelta:
     """Return the smallest length of the calendar's intervals as a Timedelta."""
     intervals = calendar.targets + calendar.precursors
     lengthstr = [iv.length for iv in intervals]
+    lengthstr = [ln.replace("-", "") for ln in lengthstr]  # Account for neg. lengths
     lengthstr = [replace_month_length(ln) if ln[-1] == "M" else ln for ln in lengthstr]
     lengths = [pd.Timedelta(ln) for ln in lengthstr]
     return min(lengths)

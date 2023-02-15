@@ -210,6 +210,10 @@ class TestResample:
             resample(cal, dataset)
 
 
+TOO_LOW_FREQ_ERR = r".*lower time resolution than the calendar.*"
+TOO_LOW_FREQ_WARN = r".*input data frequency is very close to the Calendar's freq.*"
+
+
 class TestResampleChecks:
     @pytest.fixture
     def dummy_dataframe(self):
@@ -225,25 +229,25 @@ class TestResampleChecks:
     def test_low_freq_warning_dataframe(self, dummy_dataframe):
         cal = daily_calendar(anchor="10-15", length="2d")
         cal = cal.map_to_data(dummy_dataframe)
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match=TOO_LOW_FREQ_WARN):
             resample(cal, dummy_dataframe)
 
     def test_too_low_freq_dataframe(self, dummy_dataframe):
         cal = daily_calendar(anchor="10-15", length="1d")
         cal = cal.map_to_data(dummy_dataframe)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=TOO_LOW_FREQ_ERR):
             resample(cal, dummy_dataframe)
 
     def test_low_freq_warning_dataset(self, dummy_dataset):
         cal = daily_calendar(anchor="10-15", length="2d")
         cal = cal.map_to_data(dummy_dataset)
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match=TOO_LOW_FREQ_WARN):
             resample(cal, dummy_dataset)
 
     def test_too_low_freq_dataset(self, dummy_dataset):
         cal = daily_calendar(anchor="10-15", length="1d")
         cal = cal.map_to_data(dummy_dataset)
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=TOO_LOW_FREQ_ERR):
             resample(cal, dummy_dataset)
 
     def test_low_freq_month_fmt_dataframe(self):
@@ -256,13 +260,26 @@ class TestResampleChecks:
         )
         cal = monthly_calendar(anchor="10-15", length="1M")
         cal = cal.map_to_data(df)
-        with pytest.warns(UserWarning):
+        with pytest.warns(UserWarning, match=TOO_LOW_FREQ_WARN):
             resample(cal, df)
+
+    def test_month_freq_data(self):
+        time_index = pd.date_range("20181001", "20211001", freq="2M")
+        test_data = pd.DataFrame(
+            data={
+                "data1": np.random.random(len(time_index)),
+            },
+            index=time_index,
+        )
+        cal = monthly_calendar(anchor="Dec", length="1M")
+        cal.map_to_data(test_data)
+        with pytest.raises(ValueError, match=TOO_LOW_FREQ_ERR):
+            resample(cal, test_data)
 
     def test_reserved_names_dataframe(self, dummy_dataframe):
         cal = daily_calendar(anchor="10-15", length="7d")
         cal.map_to_data(dummy_dataframe)
-        with pytest.raises(ValueError, match=r".* reserved names. .*"):
+        with pytest.raises(ValueError, match=r".*reserved names..*"):
             resample(cal, dummy_dataframe.rename(columns={"data1": "anchor_year"}))
 
 
