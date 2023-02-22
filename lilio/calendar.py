@@ -160,8 +160,10 @@ class Calendar:
             anchor: String denoting the anchor date. The following inputs are valid:
                     - "MM-DD" for a month and day. E.g. "12-31".
                     - "MM" for only a month, e.g. "4" for March.
-                    - English names and abbreviations of months. E.g. "December" or "jan".
-                    - "Www" for a week number, e.g. "W05" for the fifth week of the year.
+                    - English names and abbreviations of months. E.g. "December" or
+                        "jan".
+                    - "Www" for a week number, e.g. "W05" for the fifth week of the
+                        year.
                     - "Www-D" for a week number plus day of week. E.g. "W01-4" for the
                         first thursday of the year.
             allow_overlap: If overlapping intervals between years is allowed or not.
@@ -251,8 +253,8 @@ class Calendar:
 
         Args:
             role: Either a 'target' or 'precursor' interval(s).
-            length: The length of the interval(s), in a format of '5d' for five days, '2W'
-                for two weeks, or '1M' for one month.
+            length: The length of the interval(s), in a format of '5d' for five days,
+                '2W' for two weeks, or '1M' for one month.
             gap: The gap between this interval and the preceding target/precursor
                 interval. Same format as the length argument.
             n: The number of intervals which should be added to the calendar. Defaults
@@ -522,7 +524,8 @@ class Calendar:
             intervals (pd.Dataframe): Dataframe with intervals.
 
         Returns:
-            pd.Dataframe: Dataframe with target periods labelled, sorted by i_interval value.
+            pd.Dataframe: Dataframe with target periods labelled, sorted by their
+                i_interval value.
         """
         # rename precursors
         intervals = intervals.rename(
@@ -550,7 +553,9 @@ class Calendar:
             self._set_year_range_from_timestamps()
 
         year_range = range(
-            self._last_year, self._first_year - 1, -(self._get_skip_nyears() + 1)  # type: ignore
+            self._last_year,  # type: ignore
+            self._first_year - 1,  # type: ignore
+            -(self._get_skip_nyears() + 1),  # type: ignore
         )
 
         intervals = pd.concat([self._map_year(year) for year in year_range], axis=1).T
@@ -622,7 +627,8 @@ class Calendar:
                 anchor date, or as absolute dates.
             show_length: Toggles if the frequency of the intervals should be displayed.
                 Defaults to False (Matplotlib plotter only).
-            add_legend: Toggles if a legend should be added to the plot (Matplotlib only)
+            add_legend: Toggles if a legend should be added to the plot (Matplotlib
+                only)
             ax: Matplotlib axis object to plot the visualization into.
             **bokeh_kwargs: Keyword arguments to pass to Bokeh's plotting.figure. See
                 https://docs.bokeh.org/en/latest/docs/reference/plotting/figure.html
