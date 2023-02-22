@@ -107,7 +107,7 @@ html_sidebars = {
     ]
 }
 
-# html_logo = "./assets/images/ai4s2s_logo.png"
+html_logo = "./assets/images/lilio_logo_wide.png"
 
 # -- Options for Intersphinx
 
