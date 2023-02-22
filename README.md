@@ -7,7 +7,8 @@
 [![github license badge](https://img.shields.io/github/license/AI4S2S/lilio)](https://github.com/AI4S2S/lilio)
 [![rsd badge](https://img.shields.io/badge/rsd-lilio-blue)](https://research-software-directory.org/software/lilio)
 [![DOI](https://zenodo.org/badge/588084019.svg)](https://zenodo.org/badge/latestdoi/588084019)
-[![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%E2%97%8F%20%20-green)](https://fair-software.eu)
+[![SQAaaS badge shields.io](https://img.shields.io/badge/sqaaas%20software-silver-lightgrey)](https://api.eu.badgr.io/public/assertions/p6VkmRseTtS2evomWYypKQ "SQAaaS silver badge achieved")
+[![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 [![Documentation Status](https://readthedocs.org/projects/ai4s2s/badge/?version=stable)](https://lilio.readthedocs.io/en/stable/?badge=stable)
 [![build](https://github.com/AI4S2S/lilio/actions/workflows/build.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/build.yml)
 [![sonarcloud](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml)
@@ -123,7 +124,3 @@ More information will follow soon.
 ## Credits
 
 This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [NLeSC/python-template](https://github.com/NLeSC/python-template).
-
-## Software Quality
-
-[![SQAaaS badge](https://github.com/EOSC-synergy/SQAaaS/raw/master/badges/badges_150x116/badge_software_silver.png)](https://api.eu.badgr.io/public/assertions/tVAmKytOTqWwOimvZkdoUg "SQAaaS silver badge achieved")
