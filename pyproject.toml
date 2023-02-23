@@ -142,7 +142,6 @@ extend-select = [
   "D404",  # First word of the docstring should not be 'This'
 ]
 ignore = [
-  "E501",  # Line length: fails on many docstrings (needs fixing).
   "PLR2004",  # magic value used in comparsion (i.e. `if ndays == 28: month_is_feb`).
 ]
 # Allow autofix for all enabled rules (when `--fix`) is provided.

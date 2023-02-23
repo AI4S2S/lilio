@@ -114,7 +114,8 @@ def _contains(interval_index: pd.IntervalIndex, timestamps) -> np.ndarray:
     Will return a boolean array of the shape (n_timestamps, n_intervals).
 
     Args:
-        interval_index: An IntervalIndex containing all intervals that should be checked.
+        interval_index: An IntervalIndex containing all intervals that should be
+            checked.
         timestamps: A 1-D array containing
 
     Returns:

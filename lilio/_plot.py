@@ -204,8 +204,10 @@ def matplotlib_visualization(  # noqa: PLR0913 (too-many-arguments)
     if relative_dates:
         ax.set_xlim(
             (
-                np.min(data["x"]) - data["width"][np.argmin(data["x"])] / 2 - 5,  # type: ignore
-                np.max(data["x"]) + data["width"][np.argmax(data["x"])] / 2 + 5,  # type: ignore
+                # type: ignore
+                np.min(data["x"]) - data["width"][np.argmin(data["x"])] / 2 - 5,
+                # type: ignore
+                np.max(data["x"]) + data["width"][np.argmax(data["x"])] / 2 + 5,
             )
         )
     else:
@@ -218,7 +220,8 @@ def matplotlib_visualization(  # noqa: PLR0913 (too-many-arguments)
             )
         )
 
-    ax.set_ylim([intervals.index.min() - 0.5, intervals.index.max() + 0.5])  # type: ignore
+    # type: ignore
+    ax.set_ylim([intervals.index.min() - 0.5, intervals.index.max() + 0.5])
     ax.set_yticks([int(x) for x in intervals.index.to_list()])
 
     if not add_yticklabels:
