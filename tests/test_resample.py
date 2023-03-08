@@ -211,15 +211,14 @@ class TestResample:
 
     def test_dataset_attrs(self, dummy_calendar, dummy_dataset):
         dataset, _ = dummy_dataset
-        dataset.attrs = {
-            "history": "test_history",
-            "other_attrs": "abc"
-        }
+        dataset.attrs = {"history": "test_history", "other_attrs": "abc"}
         cal = dummy_calendar.map_years(2020, 2025)
         resampled = resample(cal, dataset)
 
         expected_attrs = [
-            "lilio_version", "lilio_calendar_anchor_date", "lilio_calendar_code"
+            "lilio_version",
+            "lilio_calendar_anchor_date",
+            "lilio_calendar_code",
         ]
 
         assert "test_history" in resampled.attrs["history"]
@@ -234,15 +233,14 @@ class TestResample:
         could solve this.
         """
         dataarray, _ = dummy_dataarray
-        dataarray.attrs = {
-            "history": "test_history",
-            "other_attrs": "abc"
-        }
+        dataarray.attrs = {"history": "test_history", "other_attrs": "abc"}
         cal = dummy_calendar.map_years(2020, 2025)
         resampled = resample(cal, dataarray)
 
         expected_attrs = [
-            "lilio_version", "lilio_calendar_anchor_date", "lilio_calendar_code"
+            "lilio_version",
+            "lilio_calendar_anchor_date",
+            "lilio_calendar_code",
         ]
 
         assert "test_history" in resampled.attrs["history"]

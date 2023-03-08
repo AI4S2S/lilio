@@ -1,9 +1,9 @@
+from datetime import datetime
+from datetime import timezone
 from typing import Union
 import xarray as xr
 import lilio
 from lilio.calendar import Calendar
-from datetime import datetime
-from datetime import timezone
 
 
 def add_attrs(data: Union[xr.DataArray, xr.Dataset], calendar: Calendar) -> None:
