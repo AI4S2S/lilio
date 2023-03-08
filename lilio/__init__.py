@@ -62,8 +62,8 @@ Example:
 """
 
 import logging
-from . import calendar_shifter
-from . import traintest
+from lilio import calendar_shifter
+from lilio import traintest
 from .calendar import Calendar
 from .calendar import Interval
 from .calendar_shorthands import daily_calendar
