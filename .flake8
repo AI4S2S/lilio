@@ -1,0 +1,3 @@
+[flake8]  # This file is required for the SQAaaS badge.
+max-line-length=88
+extend-ignore=E203  # Does not comply with PEP8
