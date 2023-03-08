@@ -7,8 +7,9 @@ from typing import overload
 import numpy as np
 import pandas as pd
 import xarray as xr
+from lilio import utils
+from lilio._attrs import add_attrs
 from lilio.calendar import Calendar
-from . import utils
 
 
 # List of numpy statistical methods, with a single input argument and a single output.
@@ -356,5 +357,9 @@ def resample(
     resampled_data = _mark_target_period(resampled_data)
 
     if isinstance(input_data, xr.DataArray):
-        return resampled_data[da_name]
+        resampled_dataarray = resampled_data[da_name]
+        add_attrs(resampled_dataarray, calendar)
+        return resampled_dataarray
+    if isinstance(input_data, xr.Dataset):
+        add_attrs(resampled_data, calendar)
     return resampled_data
