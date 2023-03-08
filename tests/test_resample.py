@@ -209,6 +209,47 @@ class TestResample:
         with pytest.warns(UserWarning):
             resample(cal, dataset)
 
+    def test_dataset_attrs(self, dummy_calendar, dummy_dataset):
+        dataset, _ = dummy_dataset
+        dataset.attrs = {
+            "history": "test_history",
+            "other_attrs": "abc"
+        }
+        cal = dummy_calendar.map_years(2020, 2025)
+        resampled = resample(cal, dataset)
+
+        expected_attrs = [
+            "lilio_version", "lilio_calendar_anchor_date", "lilio_calendar_code"
+        ]
+
+        assert "test_history" in resampled.attrs["history"]
+        assert "other_attrs" in resampled.attrs.keys()
+        for att in expected_attrs:
+            assert att in resampled.attrs.keys()
+
+    def test_dataarray_attrs(self, dummy_calendar, dummy_dataarray):
+        """This is a copy of the previous test, but with dataarray input.
+
+        Sadly, fixtures aren't compatible with parameterize. Refactoring the fixtures
+        could solve this.
+        """
+        dataarray, _ = dummy_dataarray
+        dataarray.attrs = {
+            "history": "test_history",
+            "other_attrs": "abc"
+        }
+        cal = dummy_calendar.map_years(2020, 2025)
+        resampled = resample(cal, dataarray)
+
+        expected_attrs = [
+            "lilio_version", "lilio_calendar_anchor_date", "lilio_calendar_code"
+        ]
+
+        assert "test_history" in resampled.attrs["history"]
+        assert "other_attrs" in resampled.attrs.keys()
+        for att in expected_attrs:
+            assert att in resampled.attrs.keys()
+
 
 TOO_LOW_FREQ_ERR = r".*lower time resolution than the calendar.*"
 TOO_LOW_FREQ_WARN = r".*input data frequency is very close to the Calendar's freq.*"
