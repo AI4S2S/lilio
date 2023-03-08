@@ -7,7 +7,7 @@ from lilio.calendar import Calendar
 def add_attrs(data: Union[xr.DataArray, xr.Dataset], calendar: Calendar) -> None:
     """Update resampled xarray data with the Calendar's attributes and provenance."""
     data.attrs = {
-        **data.attrs,  # Keep original attrs
+        **data.attrs,  # Keep original attrs. Conflicts will be overwritten attrs below:
         "lilio_version": lilio.__version__,
         "lilio_calendar_anchor_date": calendar.anchor,
         "lilio_calendar_code": str(calendar),

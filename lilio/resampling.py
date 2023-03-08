@@ -358,8 +358,10 @@ def resample(
 
     if isinstance(input_data, xr.DataArray):
         resampled_dataarray = resampled_data[da_name]
+        resampled_dataarray.attrs = input_data.attrs
         add_attrs(resampled_dataarray, calendar)
         return resampled_dataarray
     if isinstance(input_data, xr.Dataset):
+        resampled_data.attrs = input_data.attrs
         add_attrs(resampled_data, calendar)
     return resampled_data
