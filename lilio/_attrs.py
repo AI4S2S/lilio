@@ -39,8 +39,8 @@ def add_attrs(data: Union[xr.DataArray, xr.Dataset], calendar: Calendar) -> None
         "units": "-",
         "description": (
             "The index of each Lilio Calendar interval. Positive values denote "
-            "intervals after the anchor date, while negative values represent intervals"
-            " before the anchor date."
+            "intervals after the anchor date (targets), while negative values "
+            "represent intervals before the anchor date (precursors)."
         ),
     }
     data["is_target"].attrs = {
