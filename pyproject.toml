@@ -128,7 +128,7 @@ select = [
   "F",  # pyflakes
   "B",  # flake8-bugbear
   "D",  # pydocstyle
-  "C",  # mccabe complexity
+  "C90",  # mccabe complexity
 #  "I",  # isort (autosort not working correctly, disabled for now).
   "N",  # PEP8-naming
   "UP",  # pyupgrade (upgrade syntax to current syntax)
@@ -140,12 +140,13 @@ extend-select = [
   "D401",  # First line should be in imperative mood
   "D400",  # First line should end in a period.
   "D404",  # First word of the docstring should not be 'This'
+  "TID252",  # No relative imports (not pep8 compliant)
 ]
 ignore = [
   "PLR2004",  # magic value used in comparsion (i.e. `if ndays == 28: month_is_feb`).
 ]
 # Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C", "D", "E", "F"]
+fixable = ["A", "B", "C90", "D", "E", "F", "TID252"]
 unfixable = []
 line-length = 88
 exclude = ["docs", "build"]

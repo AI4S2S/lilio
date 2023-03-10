@@ -10,8 +10,8 @@ from typing import Union
 import pandas as pd
 import xarray as xr
 from pandas.tseries.offsets import DateOffset
-from . import _plot
-from . import utils
+from lilio import _plot
+from lilio import utils
 
 
 _MappingYears = Tuple[Literal["years"], int, int]

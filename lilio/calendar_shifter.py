@@ -4,8 +4,8 @@ from typing import Dict
 from typing import List
 from typing import Union
 import xarray as xr
-from . import calendar
-from . import utils
+from lilio import calendar
+from lilio import utils
 from .resampling import resample
 
 
