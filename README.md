@@ -3,16 +3,16 @@
 <img align="right" width="160" alt="Logo" src="https://raw.githubusercontent.com/AI4S2S/lilio/main/docs/assets/images/lilio_logo.png">
 
 
-[![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio)
+<!--[![github repo badge](https://img.shields.io/badge/github-repo-000.svg?logo=github&labelColor=gray&color=blue)](https://github.com/AI4S2S/lilio) -->
 [![github license badge](https://img.shields.io/github/license/AI4S2S/lilio)](https://github.com/AI4S2S/lilio)
-[![rsd badge](https://img.shields.io/badge/rsd-lilio-blue)](https://research-software-directory.org/software/lilio)
+[![rsd badge](https://img.shields.io/badge/RSD-lilio-blue)](https://research-software-directory.org/software/lilio)
 [![DOI](https://zenodo.org/badge/588084019.svg)](https://zenodo.org/badge/latestdoi/588084019)
 [![SQAaaS badge shields.io](https://img.shields.io/badge/sqaaas%20software-gold-yellow)](https://api.eu.badgr.io/public/assertions/P3scOSLyQVWzzsjq0Ueycw "SQAaaS gold badge achieved")
 [![fair-software.eu](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F-green)](https://fair-software.eu)
 [![Documentation Status](https://readthedocs.org/projects/ai4s2s/badge/?version=stable)](https://lilio.readthedocs.io/en/stable/?badge=stable)
 [![build](https://github.com/AI4S2S/lilio/actions/workflows/build.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/build.yml)
-[![sonarcloud](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml)
 [![workflow scc badge](https://sonarcloud.io/api/project_badges/measure?project=AI4S2S_lilio&metric=coverage)](https://sonarcloud.io/dashboard?id=AI4S2S_lilio)
+<!--[![sonarcloud](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/AI4S2S/lilio/actions/workflows/sonarcloud.yml) -->
 
 A python package for generating calendars to resample timeseries into training and target data for machine learning. Named after [the inventor](https://en.wikipedia.org/wiki/Aloysius_Lilius) of the [Gregorian Calendar](https://en.wikipedia.org/wiki/Gregorian_calendar).
 
@@ -21,10 +21,16 @@ Lilio was originally designed for use in [`s2spy`](https://github.com/AI4S2S/s2s
 ## Installation
 [![workflow pypi badge](https://img.shields.io/pypi/v/lilio.svg?colorB=blue)](https://pypi.python.org/project/lilio/)
 [![supported python versions](https://img.shields.io/pypi/pyversions/lilio)](https://pypi.python.org/project/lilio/)
+[![conda-forge](https://anaconda.org/conda-forge/lilio/badges/version.svg)](https://anaconda.org/conda-forge/lilio)
 
 To install the latest release of lilio, do:
 ```console
 python3 -m pip install lilio
+```
+
+Lilio is also available on conda-forge. If you use conda, do:
+```console
+conda install -c conda-forge lilio
 ```
 
 To install the in-development version from the GitHub repository, do:
@@ -111,16 +117,13 @@ For detailed information on using `lilio` package, visit the [documentation page
 If you want to contribute to the development of lilio,
 have a look at the [contribution guidelines](docs/CONTRIBUTING.md).
 
-<!--
 ## How to cite us
-[![RSD](https://img.shields.io/badge/rsd-s2spy-00a3e3.svg)](https://research-software-directory.org/software/s2spy)
-<!-- [![DOI](https://zenodo.org/badge/DOI/<replace-with-created-DOI>.svg)](https://doi.org/<replace-with-created-DOI>)
+[![rsd badge](https://img.shields.io/badge/RSD-lilio-blue)](https://research-software-directory.org/software/lilio)
+[![DOI](https://zenodo.org/badge/588084019.svg)](https://zenodo.org/badge/latestdoi/588084019)
 
-TODO: add links to zenodo and rsd.
-More information will follow soon.
+Please use the Zenodo DOI to cite this package if you used it in your research.
 
--->
+## Acknowledgements
+This package was developed by the Netherlands eScience Center and Vrije Universiteit Amsterdam under Netherlands eScience Center grant NLESC.OEC.2021.005.
 
-## Credits
-
-This package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [NLeSC/python-template](https://github.com/NLeSC/python-template).
+The package was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [NLeSC/python-template](https://github.com/NLeSC/python-template).
