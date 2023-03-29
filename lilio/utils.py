@@ -77,8 +77,9 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
             return None
 
     warnings.warn(
-        "The input data could not fully cover the calendar's intervals. "
-        "Intervals without available data will contain NaN values."
+        "\n  The input data could not fully cover the calendar's intervals."
+        "\n  Intervals without available data will contain NaN values.",
+        stacklevel=1,
     )
     return None
 
@@ -154,10 +155,11 @@ def check_input_frequency(
         )
     if calendar_freq < 2 * data_freq:
         warnings.warn(
-            "The input data frequency is very close to the Calendar's frequency. "
-            "This could lead to issues like aliasing or incorrect resampling. "
-            "If possible: make the Calendar's intervals larger, or use data of a higher"
-            " time resolution."
+            "\n  The input data frequency is very close to the Calendar's frequency."
+            "\n  This could lead to issues like aliasing or incorrect resampling."
+            "\n  If possible: make the Calendar's intervals larger, or use data of a"
+            "\n  higher time resolution.",
+            stacklevel=1,
         )
 
 
