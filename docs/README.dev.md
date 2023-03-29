@@ -3,6 +3,9 @@
 If you're looking for user documentation, go [here](readme_link.rst).
 
 ## Development install
+For a full development enviroment run the commands below.
+
+*Note that this is optional:* if you already have `hatch` in your main environment, this setup is not needed, as you can use the `hatch` environments to run all commands.
 
 ```shell
 # Create a virtual environment, e.g. with
@@ -27,7 +30,7 @@ Afterwards check that the install directory is present in the `PATH` environment
 
 ## Running the tests
 
-Running tests has been configured using `hatch`, and can be started by running:
+Lilio uses `pytest` for unit testing. Running tests has been configured using `hatch`, and can be started by running:
 
 ```shell
 hatch run test
@@ -44,7 +47,7 @@ This runs tests and prints the results to the command line, as well as storing t
 
 ## Running linters locally
 
-For linting and code style we use `flake8`, `black` and `isort`. We additionally use `mypy` to check the type hints.
+For linting and code style we use `ruff`, `black` and `isort`. We additionally use `mypy` to check the type hints.
 All tools can simply be run by doing:
 
 ```shell
@@ -68,6 +71,8 @@ hatch run docs:build
 
 The documentation will be in `docs/_build/html`.
 
+You can also make use of the [sphinx-autobuild](https://pypi.org/project/sphinx-autobuild/) plugin to show a live preview of the documentation, which can make developing the documentation a bit easier.
+
 ## Versioning
 
 Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
@@ -80,52 +85,28 @@ bumpversion patch
 
 ## Making a release
 
-This section describes how to make a release in 3 parts:
+This section describes how to make a release in 3 parts: preparation, release and validation.
 
-1. preparation
-1. making a release on PyPI
-1. making a release on GitHub
+### Preparation
 
-### (1/3) Preparation
-
-1. Update the <CHANGELOG.md> (don't forget to update links at bottom of page)
-2. Verify that the information in `CITATION.cff` is correct, and that `.zenodo.json` contains equivalent data
+1. Update the `CHANGELOG.md` file
+2. Verify that the information in `CITATION.cff` is correct
 3. Make sure the [version has been updated](#versioning).
 4. Run the unit tests with `hatch run test`
 
-### (2/3) PyPI
+### Making the GitHub release
 
-First prepare a new directory, for example:
-```shell
-cd $(mktemp -d lilio.XXXXXX)
-```
+Make a release and tag on GitHub.com. This will:
 
-A fresh git clone ensures the release has the state of origin/main branch
+ - trigger Zenodo into making a snapshot of your repository and sticking a DOI on it.
+ - start a GitHub action that builds and uploads the new version to [PyPI](https://pypi.org/project/lilio/).
+    - Which should trigger [conda-forge](https://anaconda.org/conda-forge/lilio) to update the package as well.
 
-```shell
-git clone https://github.com/AI4S2S/lilio .
-```
 
-In a your terminal, with an activated environment which has [`hatch`](https://hatch.pypa.io/latest/) installed do:
+### Validation
 
-```shell
-pip install hatch --upgrade
-hatch build
-```
+After making the release, you should check that:
 
-If the build was succesfull, publish it to [PyPI's test servers](https://test.pypi.org/). Note that your credentials are different between test.pypi.org and pypy.org.
-```shell
-hatch publish --repo test
-```
-
-Visit [https://test.pypi.org/project/lilio](https://test.pypi.org/project/lilio) and
-verify that your package was uploaded successfully.
-
-Now we can publish to PyPI:
-```
-hatch publish
-```
-
-### (3/3) GitHub
-
-Don't forget to also make a [release on GitHub](https://github.com/AI4S2S/lilio/releases/new). If your repository uses the GitHub-Zenodo integration this will also trigger Zenodo into making a snapshot of your repository and sticking a DOI on it.
+1. The [Zenodo page](https://doi.org/10.5281/zenodo.7620212) is updated
+1. The [publishing action](https://github.com/AI4S2S/lilio/actions/workflows/python-publish.yml) ran successfully, and that `pip install lilio` installs the new version.
+1. The [conda-forge package](https://anaconda.org/conda-forge/lilio) is updated, and can be installed using conda.
