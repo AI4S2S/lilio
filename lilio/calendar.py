@@ -657,10 +657,11 @@ class Calendar:
 
             if ax is not None:
                 warnings.warn(
-                    "ax is only a valid keyword argument for the non-interactive "
-                    "matplotlib backend. Bokeh's figure can be controlled by passing "
-                    "Bokeh figure keyword arguments (e.g. width=800).",
+                    "\n  ax is only a valid keyword argument for the non-interactive"
+                    "\n  matplotlib backend. Bokeh's figure can be controlled by"
+                    "\n  passing Bokeh figure keyword arguments (e.g. width=800).",
                     UserWarning,
+                    stacklevel=1,
                 )
             bokeh_visualization(
                 calendar, n_years, relative_dates, add_yticklabels, **bokeh_kwargs
@@ -668,10 +669,11 @@ class Calendar:
         else:
             if bokeh_kwargs:
                 warnings.warn(
-                    "kwargs for bokeh have been passed to visualize(), but the "
-                    "matplotlib backend does not support these. Use the 'ax' kwarg "
-                    "instead to control the generated figure.",
+                    "\n  kwargs for bokeh have been passed to visualize(), but the"
+                    "\n  matplotlib backend does not support these. Use the 'ax' kwarg"
+                    "\n  instead to control the generated figure.",
                     UserWarning,
+                    stacklevel=1,
                 )
 
             _plot.matplotlib_visualization(
