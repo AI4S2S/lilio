@@ -7,14 +7,14 @@ To make use of this, you need to make sure that your input data consists of xarr
 Dask for pandas is currently not supported.
 
 ## Quick starter guide
-For novices, we outline some steps to get started on using Lilio with Dask.
+For Dask novices, we outline some steps to get started on using Lilio with Dask.
 
 ### Required packages
 Dask is not a required dependency of Lilio. If you do not have Dask yet, please install it using:
 ```bash
 pip install dask[distributed]
 ```
-Aditionally, for the task interface, Bokeh <3 is required:
+Aditionally, for the Dask dashboard, Bokeh <3 is required:
 ```
 pip install "bokeh<3"
 ```
