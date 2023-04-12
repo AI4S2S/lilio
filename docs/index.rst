@@ -28,6 +28,7 @@ Table of contents
     :caption: Technical information
     :maxdepth: 2
 
+    Scaling up Lilio with Dask <dask_integration.md>
     Developer Readme <README.dev.md>
     Contributing guide <contributing_link>
     Changelog <CHANGELOG.md>
