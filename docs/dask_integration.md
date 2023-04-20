@@ -14,9 +14,9 @@ Dask is not a required dependency of Lilio. If you do not have Dask yet, please 
 ```bash
 pip install dask[distributed]
 ```
-Aditionally, for the Dask dashboard, Bokeh <3 is required:
+Aditionally, for the Dask dashboard, Bokeh <3 and >=2.1.1 is required:
 ```
-pip install "bokeh<3"
+pip install "bokeh>=2.1.1,<3"
 ```
 
 ### Loading in the data
