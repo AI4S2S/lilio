@@ -219,13 +219,15 @@ def _resample_dataset(
             input_core_dims=[["time"]],
             output_core_dims=[[]],
             vectorize=True,
-            dask="parallelized",
-            dask_gufunc_kwargs={"allow_rechunk": True},
+            dask="parallelized",  # only does something when data is a Dask array
+            dask_gufunc_kwargs={"allow_rechunk": True},  # Same as above
         )
 
     if utils.is_dask_array(input_data_time):
         import dask
-
+        # Note: the * before data_list unpacks the list into separate arguments
+        #   and passes these concurrently to dask.compute. This triggers dask to
+        #   compute all the sub-datasets concurrently.
         input_data_resampled = xr.concat(dask.compute(*data_list), dim="anch_int")
     else:
         input_data_resampled = xr.concat(data_list, dim="anch_int")  # type: ignore
