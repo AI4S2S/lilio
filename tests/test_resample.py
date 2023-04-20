@@ -2,11 +2,11 @@
 """
 import tempfile
 from pathlib import Path
-from dask.distributed import Client
 import numpy as np
 import pandas as pd
 import pytest
 import xarray as xr
+from dask.distributed import Client
 from lilio import Calendar
 from lilio import daily_calendar
 from lilio import monthly_calendar
@@ -14,7 +14,9 @@ from lilio import resample
 from lilio.resampling import VALID_METHODS
 from . import data_folder
 
+
 TEST_DATA_DIR = data_folder
+
 
 class TestResample:
     """Test resampling, general tests for how=mean."""
@@ -390,10 +392,10 @@ class TestResampleDask:
         return xr.open_mfdataset(
             TEST_DATA_DIR.glob("*.nc"),
             parallel=False,  # See: https://github.com/pydata/xarray/issues/7079
-            chunks={'time': 30, "longitude": -1, "latitude": -1},
+            chunks={"time": 30, "longitude": -1, "latitude": -1},
             engine="netcdf4",
         )
-    
+
     def test_dask_resample(self, dummy_dataset, dummy_calendar):
         """Just asssert that resampling w/ dask runs fine."""
         client = Client(n_workers=2, threads_per_worker=2)

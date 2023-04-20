@@ -225,6 +225,7 @@ def _resample_dataset(
 
     if utils.is_dask_array(input_data_time):
         import dask
+
         # Note: the * before data_list unpacks the list into separate arguments
         #   and passes these concurrently to dask.compute. This triggers dask to
         #   compute all the sub-datasets concurrently.

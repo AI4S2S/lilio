@@ -1,13 +1,13 @@
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import xarray as xr
-from pathlib import Path
 
 
 def generate_era5_file(
     start_time: np.datetime64, end_time: np.datetime64
 ) -> xr.Dataset:
-    test_value = 20.
+    test_value = 20.0
     resolution = 0.25
 
     time_coords = pd.date_range(
