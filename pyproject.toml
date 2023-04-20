@@ -73,7 +73,7 @@ dev = [
   "mypy",
   "pytest",
   "pytest-cov",
-  "dask",
+  "dask[distributed]",
 ]
 docs = [  # Required for ReadTheDocs
   "myst_parser",
