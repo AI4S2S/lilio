@@ -1,6 +1,7 @@
 """The implementation of the resampling methods for use with the Calendar."""
 import typing
 from typing import Callable
+from typing import List
 from typing import Literal
 from typing import Union
 from typing import overload
@@ -170,7 +171,6 @@ def _resample_pandas(
     return data
 
 
-# pylint: disable=too-many-locals
 def _resample_dataset(
     calendar: Calendar,
     input_data: xr.Dataset,
@@ -194,9 +194,16 @@ def _resample_dataset(
     data = data.to_dataset()
     data = data.stack(anch_int=("anchor_year", "i_interval"))
 
+    intervals = pd.IntervalIndex(data["interval"].values)
+    timesteps = input_data["time"].to_numpy()
+
+    indices_list: List[np.ndarray] = [np.ndarray(0)] * len(intervals)
+    for i in range(len(intervals)):
+        row = _contains(intervals[[i]], timesteps)[0]
+        indices_list[i] = np.argwhere(row).T[0]
+
     # Separate data with time dims (should be resampled), from data without time dims
-    #   (which does not need resampling). Otherwise stacking ALL dims together will
-    #   cause the stacked dimension become needlessly large, making resampling slow.
+    #   (which does not need resampling).
     input_data_time = input_data[
         [var for var in input_data.data_vars if "time" in input_data[var].dims]
     ]
@@ -204,40 +211,32 @@ def _resample_dataset(
         [var for var in input_data.data_vars if "time" not in input_data[var].dims]
     ]
 
-    stacking_dims = list(input_data_time.dims.keys())
-    stacking_dims.remove("time")
-    if stacking_dims:  # There might not be extra dims to stack!
-        input_data_time = input_data_time.stack(allstack=stacking_dims)
+    data_list = [xr.Dataset] * len(intervals)
+    for i in range(len(intervals)):
+        data_list[i] = xr.apply_ufunc(
+            resampling_method,
+            input_data_time.isel(time=indices_list[i]),
+            input_core_dims=[["time"]],
+            output_core_dims=[[]],
+            vectorize=True,
+            dask="parallelized",  # only does something when data is a Dask array
+            dask_gufunc_kwargs={"allow_rechunk": True},  # Same as above
+        )
 
-    da_coords = {"anch_int": data["anch_int"]}
-    if stacking_dims:
-        da_coords["allstack"] = input_data_time["allstack"]
+    if utils.is_dask_array(input_data_time):
+        import dask
 
-    contains_matrix = _contains(
-        pd.IntervalIndex(data["interval"].values), input_data_time["time"].values
-    )
-
-    resampled_vars = [xr.DataArray] * len(input_data_time.data_vars)
-    for i, var in enumerate(input_data_time.data_vars):
-        size_input = input_data_time[var].shape[1] if stacking_dims else 1
-        resampled_data = np.zeros((contains_matrix.shape[0], size_input))
-
-        # Note: while looping, contains_matrix will have a size of
-        # (n_intervals * n_anchor_years), making it the most reliably small dim.
-        _data = input_data_time[var].values
-        for j, row in enumerate(contains_matrix):
-            resampled_data[j, :] = resampling_method(_data[row], axis=0)
-
-        resampled_data = np.squeeze(resampled_data)  # in case of (1, n) resampled data
-
-        resampled_vars[i] = xr.DataArray(  # type: ignore
-            data=resampled_data, coords=da_coords
-        ).rename(var)
+        # Note: the * before data_list unpacks the list into separate arguments
+        #   and passes these concurrently to dask.compute. This triggers dask to
+        #   compute all the sub-datasets concurrently.
+        input_data_resampled = xr.concat(dask.compute(*data_list), dim="anch_int")
+    else:
+        input_data_resampled = xr.concat(data_list, dim="anch_int")  # type: ignore
 
     if input_data_nontime.data_vars:
-        data = xr.merge([data, input_data_nontime] + resampled_vars)
+        data = xr.merge([data, input_data_nontime, input_data_resampled])
     else:
-        data = xr.merge([data] + resampled_vars)
+        data = xr.merge([data, input_data_resampled])
 
     data = data.unstack()
     data = utils.convert_interval_to_bounds(data)

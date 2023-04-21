@@ -34,6 +34,17 @@ def check_timeseries(
         check_time_dim_xarray(data)
 
 
+def is_dask_array(data: Union[xr.DataArray, xr.Dataset]) -> bool:
+    """Checks if the xarray dataset/array has any dask arrays."""
+    if isinstance(data, xr.DataArray):
+        return False if data.chunks is None else True
+
+    if any([data[var].chunks is not None for var in list(data.variables)]):
+        return True
+    else:
+        return False
+
+
 def check_time_dim_xarray(data) -> None:
     """Check if an xarray data has a time dimensions with time data."""
     if "time" not in data.dims:
