@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Bokeh >= 3.0.0 is now required for interactive plotting, instead of <= 2.4.3.
+  - Do note that dask.distributed still requires bokeh < 3.
+
+### Added
+- Lilio's resample now supports use of dask. A tutorial on how to make use of this has been added to the documentation ([#52](https://github.com/AI4S2S/lilio/pull/52)).
+- When resampling xarray data, information such as the lilio version, calendar anchor date, the exact calendar, etc. are now added to the attributes, as well as descriptions and full names for anchor_year, i_interval, and is_target ([#49](https://github.com/AI4S2S/lilio/pull/49))
 
 ## 0.3.1 (2023-02-15)
 
