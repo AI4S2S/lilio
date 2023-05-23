@@ -3,6 +3,7 @@ import re
 import typing
 import warnings
 from typing import Dict
+from typing import List
 from typing import Union
 import numpy as np
 import pandas as pd
@@ -61,15 +62,12 @@ def check_time_dim_pandas(data) -> None:
         raise ValueError("The input data does not have a datetime index.")
 
 
-def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
-    """Check for empty intervals in pandas data.
-
-    Note: For the Dataset, all values within a certain interval, anchor_year combination
-    have to be NaN, to allow for, e.g., empty gridcells in a latitude/longitude grid.
+def check_empty_intervals(indices_list: List[np.ndarray]) -> None:
+    """Check for empty intervals in the resampling data.
 
     Args:
-        data (Union[pd.DataFrame, xr.Dataset]): Data that should be checked for empty
-            intervals. Should be done after resampling the data.
+        indices_list: A list, where each item is an array with indices corresponding
+            to the to-be-resampled data's time axis.
 
     Raises:
         UserWarning: If the data is insufficient.
@@ -77,22 +75,26 @@ def check_empty_intervals(data: Union[pd.DataFrame, xr.Dataset]) -> None:
     Returns:
         None
     """
-    if isinstance(data, pd.DataFrame) and not np.any(np.isnan(data.iloc[:, 3:])):
-        return None
-    if isinstance(data, xr.Dataset):
-        time_vars = [var for var in data.data_vars if "anchor_year" in data[var].dims]
-        if not any(
-            data[var].isnull().any(dim=["i_interval", "anchor_year"]).all()
-            for var in time_vars
-        ):
-            return None
-
-    warnings.warn(
-        "\n  The input data could not fully cover the calendar's intervals."
-        "\n  Intervals without available data will contain NaN values.",
-        stacklevel=1,
-    )
-    return None
+    if any(len(interval_locs) == 1 for interval_locs in indices_list):
+        warnings.warn(  # type: ignore
+            message=(
+                "\n  Some intervals only contains a single data point."
+                "\n  This could lead to issues like aliasing or incorrect resampling."
+                "\n  If possible: make the Calendar's intervals larger, or use data of"
+                "\n  a higher time resolution."
+            ),
+            stacklevel=1,
+        )
+    elif any(len(interval_locs) == 0 for interval_locs in indices_list):
+        warnings.warn(  # type: ignore
+            message=(
+                "\n  The input data could not fully cover the calendar's intervals."
+                "\n  Intervals without available data will contain NaN values.",
+                "\n  If possible: make the Calendar's intervals larger, or use data of"
+                "\n  a higher time resolution.",
+            ),
+            stacklevel=1,
+        )
 
 
 def infer_input_data_freq(
