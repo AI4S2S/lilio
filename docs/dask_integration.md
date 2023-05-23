@@ -58,4 +58,12 @@ Now your `Dataset` consists of Dask arrays, and the client has been set up, all 
 ```python
 data_resampled = lilio.resample(calendar, ds)
 ```
+
+Note that this will (quite quickly) return a lazy Dataset: the computation has not been performed yet.
+To compute the result do:
+```python
+data_resampled.compute()
+```
 While this is going on, have a look at the dashboard to see the workers being busy!
+
+You can also select certain anchor years, or spatial regions, before you compute, if the full resampled data does not fit into memory.
