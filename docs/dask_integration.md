@@ -62,7 +62,7 @@ data_resampled = lilio.resample(calendar, ds)
 Note that this will (quite quickly) return a lazy Dataset: the computation has not been performed yet.
 To compute the result do:
 ```python
-data_resampled.compute()
+data_resampled_results = data_resampled.compute()
 ```
 While this is going on, have a look at the dashboard to see the workers being busy!
 
