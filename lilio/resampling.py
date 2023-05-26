@@ -162,6 +162,10 @@ def _resample_pandas(
         pd.IntervalIndex(data.interval.values), input_data.index.values
     )
 
+    utils.check_empty_intervals(
+        indices_list=[np.argwhere(row).T[0] for row in contains_matrix]
+    )
+
     for colname in input_data.columns:
         resampled_data = np.zeros(contains_matrix.shape[0])
         for i, row in enumerate(contains_matrix):
@@ -202,6 +206,8 @@ def _resample_dataset(
         row = _contains(intervals[[i]], timesteps)[0]
         indices_list[i] = np.argwhere(row).T[0]
 
+    utils.check_empty_intervals(indices_list)
+
     # Separate data with time dims (should be resampled), from data without time dims
     #   (which does not need resampling).
     input_data_time = input_data[
@@ -223,20 +229,14 @@ def _resample_dataset(
             dask_gufunc_kwargs={"allow_rechunk": True},  # Same as above
         )
 
-    if utils.is_dask_array(input_data_time):
-        import dask
-
-        # Note: the * before data_list unpacks the list into separate arguments
-        #   and passes these concurrently to dask.compute. This triggers dask to
-        #   compute all the sub-datasets concurrently.
-        input_data_resampled = xr.concat(dask.compute(*data_list), dim="anch_int")
-    else:
-        input_data_resampled = xr.concat(data_list, dim="anch_int")  # type: ignore
+    input_data_resampled = xr.concat(data_list, dim="anch_int")  # type: ignore
 
     if input_data_nontime.data_vars:
-        data = xr.merge([data, input_data_nontime, input_data_resampled])
+        data = xr.merge(
+            [data, input_data_nontime, input_data_resampled]  # type: ignore
+        )
     else:
-        data = xr.merge([data, input_data_resampled])
+        data = xr.merge([data, input_data_resampled])  # type: ignore
 
     data = data.unstack()
     data = utils.convert_interval_to_bounds(data)
@@ -350,8 +350,6 @@ def resample(
         resampled_data = _resample_dataset(calendar, input_data.to_dataset(), how)
     else:
         resampled_data = _resample_dataset(calendar, input_data, how)
-
-    utils.check_empty_intervals(resampled_data)
 
     resampled_data = _mark_target_period(resampled_data)
 
