@@ -331,7 +331,7 @@ class TestResampleChecks:
         cal.map_to_data(dummy_dataframe)
         with pytest.raises(ValueError, match=r".*calendar has no intervals.*"):
             resample(cal, dummy_dataframe)
-    
+
     def test_single_target(self, dummy_dataframe):
         cal = Calendar(anchor="Jan")
         cal.add_intervals("target", length="7d")
