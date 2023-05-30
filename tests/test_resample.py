@@ -326,6 +326,24 @@ class TestResampleChecks:
         with pytest.raises(ValueError, match=r".*reserved names..*"):
             resample(cal, dummy_dataframe.rename(columns={"data1": "anchor_year"}))
 
+    def test_empty_calendar(self, dummy_dataframe):
+        cal = Calendar(anchor="Jan")
+        cal.map_to_data(dummy_dataframe)
+        with pytest.raises(ValueError, match=r".*calendar has no intervals.*"):
+            resample(cal, dummy_dataframe)
+    
+    def test_single_target(self, dummy_dataframe):
+        cal = Calendar(anchor="Jan")
+        cal.add_intervals("target", length="7d")
+        cal.map_to_data(dummy_dataframe)
+        resample(cal, dummy_dataframe)
+
+    def test_single_precursor(self, dummy_dataframe):
+        cal = Calendar(anchor="Jan")
+        cal.add_intervals("precursor", length="7d")
+        cal.map_to_data(dummy_dataframe)
+        resample(cal, dummy_dataframe)
+
 
 class TestResampleMethods:
     """Test alternative resampling methods.

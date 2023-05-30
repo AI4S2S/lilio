@@ -206,9 +206,14 @@ class Calendar:
         self._set_mapping(mapping)
 
     @property
-    def n_targets(self):
+    def n_targets(self) -> int:
         """Return the number of targets."""
         return len(self.targets)
+
+    @property
+    def n_precursors(self) -> int:
+        """Return the number of precursors."""
+        return len(self.precursors)
 
     @property
     def anchor(self):

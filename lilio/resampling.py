@@ -335,6 +335,8 @@ def resample(
     """
     if calendar.mapping is None:
         raise ValueError("Generate a calendar map before calling resample")
+    if calendar.n_targets + calendar.n_precursors == 0:
+        raise ValueError("The calendar has no intervals: resampling is not possible.")
 
     if isinstance(how, str):
         _check_valid_resampling_methods(how)
