@@ -19,6 +19,21 @@ Aditionally, for the Dask dashboard, Bokeh <3 and >=2.1.1 is required:
 pip install "bokeh>=2.1.1,<3"
 ```
 
+### Setting up the Dask client
+[Nowadays it is recommended](https://docs.dask.org/en/stable/scheduling.html#dask-distributed-local) to use the distributed scheduler in Dask, even for local computations.
+You start it by doing:
+```python
+from dask.distributed import Client
+client = Client(n_workers=4, threads_per_worker=2)
+```
+The exact parameter values for `n_workers` and `threads_per_worker` will depend on your machine (e.g. CPU cores, available memory).
+
+The `client` object can tell you where Dask's dashboard is located:
+
+![Example client](assets/images/dask_client_example.png)
+
+This dashboard can be very insightful for optimization of Dask computations.
+
 ### Loading in the data
 An important step is properly loading in the input data. 
 If Dask is installed, you can use the "parallel" and "chunks" keywords with xarray's `open_mfdataset`:
@@ -38,20 +53,8 @@ Here, setting an appropriate chunk size is important, as it can impact memory us
 Rechunking later can be inefficient, and it is best defined when opening the data.
 For more information, see [xarray's documentation on this topic](https://docs.xarray.dev/en/stable/user-guide/dask.html).
 
-### Setting up the client
-[Nowadays it is recommended](https://docs.dask.org/en/stable/scheduling.html#dask-distributed-local) to use the distributed scheduler in Dask, even for local computations.
-You start it by doing:
-```python
-from dask.distributed import Client
-client = Client(n_workers=4, threads_per_worker=2)
-```
-The exact parameter values for `n_workers` and `threads_per_worker` will depend on your machine (e.g. CPU cores, available memory).
-
-The `client` object can tell you where Dask's dashboard is located:
-
-![Example client](assets/images/dask_client_example.png)
-
-This dashboard can be very insightful for optimization of Dask computations.
+If you set the chunk size too large, this will lead to memory issues. If you set the chunks too small, there will be a lot of overhead from the Dask scheduler. You will also want to have a sufficient number of chunks to keep all workers and threads busy.
+A good guide on choosing chunks sizes is available [on Dask's blog](https://blog.dask.org/2021/11/02/choosing-dask-chunk-sizes).
 
 ### Resampling with Dask
 Now your `Dataset` consists of Dask arrays, and the client has been set up, all that's left is resampling your data as usual:
