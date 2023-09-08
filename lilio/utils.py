@@ -34,7 +34,7 @@ def check_timeseries(
 
 
 def is_dask_array(data: Union[xr.DataArray, xr.Dataset]) -> bool:
-    """Checks if the xarray dataset/array has any dask arrays."""
+    """Check if the xarray dataset/array has any dask arrays."""
     if isinstance(data, xr.DataArray):
         return False if data.chunks is None else True
 

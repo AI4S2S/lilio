@@ -1,7 +1,5 @@
 """Calendar shifter to create staggered calendars."""
 import copy
-from typing import Dict
-from typing import List
 from typing import Union
 import xarray as xr
 from lilio import calendar
@@ -10,8 +8,8 @@ from .resampling import resample
 
 
 def _gap_shift(
-    interval: calendar.Interval, shift: Union[str, Dict[str, int]]
-) -> Dict[str, int]:
+    interval: calendar.Interval, shift: Union[str, dict[str, int]]
+) -> dict[str, int]:
     """Shift a calendar interval's gap property by the given amount.
 
     Args:
@@ -96,7 +94,7 @@ def calendar_shifter(
 
 def staggered_calendar(
     calendar: calendar.Calendar, shift: Union[str, dict], n_shifts: int
-) -> List[calendar.Calendar]:
+) -> list[calendar.Calendar]:
     """Create a staggered calendar list by shifting a calendar by an offset n-times.
 
     Args:

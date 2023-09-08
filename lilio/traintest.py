@@ -2,11 +2,8 @@
 
 Wrapper around sklearn splitters for working with (multiple) xarray dataarrays.
 """
-from typing import Iterable
-from typing import List
+from collections.abc import Iterable
 from typing import Optional
-from typing import Tuple
-from typing import Type
 from typing import Union
 import numpy as np
 import xarray as xr
@@ -15,12 +12,12 @@ from sklearn.model_selection._split import BaseShuffleSplit
 
 
 # Mypy type aliases
-XType = Union[xr.DataArray, List[xr.DataArray]]
+XType = Union[xr.DataArray, list[xr.DataArray]]
 CVtype = Union[BaseCrossValidator, BaseShuffleSplit]
 
 # For output types, variables are split in 2
-XOnly = Tuple[XType, XType]
-XAndY = Tuple[XType, XType, xr.DataArray, xr.DataArray]
+XOnly = tuple[XType, XType]
+XAndY = tuple[XType, XType, xr.DataArray, xr.DataArray]
 XMaybeY = Iterable[Union[XOnly, XAndY]]
 
 
@@ -41,7 +38,7 @@ def _all_equal(arrays):
 class TrainTestSplit:
     """Split (multiple) xr.DataArrays across a given dimension."""
 
-    def __init__(self, splitter: Type[CVtype]) -> None:
+    def __init__(self, splitter: type[CVtype]) -> None:
         """Split (multiple) xr.DataArrays across a given dimension.
 
         Calling `split()` on this object returns an iterator that allows passing in
