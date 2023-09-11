@@ -22,7 +22,7 @@ name = "lilio"
 description = "python package for generating calendars for machine learning timeseries analysis."
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.9, <=3.11"
+requires-python = ">=3.9, <3.12"
 authors = [
   {email = "y.liu@esciencecenter.nl"},
   {name = "Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
