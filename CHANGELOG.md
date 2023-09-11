@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## 0.4.1 (2023-09-11)
+### Added
+- Python 3.11 support ([#60](https://github.com/AI4S2S/lilio/pull/60)).
+
+### Changed
+- Improved dask ingegration guide ([#59](https://github.com/AI4S2S/lilio/pull/59)).
+
+### Removed
+- Python 3.8 support ([#60](https://github.com/AI4S2S/lilio/pull/60)).
+
 ## 0.4.0 (2023-04-21)
 ### Changed
 - Bokeh >= 3.0.0 is now required for interactive plotting, instead of <= 2.4.3.
