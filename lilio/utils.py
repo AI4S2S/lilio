@@ -2,8 +2,6 @@
 import re
 import typing
 import warnings
-from typing import Dict
-from typing import List
 from typing import Union
 import numpy as np
 import pandas as pd
@@ -36,7 +34,7 @@ def check_timeseries(
 
 
 def is_dask_array(data: Union[xr.DataArray, xr.Dataset]) -> bool:
-    """Checks if the xarray dataset/array has any dask arrays."""
+    """Check if the xarray dataset/array has any dask arrays."""
     if isinstance(data, xr.DataArray):
         return False if data.chunks is None else True
 
@@ -62,7 +60,7 @@ def check_time_dim_pandas(data) -> None:
         raise ValueError("The input data does not have a datetime index.")
 
 
-def check_empty_intervals(indices_list: List[np.ndarray]) -> None:
+def check_empty_intervals(indices_list: list[np.ndarray]) -> None:
     """Check for empty intervals in the resampling data.
 
     Args:
@@ -89,9 +87,9 @@ def check_empty_intervals(indices_list: List[np.ndarray]) -> None:
         warnings.warn(  # type: ignore
             message=(
                 "\n  The input data could not fully cover the calendar's intervals."
-                "\n  Intervals without available data will contain NaN values.",
+                "\n  Intervals without available data will contain NaN values."
                 "\n  If possible: make the Calendar's intervals larger, or use data of"
-                "\n  a higher time resolution.",
+                "\n  a higher time resolution."
             ),
             stacklevel=1,
         )
@@ -246,7 +244,7 @@ def assert_bokeh_available():
         ) from e
 
 
-def get_month_names() -> Dict:
+def get_month_names() -> dict:
     """Generate a dictionary with English lowercase month names and abbreviations.
 
     Returns:

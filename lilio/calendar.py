@@ -3,9 +3,7 @@ import copy
 import re
 import warnings
 from os import linesep
-from typing import List
 from typing import Literal
-from typing import Tuple
 from typing import Union
 import pandas as pd
 import xarray as xr
@@ -14,8 +12,8 @@ from lilio import _plot
 from lilio import utils
 
 
-_MappingYears = Tuple[Literal["years"], int, int]
-_MappingData = Tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
+_MappingYears = tuple[Literal["years"], int, int]
+_MappingData = tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
 
 
 class Interval:
@@ -140,7 +138,7 @@ class Calendar:
             _MappingYears,
             _MappingData,
         ] = None,
-        intervals: Union[None, List[Interval]] = None,
+        intervals: Union[None, list[Interval]] = None,
     ):
         """Instantiate a basic container for building calendar using basic blocks.
 
@@ -192,8 +190,8 @@ class Calendar:
         """
         self._anchor, self._anchor_fmt = self._parse_anchor(anchor)
         self._allow_overlap = allow_overlap
-        self.targets: List[Interval] = []
-        self.precursors: List[Interval] = []
+        self.targets: list[Interval] = []
+        self.precursors: list[Interval] = []
 
         self._first_year: Union[None, int] = None
         self._last_year: Union[None, int] = None
@@ -300,7 +298,7 @@ class Calendar:
             f"{year}-" + self._anchor, format="%Y-" + self._anchor_fmt
         )
 
-    def _parse_anchor(self, anchor_str: str) -> Tuple[str, str]:
+    def _parse_anchor(self, anchor_str: str) -> tuple[str, str]:
         """Parse the user-input anchor.
 
         Args:

@@ -1,7 +1,6 @@
 """The implementation of the resampling methods for use with the Calendar."""
 import typing
 from typing import Callable
-from typing import List
 from typing import Literal
 from typing import Union
 from typing import overload
@@ -201,7 +200,7 @@ def _resample_dataset(
     intervals = pd.IntervalIndex(data["interval"].values)
     timesteps = input_data["time"].to_numpy()
 
-    indices_list: List[np.ndarray] = [np.ndarray(0)] * len(intervals)
+    indices_list: list[np.ndarray] = [np.ndarray(0)] * len(intervals)
     for i in range(len(intervals)):
         row = _contains(intervals[[i]], timesteps)[0]
         indices_list[i] = np.argwhere(row).T[0]

@@ -1,6 +1,5 @@
 """Calendar plotting implementations (general and matplotlib)."""
 import typing
-from typing import Dict
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -85,7 +84,7 @@ def generate_plot_data(
     relative_dates: bool,
     year: int,
     year_intervals: pd.Series,
-) -> Dict:
+) -> dict:
     """Util to generate the plotting data, containing all variables to plot.
 
     Args:
@@ -126,7 +125,7 @@ def generate_plot_data(
     }
 
 
-def plot_rectangles(ax: plt.Axes, data: Dict, show_length: bool):
+def plot_rectangles(ax: plt.Axes, data: dict, show_length: bool):
     """Generate rectangles from the input data.
 
     Args:
