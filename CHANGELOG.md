@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Python 3.11 support ([#60](https://github.com/AI4S2S/lilio/pull/60)).
 
 ### Changed
-- Improved dask ingegration guide ([#59](https://github.com/AI4S2S/lilio/pull/59)).
+- Improved dask integration guide ([#59](https://github.com/AI4S2S/lilio/pull/59)).
 
 ### Removed
 - Python 3.8 support ([#60](https://github.com/AI4S2S/lilio/pull/60)).
