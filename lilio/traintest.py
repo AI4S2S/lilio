@@ -114,7 +114,7 @@ class TrainTestSplit:
                 if isinstance(x_args, xr.DataArray):
                     yield x_train.pop(), x_test.pop()
                 else:
-                    x_train, x_test
+                    yield x_train, x_test
             else:
                 y_train = y.isel({dim: train_indices})
                 y_test = y.isel({dim: test_indices})

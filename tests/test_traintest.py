@@ -39,6 +39,18 @@ def test_kfold_x(dummy_data):
     xr.testing.assert_equal(x_test, x1.sel(anchor_year=expected_test))
 
 
+def test_kfold_x_list(dummy_data):
+    """Correctly split x."""
+    x1, _, _ = dummy_data
+    cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
+    x_train, x_test = next(cv.split([x1]))
+    expected_train = [2019, 2020, 2021, 2022]
+    expected_test = [2016, 2017, 2018]
+    assert isinstance(x_train, list)
+    assert np.array_equal(x_train[0].anchor_year, expected_train)
+    xr.testing.assert_equal(x_test[0], x1.sel(anchor_year=expected_test))
+
+
 def test_kfold_xy(dummy_data):
     """Correctly split x and y."""
     x1, _, y = dummy_data
@@ -61,6 +73,21 @@ def test_kfold_xxy(dummy_data):
     expected_train = [2019, 2020, 2021, 2022]
     expected_test = [2016, 2017, 2018]
 
+    assert np.array_equal(x_train[0].anchor_year, expected_train)
+    xr.testing.assert_equal(x_test[1], x2.sel(anchor_year=expected_test))
+    assert np.array_equal(y_train.anchor_year, expected_train)
+    xr.testing.assert_equal(y_test, y.sel(anchor_year=expected_test))
+
+
+def test_kfold_xxy_tuple(dummy_data):
+    """Correctly split x1, x2, and y."""
+    x1, x2, y = dummy_data
+    cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
+    x_train, x_test, y_train, y_test = next(cv.split((x1, x2), y=y))
+    expected_train = [2019, 2020, 2021, 2022]
+    expected_test = [2016, 2017, 2018]
+
+    assert isinstance(x_train, list) # all iterable will be turned into list
     assert np.array_equal(x_train[0].anchor_year, expected_train)
     xr.testing.assert_equal(x_test[1], x2.sel(anchor_year=expected_test))
     assert np.array_equal(y_train.anchor_year, expected_train)
