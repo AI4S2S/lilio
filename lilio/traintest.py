@@ -73,6 +73,44 @@ class TrainTestSplit:
         Returns:
             Iterator over the splits
         """
+        x_args_list, x = self._check_dimension_and_type(x_args, y, dim)
+
+        # Now we know that all inputs are equal.
+        for train_indices, test_indices in self.splitter.split(x[dim]):
+            x_train = [da.isel({dim: train_indices}) for da in x_args_list]
+            x_test = [da.isel({dim: test_indices}) for da in x_args_list]
+
+            if y is None:
+                if isinstance(x_args, xr.DataArray):
+                    yield x_train.pop(), x_test.pop()
+                else:
+                    yield x_train, x_test
+            else:
+                y_train = y.isel({dim: train_indices})
+                y_test = y.isel({dim: test_indices})
+                if isinstance(x_args, xr.DataArray):
+                    yield x_train.pop(), x_test.pop(), y_train, y_test
+                else:
+                    yield x_train, x_test, y_train, y_test
+
+    def _check_dimension_and_type(
+        self,
+        x_args: Union[xr.DataArray, Iterable[xr.DataArray]],
+        y: Optional[xr.DataArray] = None,
+        dim: str = "anchor_year",
+    ):
+        """Check input dimensions and type.
+
+        Args:
+            x_args: one or multiple xr.DataArray's that share the same
+                coordinate along the given dimension.
+            y: (optional) xr.DataArray that shares the same coordinate along the
+                given dimension.
+            dim: name of the dimension along which to split the data.
+
+        Returns:
+            List of input x and dataarray containing coordinate info
+        """
         # Check that all inputs share the same dim coordinate
         coords = []
         x: xr.DataArray  # Initialize x to set scope outside loop
@@ -81,7 +119,7 @@ class TrainTestSplit:
             x_args_list = [x_args]
         else:
             x_args_list = list(x_args)
-        
+
         for x in x_args_list:
             try:
                 coords.append(x[dim])
@@ -105,20 +143,4 @@ class TrainTestSplit:
                 f"Invalid input: need at least 2 values along dimension {dim}."
             )
 
-        # Now we know that all inputs are equal.
-        for train_indices, test_indices in self.splitter.split(x[dim]):
-            x_train = [da.isel({dim: train_indices}) for da in x_args_list]
-            x_test = [da.isel({dim: test_indices}) for da in x_args_list]
-
-            if y is None:
-                if isinstance(x_args, xr.DataArray):
-                    yield x_train.pop(), x_test.pop()
-                else:
-                    yield x_train, x_test
-            else:
-                y_train = y.isel({dim: train_indices})
-                y_test = y.isel({dim: test_indices})
-                if isinstance(x_args, xr.DataArray):
-                    yield x_train.pop(), x_test.pop(), y_train, y_test
-                else:
-                    yield x_train, x_test, y_train, y_test
+        return x_args_list, x

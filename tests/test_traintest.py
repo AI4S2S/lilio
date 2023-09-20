@@ -87,7 +87,7 @@ def test_kfold_xxy_tuple(dummy_data):
     expected_train = [2019, 2020, 2021, 2022]
     expected_test = [2016, 2017, 2018]
 
-    assert isinstance(x_train, list) # all iterable will be turned into list
+    assert isinstance(x_train, list)  # all iterable will be turned into list
     assert np.array_equal(x_train[0].anchor_year, expected_train)
     xr.testing.assert_equal(x_test[1], x2.sel(anchor_year=expected_test))
     assert np.array_equal(y_train.anchor_year, expected_train)
