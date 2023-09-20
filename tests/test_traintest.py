@@ -57,7 +57,7 @@ def test_kfold_xxy(dummy_data):
     """Correctly split x1, x2, and y."""
     x1, x2, y = dummy_data
     cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
-    x_train, x_test, y_train, y_test = next(cv.split(x1, x2, y=y))
+    x_train, x_test, y_train, y_test = next(cv.split([x1, x2], y=y))
     expected_train = [2019, 2020, 2021, 2022]
     expected_test = [2016, 2017, 2018]
 

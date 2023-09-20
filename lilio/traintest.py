@@ -57,7 +57,7 @@ class TrainTestSplit:
 
     def split(
         self,
-        *x_args: xr.DataArray,
+        x_args: Union[xr.DataArray, Iterable[xr.DataArray]],
         y: Optional[xr.DataArray] = None,
         dim: str = "anchor_year",
     ) -> XMaybeY:
@@ -65,9 +65,9 @@ class TrainTestSplit:
 
         Args:
             x_args: one or multiple xr.DataArray's that share the same
-                coordinate along the given dimension
+                coordinate along the given dimension.
             y: (optional) xr.DataArray that shares the same coordinate along the
-                given dimension
+                given dimension.
             dim: name of the dimension along which to split the data.
 
         Returns:
@@ -76,7 +76,13 @@ class TrainTestSplit:
         # Check that all inputs share the same dim coordinate
         coords = []
         x: xr.DataArray  # Initialize x to set scope outside loop
-        for x in x_args:
+
+        if isinstance(x_args, xr.DataArray):
+            x_args_list = [x_args]
+        else:
+            x_args_list = list(x_args)
+        
+        for x in x_args_list:
             try:
                 coords.append(x[dim])
             except KeyError as err:
@@ -96,21 +102,23 @@ class TrainTestSplit:
 
         if x[dim].size <= 1:
             raise ValueError(
-                f"Invalid input: need at least 2 values along dimension {dim}"
+                f"Invalid input: need at least 2 values along dimension {dim}."
             )
 
         # Now we know that all inputs are equal.
         for train_indices, test_indices in self.splitter.split(x[dim]):
-            if len(x_args) == 1:
-                x_train: XType = x.isel({dim: train_indices})
-                x_test: XType = x.isel({dim: test_indices})
-            else:
-                x_train = [da.isel({dim: train_indices}) for da in x_args]
-                x_test = [da.isel({dim: test_indices}) for da in x_args]
+            x_train = [da.isel({dim: train_indices}) for da in x_args_list]
+            x_test = [da.isel({dim: test_indices}) for da in x_args_list]
 
             if y is None:
-                yield x_train, x_test
+                if isinstance(x_args, xr.DataArray):
+                    yield x_train.pop(), x_test.pop()
+                else:
+                    x_train, x_test
             else:
                 y_train = y.isel({dim: train_indices})
                 y_test = y.isel({dim: test_indices})
-                yield x_train, x_test, y_train, y_test
+                if isinstance(x_args, xr.DataArray):
+                    yield x_train.pop(), x_test.pop(), y_train, y_test
+                else:
+                    yield x_train, x_test, y_train, y_test
