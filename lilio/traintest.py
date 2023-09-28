@@ -5,6 +5,7 @@ Wrapper around sklearn splitters for working with (multiple) xarray dataarrays.
 from collections.abc import Iterable
 from typing import Optional
 from typing import Union
+from typing import overload
 import numpy as np
 import xarray as xr
 from sklearn.model_selection._split import BaseCrossValidator
@@ -55,12 +56,46 @@ class TrainTestSplit:
         """
         self.splitter = splitter
 
+    @overload
+    def split(
+        self,
+        x_args: xr.DataArray,
+        y: Optional[xr.DataArray] = None,
+        dim: str = "anchor_year",
+    ) -> Iterable[tuple[xr.DataArray, xr.DataArray, xr.DataArray, xr.DataArray]]:
+        ...
+
+    @overload
+    def split(
+        self,
+        x_args: Iterable[xr.DataArray],
+        y: Optional[xr.DataArray] = None,
+        dim: str = "anchor_year",
+    ) -> Iterable[
+        tuple[
+            Iterable[xr.DataArray], Iterable[xr.DataArray], xr.DataArray, xr.DataArray
+        ]
+    ]:
+        ...
+
     def split(
         self,
         x_args: Union[xr.DataArray, Iterable[xr.DataArray]],
         y: Optional[xr.DataArray] = None,
         dim: str = "anchor_year",
-    ) -> XMaybeY:
+    ) -> Iterable[
+        Union[
+            tuple[xr.DataArray, xr.DataArray],
+            tuple[xr.DataArray, xr.DataArray, xr.DataArray, xr.DataArray],
+            tuple[Iterable[xr.DataArray], Iterable[xr.DataArray]],
+            tuple[
+                Iterable[xr.DataArray],
+                Iterable[xr.DataArray],
+                xr.DataArray,
+                xr.DataArray,
+            ],
+        ]
+    ]:
         """Iterate over splits.
 
         Args:
@@ -98,8 +133,8 @@ class TrainTestSplit:
         x_args: Union[xr.DataArray, Iterable[xr.DataArray]],
         y: Optional[xr.DataArray] = None,
         dim: str = "anchor_year",
-    ):
-        """Check input dimensions and type.
+    ) -> tuple[list[xr.DataArray], xr.DataArray]:
+        """Check input dimensions and type and return input as list.
 
         Args:
             x_args: one or multiple xr.DataArray's that share the same
