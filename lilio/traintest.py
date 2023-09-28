@@ -13,13 +13,7 @@ from sklearn.model_selection._split import BaseShuffleSplit
 
 
 # Mypy type aliases
-XType = Union[xr.DataArray, list[xr.DataArray]]
 CVtype = Union[BaseCrossValidator, BaseShuffleSplit]
-
-# For output types, variables are split in 2
-XOnly = tuple[XType, XType]
-XAndY = tuple[XType, XType, xr.DataArray, xr.DataArray]
-XMaybeY = Iterable[Union[XOnly, XAndY]]
 
 
 class CoordinateMismatchError(Exception):
