@@ -13,6 +13,7 @@ if typing.TYPE_CHECKING:
 
 
 MONTH_LENGTH = 30  # Month length for Timedelta checks.
+YEAR_LENGTH = 365.25  # Year length for Timedelta checks.
 
 
 def check_timeseries(
@@ -124,12 +125,23 @@ def infer_input_data_freq(
         data_freq = (  # Deal with monthly timedelta case
             replace_month_length(data_freq) if data_freq[-1] == "M" else data_freq
         )
+
+        data_freq = (  # Deal with yearly timedelta case
+            replace_year_length(data_freq) if "AS" in data_freq else data_freq
+        )
+
     return pd.Timedelta(data_freq)
 
 
 def replace_month_length(length: str) -> str:
     """Replace month lengths with an equivalent length in days."""
     ndays = int(length[:-1]) * MONTH_LENGTH
+    return f"{ndays}d"
+
+
+def replace_year_length(length: str) -> str:
+    """Replace year lengths with an equivalent length in days."""
+    ndays = YEAR_LENGTH
     return f"{ndays}d"
 
 
@@ -154,6 +166,9 @@ def check_input_frequency(
     """
     data_freq = infer_input_data_freq(data)
     calendar_freq = get_smallest_calendar_freq(calendar)
+
+    if "label" in data.coords:
+        return
 
     if calendar_freq < data_freq:
         raise ValueError(
