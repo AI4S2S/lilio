@@ -72,6 +72,12 @@ class TestResample:
             },
         )
 
+    @pytest.fixture
+    def dummy_calendar_with_year_freq(self):
+        cal = Calendar(anchor="Jan")
+        cal.add_intervals("target", length="1Y")
+        return cal
+
     # Tests start here:
     def test_non_mapped_calendar(self, dummy_calendar):
         with pytest.raises(ValueError):
@@ -252,6 +258,27 @@ class TestResample:
         assert "other_attrs" in resampled.attrs.keys()
         for att in expected_attrs:
             assert att in resampled.attrs.keys()
+
+    def test_resample_with_year_freq(
+        self,
+        dummy_calendar_with_year_freq,
+    ):
+        """Testing resampling when you have only 1 datapoint per year."""
+        years = list(range(2019, 2022))
+        time_index = pd.to_datetime([f"{year}-02-01" for year in years])
+        test_data = np.random.random(len(time_index))
+        initseries = pd.Series(test_data, index=time_index, name="data1")
+        # The calendar will skip the last timestep because of how pd.intervals are
+        # defined (with left and right bounds). This is not a problem for resampling,
+        # but it is a problem for the user to be aware of.
+        series = initseries._append(
+            pd.Series([np.nan], index=[pd.to_datetime("2022-02-01")])
+        )
+        cal = dummy_calendar_with_year_freq
+        cal.map_to_data(series)
+        cal.get_intervals()
+        resampled = resample(cal, series)
+        assert all(np.equal(test_data, resampled.data.values)), "Data not equal."
 
 
 TOO_LOW_FREQ_ERR = r".*lower time resolution than the calendar.*"

@@ -43,6 +43,11 @@ class TestInterval:
         assert target.length_dateoffset == DateOffset(weeks=3)
         assert target.gap_dateoffset == DateOffset(weeks=2)
 
+    def test_interval_years(self):
+        target = Interval("target", "1Y", "1Y")
+        assert target.length_dateoffset == DateOffset(years=1)
+        assert target.gap_dateoffset == DateOffset(years=1)
+
     def test_target_interval_dict(self):
         a = {"months": 1, "weeks": 2, "days": 1}
         b = {"months": 2, "weeks": 1, "days": 5}

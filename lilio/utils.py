@@ -127,7 +127,7 @@ def infer_input_data_freq(
         )
 
         data_freq = (  # Deal with yearly timedelta case
-            replace_year_length(data_freq) if "AS" in data_freq else data_freq
+            replace_year_length(data_freq) if "A" in data_freq else data_freq
         )
 
     return pd.Timedelta(data_freq)
@@ -151,6 +151,7 @@ def get_smallest_calendar_freq(calendar: "Calendar") -> pd.Timedelta:
     lengthstr = [iv.length for iv in intervals]
     lengthstr = [ln.replace("-", "") for ln in lengthstr]  # Account for neg. lengths
     lengthstr = [replace_month_length(ln) if ln[-1] == "M" else ln for ln in lengthstr]
+    lengthstr = [replace_year_length(ln) if "Y" in ln else ln for ln in lengthstr]
     lengths = [pd.Timedelta(ln) for ln in lengthstr]
     return min(lengths)
 
@@ -167,8 +168,8 @@ def check_input_frequency(
     data_freq = infer_input_data_freq(data)
     calendar_freq = get_smallest_calendar_freq(calendar)
 
-    if "label" in data.coords:
-        return
+    # if "label" in data.coords:
+    #     return
 
     if calendar_freq < data_freq:
         raise ValueError(
@@ -360,6 +361,8 @@ def parse_freqstr_to_dateoffset(time_str):
         time_dict = {"months": int(time_str[:-1])}
     elif re.fullmatch(r"[+-]?\d*W", time_str):
         time_dict = {"weeks": int(time_str[:-1])}
+    elif re.fullmatch(r"[+-]?\d*Y", time_str):
+        time_dict = {"years": int(time_str[:-1])}
     else:
         raise ValueError("Please input a time string in the correct format.")
 
