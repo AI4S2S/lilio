@@ -1,4 +1,5 @@
 """Tests for Lilio's traintest module."""
+import re
 import numpy as np
 import pandas as pd
 import pytest
@@ -77,6 +78,17 @@ def test_kfold_xxy(dummy_data):
     xr.testing.assert_equal(x_test[1], x2.sel(anchor_year=expected_test))
     assert np.array_equal(y_train.anchor_year, expected_train)
     xr.testing.assert_equal(y_test, y.sel(anchor_year=expected_test))
+
+
+def test_kfold_xxy_args(dummy_data):
+    """Correctly split x1, x2, and y."""
+    x1, x2, y = dummy_data
+    cv = lilio.traintest.TrainTestSplit(KFold(n_splits=3))
+    with pytest.raises(
+        TypeError,
+        match=re.escape("TrainTestSplit.split() got multiple values for argument 'y'"),
+    ):
+        next(cv.split(*[x1, x2], y=y))
 
 
 def test_kfold_xxy_tuple(dummy_data):
