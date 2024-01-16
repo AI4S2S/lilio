@@ -22,7 +22,7 @@ name = "lilio"
 description = "python package for generating calendars for machine learning timeseries analysis."
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.9, <3.12"
+requires-python = ">=3.10, <3.12"
 authors = [
   {email = "y.liu@esciencecenter.nl"},
   {name = "Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
@@ -49,7 +49,6 @@ classifiers = [
   "Operating System :: OS Independent",
   "Programming Language :: Python",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
 ]
