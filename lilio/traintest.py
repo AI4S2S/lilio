@@ -1,4 +1,4 @@
-"""s2spy train/test splitting methods.
+"""lilio train/test splitting methods.
 
 Wrapper around sklearn splitters for working with (multiple) xarray dataarrays.
 """
