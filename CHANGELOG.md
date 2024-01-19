@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Consistent output type of train-test split as input ([#62](https://github.com/AI4S2S/lilio/pull/62)).
+- Corrected s2spy.time to lilio ([#65](https://github.com/AI4S2S/lilio/pull/64))
 
 ## 0.4.1 (2023-09-11)
 ### Added
