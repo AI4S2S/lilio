@@ -44,7 +44,7 @@ authors:
     orcid: "https://orcid.org/0000-0002-2546-4528"
     affiliation: "Netherlands eScience Center"
 
-version: "0.4.1"
+version: "0.4.2"
 repository-code: "https://github.com/AI4S2S/lilio"
 keywords:
   - calendar
