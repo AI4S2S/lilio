@@ -24,13 +24,14 @@ readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.9, <3.12"
 authors = [
-  {email = "y.liu@esciencecenter.nl"},
-  {name = "Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
+  {email = "c.donnelly@esciencecenter.nl"},
+  {name = "Claire Donnelly, Yang Liu, Bart Schilperoort, Peter Kalverla, Jannes van Ingen, Sem Vijverberg"}
 ]
 maintainers = [
+  {name = "Claire Donnelly", email = "c.donnelly@esciencecenter.nl"},
   {name = "Yang Liu", email = "y.liu@esciencecenter.nl"},
   {name = "Bart Schilperoort", email = "b.schilperoort@esciencecenter.nl"},
-  {name = "Peter Kalverla", email = "b.schilperoort@esciencecenter.nl"},
+  {name = "Peter Kalverla", email = "p.kalvera@esciencecenter.nl"},
   {name = "Jannes van Ingen", email = "jannes.van.ingen@s2s-ai.com"},
   {name = "Sem Vijverberg", email = "sem.vijverberg@vu.nl"},
 ]
@@ -65,7 +66,7 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
-  "bump2version",
+  "bump-my-version",
   "hatch",
   "ruff",
   "isort",

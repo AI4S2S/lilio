@@ -74,8 +74,8 @@ from .resampling import resample
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
-__author__ = "Yang Liu"
-__email__ = "y.liu@esciencecenter.nl"
+__author__ = "Claire Donnelly"
+__email__ = "c.donnelly@esciencecenter.nl"
 __version__ = "0.4.1"
 
 __all__ = [
