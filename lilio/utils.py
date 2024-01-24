@@ -127,7 +127,9 @@ def infer_input_data_freq(
         )
 
         data_freq = (  # Deal with yearly timedelta case
-            replace_year_length(data_freq) if "A" in data_freq else data_freq
+            replace_year_length(data_freq)
+            if "A" in data_freq or "Y" in data_freq
+            else data_freq
         )
 
     return pd.Timedelta(data_freq)
