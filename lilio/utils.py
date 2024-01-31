@@ -13,6 +13,7 @@ if typing.TYPE_CHECKING:
 
 
 MONTH_LENGTH = 30  # Month length for Timedelta checks.
+YEAR_LENGTH = 365.25  # Year length for Timedelta checks.
 
 
 def check_timeseries(
@@ -116,14 +117,24 @@ def infer_input_data_freq(
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
     if isinstance(data_freq, str):
-        data_freq.replace("-", "")  # Get the absolute frequency
-
         if not re.match(r"\d+\D", data_freq):  # infer_freq can return "d" for "1d".
             data_freq = "1" + data_freq
+
+        # anoying switch from "2M" to "2ME" format in pandas > 2.2.
+        # We will need to adapt to this in the future.
+        if len(data_freq) in [3, 4] and data_freq[1:] in ["ME", "MS"]:
+            data_freq = data_freq.replace(data_freq[1:], "M")
 
         data_freq = (  # Deal with monthly timedelta case
             replace_month_length(data_freq) if data_freq[-1] == "M" else data_freq
         )
+
+        data_freq = (  # Deal with yearly timedelta case
+            replace_year_length(data_freq)
+            if "A" in data_freq or "Y" in data_freq
+            else data_freq
+        )
+
     return pd.Timedelta(data_freq)
 
 
@@ -133,12 +144,19 @@ def replace_month_length(length: str) -> str:
     return f"{ndays}d"
 
 
+def replace_year_length(length: str) -> str:
+    """Replace year lengths with an equivalent length in days."""
+    ndays = YEAR_LENGTH
+    return f"{ndays}d"
+
+
 def get_smallest_calendar_freq(calendar: "Calendar") -> pd.Timedelta:
     """Return the smallest length of the calendar's intervals as a Timedelta."""
     intervals = calendar.targets + calendar.precursors
     lengthstr = [iv.length for iv in intervals]
     lengthstr = [ln.replace("-", "") for ln in lengthstr]  # Account for neg. lengths
     lengthstr = [replace_month_length(ln) if ln[-1] == "M" else ln for ln in lengthstr]
+    lengthstr = [replace_year_length(ln) if "Y" in ln else ln for ln in lengthstr]
     lengths = [pd.Timedelta(ln) for ln in lengthstr]
     return min(lengths)
 
@@ -154,6 +172,10 @@ def check_input_frequency(
     """
     data_freq = infer_input_data_freq(data)
     calendar_freq = get_smallest_calendar_freq(calendar)
+
+    if data_freq == pd.Timedelta("365.25d") and calendar_freq == pd.Timedelta("1d"):
+        # Allow yearly (one-datapoint-per-year) data to be resampled to daily data.
+        return None
 
     if calendar_freq < data_freq:
         raise ValueError(
@@ -345,6 +367,8 @@ def parse_freqstr_to_dateoffset(time_str):
         time_dict = {"months": int(time_str[:-1])}
     elif re.fullmatch(r"[+-]?\d*W", time_str):
         time_dict = {"weeks": int(time_str[:-1])}
+    elif re.fullmatch(r"[+-]?\d*Y", time_str):
+        time_dict = {"years": int(time_str[:-1])}
     else:
         raise ValueError("Please input a time string in the correct format.")
 
