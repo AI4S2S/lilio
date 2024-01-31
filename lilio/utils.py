@@ -116,6 +116,11 @@ def infer_input_data_freq(
         if data_freq is None:  # Manually infer the frequency
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
+    # anoying switch from "2M" to "2ME" format in pandas > 2.2.
+    # We will need to adapt to this in the future.
+    if len(data_freq) in [3, 4] and data_freq[1:] in ["ME", "MS"]:
+        data_freq = data_freq.replace(data_freq[1:], "M")
+
     if isinstance(data_freq, str):
         data_freq.replace("-", "")  # Get the absolute frequency
 
@@ -170,8 +175,9 @@ def check_input_frequency(
     data_freq = infer_input_data_freq(data)
     calendar_freq = get_smallest_calendar_freq(calendar)
 
-    # if "label" in data.coords:
-    #     return
+    if data_freq == pd.Timedelta("365.25d") and calendar_freq == pd.Timedelta("1d"):
+        # Allow yearly (one-datapoint-per-year) data to be resampled to daily data.
+        return None
 
     if calendar_freq < data_freq:
         raise ValueError(

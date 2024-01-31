@@ -280,6 +280,27 @@ class TestResample:
         resampled = resample(cal, series)
         assert all(np.equal(test_data, resampled.data.values)), "Data not equal."
 
+    def test_resample_with_one_datapoint_per_year(
+        self,
+    ):
+        """Testing resampling when you have only 1 datapoint per year."""
+        years = list(range(2019, 2022))
+        time_index = pd.to_datetime([f"{year}-02-01" for year in years])
+        test_data = np.random.random(len(time_index))
+        initseries = pd.Series(test_data, index=time_index, name="data1")
+        # The calendar will skip the last timestep because of how pd.intervals are
+        # defined (with left and right bounds). This is not a problem for resampling,
+        # but it is a problem for the user to be aware of.
+        series = initseries._append(
+            pd.Series([np.nan], index=[pd.to_datetime("2022-02-01")])
+        )
+        cal = Calendar(anchor="02-01")
+        cal.add_intervals("target", length="1d")
+        cal.map_to_data(series)
+        cal.get_intervals()
+        resampled = resample(cal, series)
+        assert all(np.equal(test_data, resampled.data.values)), "Data not equal."
+
 
 TOO_LOW_FREQ_ERR = r".*lower time resolution than the calendar.*"
 TOO_LOW_FREQ_WARN = r".*input data frequency is very close to the Calendar's freq.*"
