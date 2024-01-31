@@ -116,16 +116,14 @@ def infer_input_data_freq(
         if data_freq is None:  # Manually infer the frequency
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
-    # anoying switch from "2M" to "2ME" format in pandas > 2.2.
-    # We will need to adapt to this in the future.
-    if len(data_freq) in [3, 4] and data_freq[1:] in ["ME", "MS"]:
-        data_freq = data_freq.replace(data_freq[1:], "M")
-
     if isinstance(data_freq, str):
-        data_freq.replace("-", "")  # Get the absolute frequency
-
         if not re.match(r"\d+\D", data_freq):  # infer_freq can return "d" for "1d".
             data_freq = "1" + data_freq
+
+        # anoying switch from "2M" to "2ME" format in pandas > 2.2.
+        # We will need to adapt to this in the future.
+        if len(data_freq) in [3, 4] and data_freq[1:] in ["ME", "MS"]:
+            data_freq = data_freq.replace(data_freq[1:], "M")
 
         data_freq = (  # Deal with monthly timedelta case
             replace_month_length(data_freq) if data_freq[-1] == "M" else data_freq
