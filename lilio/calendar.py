@@ -488,7 +488,7 @@ class Calendar:
 
         # ensure that the input data could always cover the advent calendar
         # last date check
-        if self._map_year(max_year).iloc[0].right > self._last_timestamp:
+        while self._map_year(max_year).iloc[0].right > self._last_timestamp:
             max_year -= 1
         # first date check
         while self._map_year(min_year).iloc[-1].right <= self._first_timestamp:

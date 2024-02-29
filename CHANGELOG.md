@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+ - Moved to ruff formatter instead of black ([#70](https://github.com/AI4S2S/lilio/pull/70))
+ - Do import sorting with ruff instead of isort ([#70](https://github.com/AI4S2S/lilio/pull/70))
+
+### Fixed
+ - Fixed issue with calendar generation when the (rightmost) target period crossed into the new year ([#70](https://github.com/AI4S2S/lilio/pull/70)).
+
 ## 0.4.2 (2024-01-19)
 ### Changed
 - Consistent output type of train-test split as input ([#62](https://github.com/AI4S2S/lilio/pull/62)).

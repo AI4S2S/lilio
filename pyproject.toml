@@ -57,7 +57,7 @@ classifiers = [
 dependencies = [
   "netcdf4",
   "numpy",
-  "pandas",
+  "pandas<2.2",
   "matplotlib",
   "xarray",
   "scikit-learn",
@@ -69,8 +69,6 @@ dev = [
   "bump-my-version",
   "hatch",
   "ruff",
-  "isort",
-  "black",
   "mypy",
   "pytest",
   "pytest-cov",
@@ -96,10 +94,9 @@ features = ["dev", "bokeh"]
 lint = [
   "ruff check .",
   "mypy .",
-  "isort --check-only --diff .",
-  "black --check --diff .",
+  "ruff format . --check",
 ]
-format = ["isort .", "black .", "lint",]
+format = ["ruff format .", "ruff check . --fix", "lint",]
 test = ["pytest ./lilio/ ./tests/ --doctest-modules",]
 coverage = [
   "pytest --cov --cov-report term --cov-report xml --junitxml=xunit-result.xml tests/",
@@ -120,19 +117,19 @@ testpaths = ["tests"]
 ignore_missing_imports = true
 python_version = "3.10"
 
-[tool.black]
-line-length = 88
-target-version = ['py39', 'py310', 'py311']
-include = '\.pyi?$'
-
 [tool.ruff]
+target-version = "py39"
+line-length = 88
+exclude = ["docs", "build"]
+
+[tool.ruff.lint]
 select = [
   "E",  # pycodestyle
   "F",  # pyflakes
   "B",  # flake8-bugbear
   "D",  # pydocstyle
   "C90",  # mccabe complexity
-#  "I",  # isort (autosort not working correctly, disabled for now).
+  "I",  # isort (autosort not working correctly, disabled for now).
   "N",  # PEP8-naming
   "UP",  # pyupgrade (upgrade syntax to current syntax)
   "PLE",  # Pylint error https://github.com/charliermarsh/ruff#error-ple
@@ -148,41 +145,20 @@ extend-select = [
 ignore = [
   "PLR2004",  # magic value used in comparsion (i.e. `if ndays == 28: month_is_feb`).
 ]
-# Allow autofix for all enabled rules (when `--fix`) is provided.
-fixable = ["A", "B", "C90", "D", "E", "F", "TID252", "UP"]
 unfixable = []
-line-length = 88
-exclude = ["docs", "build"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-target-version = "py39"
+pydocstyle.convention = "google"
+mccabe.max-complexity = 10
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**" = ["D"]
 
-[tool.ruff.pydocstyle]
-convention = "google"
-
-[tool.ruff.mccabe]
-max-complexity = 10
-
-# Configuration for when ruff's import sorting is fixed.
-# [tool.ruff.isort]
-# known-first-party = ["lilio"]
-# force-single-line = true
-# lines-after-imports = 2
-# no-lines-before = ["future","standard-library","third-party","first-party","local-folder"]
-
-[tool.isort]
-py_version=39
-skip = [".gitignore", ".dockerignore"]
-skip_glob = ["docs/*"]
-force_single_line = true
-lines_after_imports = 2
-no_lines_before = ["FUTURE","STDLIB","THIRDPARTY","FIRSTPARTY","LOCALFOLDER"]
-known_first_party = ["lilio"]
-src_paths = ["lilio", "tests"]
-line_length = 120
+[tool.ruff.lint.isort]
+known-first-party = ["lilio"]
+force-single-line = true
+lines-after-imports = 2
+no-lines-before = ["future","standard-library","third-party","first-party","local-folder"]
 
 [tool.coverage.run]
 branch = true

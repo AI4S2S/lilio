@@ -223,6 +223,30 @@ class TestCalendar:
         cal.map_years(2020, 2022)
         assert np.array_equal(expected_anchors, cal.get_intervals().index.values)
 
+    def test_extra_year_edgecase(self):
+        """Weird things can happen when a calendar interval crosses over the new year.
+
+        2 years have to be subtracted from the last datapoint's year.
+        """
+        cal = Calendar("12-25")
+        cal.add_intervals("target", length="1M")
+        dates_inclusive = pd.date_range(start="2007-01-01", end="2010-01-01", freq="1d")
+        dates_exclusive = pd.date_range(start="2007-01-01", end="2009-12-31", freq="1d")
+        test_data_incl = pd.Series(
+            data=np.zeros(len(dates_inclusive)), index=dates_inclusive
+        )
+        test_data_excl = pd.Series(
+            data=np.zeros(len(dates_exclusive)), index=dates_exclusive
+        )
+
+        cal.map_to_data(test_data_incl)
+        n_years_inclusive = len(cal.get_intervals())
+        cal.map_to_data(test_data_excl)
+        n_years_exclusive = len(cal.get_intervals())
+
+        assert n_years_exclusive == 2
+        assert n_years_inclusive == 2
+
 
 class TestAnchorKwarg:
     correct_inputs = [  # format: (anchor, anchor_fmt, anchor_str)
