@@ -16,7 +16,7 @@ MONTH_LENGTH = 30  # Month length for Timedelta checks.
 
 
 def check_timeseries(
-    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> None:
     """Check if input data contains valid time data.
 
@@ -96,7 +96,7 @@ def check_empty_intervals(indices_list: list[np.ndarray]) -> None:
 
 
 def infer_input_data_freq(
-    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+    data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> pd.Timedelta:
     """Infer the frequency of the input data, for comparison with the calendar freq.
 
@@ -207,7 +207,7 @@ def convert_interval_to_bounds(data: xr.Dataset) -> xr.Dataset:
 
 
 def check_reserved_names(
-    input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset]
+    input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
 ) -> None:
     """Check if reserved names are already in the input data. E.g. "anchor_year"."""
     reserved_names_pd = ["anchor_year", "i_interval", "is_target"]

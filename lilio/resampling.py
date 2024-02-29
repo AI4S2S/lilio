@@ -42,7 +42,7 @@ def _check_valid_resampling_methods(method: ResamplingMethod):
 
 
 def _mark_target_period(
-    input_data: Union[pd.DataFrame, xr.Dataset]
+    input_data: Union[pd.DataFrame, xr.Dataset],
 ) -> Union[pd.DataFrame, xr.Dataset]:
     """Mark interval periods that fall within the given number of target periods.
 
@@ -77,7 +77,7 @@ def _mark_target_period(
 
 
 def _resample_bins_constructor(
-    intervals: Union[pd.Series, pd.DataFrame]
+    intervals: Union[pd.Series, pd.DataFrame],
 ) -> pd.DataFrame:
     """Restructures the interval object into a tidy DataFrame.
 
