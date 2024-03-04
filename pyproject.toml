@@ -57,7 +57,7 @@ classifiers = [
 dependencies = [
   "netcdf4",
   "numpy",
-  "pandas<2.2",
+  "pandas",
   "matplotlib",
   "xarray",
   "scikit-learn",

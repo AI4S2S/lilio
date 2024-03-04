@@ -308,7 +308,7 @@ class TestResampleChecks:
             resample(cal, df)
 
     def test_month_freq_data(self):
-        time_index = pd.date_range("20181001", "20211001", freq="2M")
+        time_index = pd.date_range("20181001", "20211001", freq="2ME")
         test_data = pd.DataFrame(
             data={
                 "data1": np.random.random(len(time_index)),
