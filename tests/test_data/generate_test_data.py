@@ -11,7 +11,7 @@ def generate_era5_file(
     resolution = 0.25
 
     time_coords = pd.date_range(
-        start=start_time, end=end_time, freq="6H", inclusive="left"
+        start=start_time, end=end_time, freq="6h", inclusive="left"
     )
     lat_coords = np.arange(
         start=0,
