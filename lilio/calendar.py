@@ -574,7 +574,13 @@ class Calendar:
         Returns:
             pd.Dataframe: Dataframe containing the calendar intervals.
         """
-        return self.get_intervals()
+        df = self.get_intervals()
+        df = df.astype("str")
+ 
+        for i in range(df.shape[0]):
+            df.iloc[i] = [el.replace(" 00:00:00", "") for el in df.iloc[i].values]
+
+        return df
 
     def __repr__(self) -> str:
         """Return a string representation of the Calendar."""
