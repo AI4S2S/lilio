@@ -1,4 +1,5 @@
 """The implementation of the resampling methods for use with the Calendar."""
+
 import typing
 from typing import Callable
 from typing import Literal
@@ -244,22 +245,19 @@ def _resample_dataset(
 
 
 @overload
-def resample(calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset:
-    ...
+def resample(calendar: Calendar, input_data: xr.Dataset) -> xr.Dataset: ...
 
 
 @overload
-def resample(calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray:
-    ...
+def resample(calendar: Calendar, input_data: xr.DataArray) -> xr.DataArray: ...
 
 
 @overload
 def resample(
     calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
-) -> pd.DataFrame:
-    ...
+) -> pd.DataFrame: ...
 
-
+# ruff: noqa: E501 / Ignoring line length issue until pd.Interval fixed to drop time. 
 def resample(
     calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],

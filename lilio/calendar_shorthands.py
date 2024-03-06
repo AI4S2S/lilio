@@ -1,4 +1,5 @@
 """Shorthands for calendars, to make generating commonly used calendars a one-liner."""
+
 import re
 import pandas as pd
 from .calendar import Calendar

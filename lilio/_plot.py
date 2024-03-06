@@ -1,4 +1,5 @@
 """Calendar plotting implementations (general and matplotlib)."""
+
 import typing
 import matplotlib.pyplot as plt
 import numpy as np

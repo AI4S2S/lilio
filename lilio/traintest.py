@@ -2,6 +2,7 @@
 
 Wrapper around sklearn splitters for working with (multiple) xarray dataarrays.
 """
+
 from collections.abc import Iterable
 from typing import Optional
 from typing import Union
@@ -56,8 +57,7 @@ class TrainTestSplit:
         x_args: xr.DataArray,
         y: Optional[xr.DataArray] = None,
         dim: str = "anchor_year",
-    ) -> Iterable[tuple[xr.DataArray, xr.DataArray, xr.DataArray, xr.DataArray]]:
-        ...
+    ) -> Iterable[tuple[xr.DataArray, xr.DataArray, xr.DataArray, xr.DataArray]]: ...
 
     @overload
     def split(
@@ -69,8 +69,7 @@ class TrainTestSplit:
         tuple[
             Iterable[xr.DataArray], Iterable[xr.DataArray], xr.DataArray, xr.DataArray
         ]
-    ]:
-        ...
+    ]: ...
 
     def split(
         self,

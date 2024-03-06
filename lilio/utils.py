@@ -1,4 +1,5 @@
 """Commonly used utility functions for Lilio."""
+
 import re
 import typing
 import warnings
@@ -115,8 +116,8 @@ def infer_input_data_freq(
         if data_freq is None:  # Manually infer the frequency
             data_freq = (data.time.values[1:] - data.time.values[:-1]).min()
 
-    if "ME" or "MS" in data_freq: 
-        data_freq = data_freq.replace("ME","M").replace("MS", "M")
+    if "ME" or "MS" in data_freq:
+        data_freq = data_freq.replace("ME", "M").replace("MS", "M")
 
     if isinstance(data_freq, str):
         data_freq.replace("-", "")  # Get the absolute frequency

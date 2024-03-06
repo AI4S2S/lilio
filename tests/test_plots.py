@@ -1,4 +1,5 @@
 """Tests for the lilio._bokeh_plots module."""
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import pytest

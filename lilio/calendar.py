@@ -1,4 +1,5 @@
 """Lilio's main Calendar module."""
+
 import copy
 import re
 import warnings
@@ -576,7 +577,7 @@ class Calendar:
         """
         df = self.get_intervals()
         df = df.astype("str")
- 
+
         for i in range(df.shape[0]):
             df.iloc[i] = [el.replace(" 00:00:00", "") for el in df.iloc[i].values]
 
