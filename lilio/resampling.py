@@ -257,7 +257,8 @@ def resample(
     calendar: Calendar, input_data: Union[pd.Series, pd.DataFrame]
 ) -> pd.DataFrame: ...
 
-# ruff: noqa: E501 / Ignoring line length issue until pd.Interval fixed to drop time. 
+
+# ruff: noqa: E501 / Ignoring line length issue until pd.Interval fixed to drop time.
 def resample(
     calendar: Calendar,
     input_data: Union[pd.Series, pd.DataFrame, xr.DataArray, xr.Dataset],
