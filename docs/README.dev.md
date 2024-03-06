@@ -47,20 +47,18 @@ This runs tests and prints the results to the command line, as well as storing t
 
 ## Running linters locally
 
-For linting and code style we use `ruff`, `black` and `isort`. We additionally use `mypy` to check the type hints.
+For linting and code style we use `ruff`. We additionally use `mypy` to check the type hints.
 All tools can simply be run by doing:
 
 ```shell
 hatch run lint
 ```
 
-To easily comply with `black` and `isort`, you can also run:
+To comply with formatting you can run:
 
 ```shell
 hatch run format
 ```
-
-This will apply the `black` and `isort` formatting, and then check the code style.
 
 ## Generating the documentation
 To generate the documentation, simply run the following command. This will also test the documentation code snippets. Note that you might need to install [`pandoc`](https://pandoc.org/) to be able to generate the documentation.

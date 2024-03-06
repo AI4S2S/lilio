@@ -1,5 +1,5 @@
-"""Tests for lilio's resample module.
-"""
+"""Tests for lilio's resample module."""
+
 import tempfile
 from pathlib import Path
 import numpy as np

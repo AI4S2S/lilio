@@ -1,5 +1,5 @@
-"""Tests for the lilio.Calendar module.
-"""
+"""Tests for the lilio.Calendar module."""
+
 from typing import Literal
 import numpy as np
 import pandas as pd

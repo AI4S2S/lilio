@@ -1,4 +1,5 @@
 """Calendar shifter to create staggered calendars."""
+
 import copy
 from typing import Union
 import xarray as xr

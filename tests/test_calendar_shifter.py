@@ -1,4 +1,5 @@
 """Tests for the s2s.nwp_calendar module."""
+
 import copy
 import numpy as np
 import pandas as pd

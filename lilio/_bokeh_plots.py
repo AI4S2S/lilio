@@ -1,4 +1,5 @@
 """Calendar plotting implementations (bokeh specific code)."""
+
 import sys
 import typing
 import numpy as np
