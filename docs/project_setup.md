@@ -11,9 +11,9 @@ checklist](https://guide.esciencecenter.nl/#/best_practices/checklist).
 
 This repository is set up with Python versions:
 
-- 3.8
 - 3.9
 - 3.10
+- 3.11
 
 Add or remove Python versions based on project requirements. See [the
 guide](https://guide.esciencecenter.nl/#/best_practices/language_guides/python) for more information about Python
@@ -52,7 +52,7 @@ help you decide which tool to use for packaging.
 
 - Documentation should be put in the `lilio/docs/` directory. The contents have been generated using `sphinx-quickstart` (Sphinx version 1.6.5).
 - We recommend writing the documentation using Restructured Text (reST) and Google style docstrings.
-  - [Restructured Text (reST) and Sphinx CheatSheet](https://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html)
+  - [Restructured Text (reST) and Sphinx CheatSheet](https://sphinx-tutorial.readthedocs.io/cheatsheet/)
   - [Google style docstring examples](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 - The documentation is set up with the ReadTheDocs Sphinx theme.
   - Check out its [configuration options](https://sphinx-rtd-theme.readthedocs.io/en/latest/).
