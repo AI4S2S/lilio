@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fixed
  - Fixed issue with calendar generation when the (rightmost) target period crossed into the new year ([#70](https://github.com/AI4S2S/lilio/pull/70)).
  - Fixed issue with Pandas 2.2 where 'M' changed to 'ME' ([#72](https://github.com/AI4S2S/lilio/pull/72))
-  - Fixed issue where pd.Interval now shows time where it is not wanted ([#72](https://github.com/AI4S2S/lilio/pull/72)). The issue was raised with Pandas ([#57748] https://github.com/pandas-dev/pandas/issues/57748).
+ - Fixed issue where pd.Interval now shows time where it is not wanted ([#72](https://github.com/AI4S2S/lilio/pull/72)). The issue was raised with Pandas ([#57748] https://github.com/pandas-dev/pandas/issues/57748).
+ - Added tests for latest version of macos (with M1 chips) ([#73](https://github.com/AI4S2S/lilio/pull/73))
 
 ## 0.4.2 (2024-01-19)
 ### Changed
