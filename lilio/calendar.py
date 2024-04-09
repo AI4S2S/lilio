@@ -492,7 +492,7 @@ class Calendar:
         while self._map_year(max_year).iloc[0].right > self._last_timestamp:
             max_year -= 1
         # first date check
-        while self._map_year(min_year).iloc[-1].right <= self._first_timestamp:
+        while self._map_year(min_year).iloc[-1].left < self._first_timestamp:
             min_year += 1
 
         # map year(s) and generate year realized advent calendar
