@@ -445,15 +445,15 @@ class Calendar:
         self._last_year = end
         self._mapping = "years"
 
-        self._leftmost_time_bound = None
-        self._rightmost_time_bound = None
+        self._first_timestamp = None
+        self._last_timestamp = None
 
         return self
 
     def map_to_data(
         self,
         input_data: Union[pd.Series, pd.DataFrame, xr.Dataset, xr.DataArray],
-        safe: bool = True,
+        safe: bool=True
     ):
         """Map the calendar to input data period.
 
@@ -471,44 +471,30 @@ class Calendar:
         utils.check_timeseries(input_data)
 
         # check the datetime order of input data
-        # Add optional greedy mode, where we only care if there is some sort of data
-        # Add check of if time_bnds variable exists, then extract the end or start of the bounds. 
-        # else default to super safe mode
-        if safe:
-            self._leftmost_time_bound, self._rightmost_time_bound = (
-                self._infer_time_bound
-            )
         if isinstance(input_data, (pd.Series, pd.DataFrame)):
-            self._leftmost_time_bound = input_data.index.min()
-            self._rightmost_time_bound = input_data.index.max()
+            self._first_timestamp = input_data.index.min()
+            self._last_timestamp = input_data.index.max()
         else:
-            self._leftmost_time_bound = pd.Timestamp(input_data.time.min().values)
-            self._rightmost_time_bound = pd.Timestamp(input_data.time.max().values)
+            self._first_timestamp = pd.Timestamp(input_data.time.min().values)
+            self._last_timestamp = pd.Timestamp(input_data.time.max().values)
 
-        self._mapping = "data" if safe else "data-greedy"
+        self._mapping = "data"
         self._first_year = None
         self._last_year = None
 
         return self
 
     def _set_year_range_from_timestamps(self):
-        min_year = self._leftmost_time_bound.year  # type: ignore
-        max_year = self._rightmost_time_bound.year  # type: ignore
+        min_year = self._first_timestamp.year  # type: ignore
+        max_year = self._last_timestamp.year  # type: ignore
 
         # ensure that the input data could always cover the advent calendar
-        if self._mapping == "data":
-            # last date check
-            while self._map_year(max_year).iloc[0].right > self._rightmost_time_bound:
-                max_year -= 1
-            # first date check
-            while self._map_year(min_year).iloc[-1].left <= self._leftmost_time_bound:
-                min_year += 1
-
-        else: # greedy mode
-            while self._map_year(max_year).iloc[0].left > self._rightmost_time_bound:
-                max_year -= 1
-            while self._map_year(min_year).iloc[-1].right <= self._leftmost_time_bound:
-                min_year += 1
+        # last date check
+        while self._map_year(max_year).iloc[0].right > self._last_timestamp:
+            max_year -= 1
+        # first date check
+        while self._map_year(min_year).iloc[-1].right <= self._first_timestamp:
+            min_year += 1
 
         # map year(s) and generate year realized advent calendar
         if max_year >= min_year:
@@ -528,8 +514,8 @@ class Calendar:
             self.map_years(mapping[1], mapping[2])
         elif mapping[0] == "data":
             self._mapping = "data"
-            self._leftmost_time_bound = mapping[1]
-            self._rightmost_time_bound = mapping[2]
+            self._first_timestamp = mapping[1]
+            self._last_timestamp = mapping[2]
         else:
             raise ValueError(
                 "Unknown mapping passed to calendar. Valid options are"
@@ -568,7 +554,7 @@ class Calendar:
                 "Cannot retrieve intervals without map_years or "
                 "map_to_data having configured the calendar."
             )
-        if self._mapping in ["data-safe", "data-greedy"]:
+        if self._mapping == "data":
             self._set_year_range_from_timestamps()
 
         year_range = range(
@@ -613,7 +599,7 @@ class Calendar:
         if self._mapping == "years":
             mapping = ("years", self._first_year, self._last_year)
         elif self._mapping == "data":
-            mapping = ("data", self._leftmost_time_bound, self._rightmost_time_bound)
+            mapping = ("data", self._first_timestamp, self._last_timestamp)
         else:
             mapping = None
 
