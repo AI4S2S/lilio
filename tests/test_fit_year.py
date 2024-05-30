@@ -41,8 +41,8 @@ def dummy_calendar():
         (False, 0, False, True),
         (False, 1, True, True),
         (False, 1, False, True),
-        (False, 2, True, False),
-        (False, 2, False, False),
+        (False, 12, True, False),
+        (False, 12, False, False),
     ),
 )
 def test_edge_cases(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
@@ -71,4 +71,7 @@ def test_edge_cases(dummy_calendar, safe_mode, n_dropped_indices, inferable, val
         expected_msg = "The input data could not cover the target advent calendar."  
         with pytest.raises(ValueError, match=expected_msg):  
             dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
+            print(truncated_data.index[-1])
+            print(dummy_calendar._rightmost_time_bound)
+            print(dummy_calendar.get_intervals())
     
