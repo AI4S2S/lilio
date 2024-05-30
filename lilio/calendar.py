@@ -15,6 +15,7 @@ from lilio import utils
 
 _MappingYears = tuple[Literal["years"], int, int]
 _MappingData = tuple[Literal["data"], pd.Timestamp, pd.Timestamp]
+_MappingDataGreedy = tuple[Literal["data-greedy"], pd.Timestamp, pd.Timestamp]
 
 
 class Interval:
@@ -138,6 +139,7 @@ class Calendar:
             None,
             _MappingYears,
             _MappingData,
+            _MappingDataGreedy,
         ] = None,
         intervals: Union[None, list[Interval]] = None,
     ):
@@ -197,14 +199,14 @@ class Calendar:
         self._first_year: Union[None, int] = None
         self._last_year: Union[None, int] = None
 
-        self._leftmost_time_bound = None
-        self._rightmost_time_bound = None
+        self._leftmost_time_bound: Union[None, pd.Timestamp] = None
+        self._rightmost_time_bound: Union[None, pd.Timestamp] = None
 
         if intervals is not None:
             # pylint: disable=expression-not-assigned
             [self._append(iv) for iv in intervals]
 
-        self._mapping: Union[None, Literal["years", "data"]]
+        self._mapping: Union[None, Literal["years", "data", "data-greedy"]]
         self._set_mapping(mapping)
 
     @property
@@ -242,7 +244,7 @@ class Calendar:
             )
 
     @property
-    def mapping(self) -> Union[None, Literal["years", "data"]]:
+    def mapping(self) -> Union[None, Literal["years", "data", "data-greedy"]]:
         """Return the mapping of the calendar. Either  None, "years", or "data"."""
         return self._mapping
 
@@ -454,9 +456,13 @@ class Calendar:
         return self
 
     def _infer_time_bound(self, input_data):
-        time_delta = pd.Timedelta(xr.infer_freq(input_data.index))
-        right = input_data.index[-1] + time_delta/2
-        left = input_data.index[0] - time_delta/2
+        right = input_data.index.max()
+        left = input_data.index.min()
+        freq = xr.infer_freq(input_data.index)
+        if freq is not None:
+            time_delta = pd.Timedelta(freq)
+            right += time_delta/2
+            left -= time_delta/2
         return left, right
 
     def map_to_data(
@@ -480,16 +486,17 @@ class Calendar:
         utils.check_timeseries(input_data)
 
         # check the datetime order of input data
-        if safe is True:
-            self._leftmost_time_bound, self._rightmost_time_bound = (
-                self._infer_time_bound(input_data)
-            )
         if isinstance(input_data, (pd.Series, pd.DataFrame)):
-            self._leftmost_time_bound = input_data.index.min()
-            self._rightmost_time_bound = input_data.index.max()
+            if safe:
+                self._leftmost_time_bound, self._rightmost_time_bound = (
+                    self._infer_time_bound(input_data)
+                )
+            else:
+                self._leftmost_time_bound = input_data.index.min()
+                self._rightmost_time_bound = input_data.index.max()
         else:
-            self._leftmost_time_bound = pd.Timestamp(input_data.time.min().values)
-            self._rightmost_time_bound = pd.Timestamp(input_data.time.max().values)
+            self._leftmost_time_bound = pd.Timestamp(input_data["time"].min().values)
+            self._rightmost_time_bound = pd.Timestamp(input_data["time"].max().values)
 
         self._mapping = "data" if safe else "data-greedy"
         self._first_year = None
@@ -498,22 +505,22 @@ class Calendar:
         return self
 
     def _set_year_range_from_timestamps(self):
-        min_year = self._leftmost_time_bound.year  # type: ignore
-        max_year = self._rightmost_time_bound.year  # type: ignore
+        min_year = self._leftmost_time_bound.year - 1 # type: ignore
+        max_year = self._rightmost_time_bound.year + 1  # type: ignore
 
         # ensure that the input data could always cover the advent calendar
         if self._mapping == "data":
             # last date check
-            while self._map_year(max_year).iloc[-1].right >= self._rightmost_time_bound:
+            while self._map_year(max_year).max().right > self._rightmost_time_bound:
                 max_year -= 1
             # first date check
-            while self._map_year(min_year).iloc[0].left <= self._leftmost_time_bound:
+            while self._map_year(min_year).min().left < self._leftmost_time_bound:
                 min_year += 1
 
         else: # greedy mode
-            while self._map_year(max_year).iloc[-1].left > self._rightmost_time_bound:
+            while self._map_year(max_year).max().left > self._rightmost_time_bound:
                 max_year -= 1
-            while self._map_year(min_year).iloc[0].right <= self._leftmost_time_bound:
+            while self._map_year(min_year).min().right < self._leftmost_time_bound:
                 min_year += 1
 
         # map year(s) and generate year realized advent calendar
