@@ -25,10 +25,7 @@ def dummy_calendar():
     cal = cal.map_years(2021, 2021)
     return cal
 
-
-@pytest.mark.parametrize(
-    "safe_mode, n_dropped_indices, inferable, valid",
-    (
+test_matrix = (
         # Safe mode (default):
         (True, 0, True, True),
         (True, 0, False, True),
@@ -45,10 +42,14 @@ def dummy_calendar():
         (False, 10, False, True),
         (False, 11, True, False),
         (False, 11, False, False),
-    ),
+    )
+
+
+@pytest.mark.parametrize(
+    "safe_mode, n_dropped_indices, inferable, valid", test_matrix,
 )
-def test_edge_cases(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
-    """"""
+def test_right_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
+    """Test right bounds of calendar are created correctly."""
     time_index = pd.date_range("20200131", "20210121", freq="2d")
     var = np.random.random(len(time_index))
     test_data = pd.Series(var, index=time_index)
@@ -68,12 +69,45 @@ def test_edge_cases(dummy_calendar, safe_mode, n_dropped_indices, inferable, val
     
     if valid:
         calendar = dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
-        print(calendar._map_year(2020).max().right)
-        print(truncated_data.index[-1])
-        print(calendar._rightmost_time_bound)
         assert np.array_equal(calendar.flat, expected)
     else:
         expected_msg = "The input data could not cover the target advent calendar."  
         with pytest.raises(ValueError, match=expected_msg):  
             dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
             dummy_calendar.get_intervals()
+
+@pytest.mark.parametrize(
+    "safe_mode, n_dropped_indices, inferable, valid", test_matrix,
+)
+def test_left_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
+    """Test left bounds of the calendar are created correctly."""
+    time_index = pd.date_range("20200131", "20210121", freq="2d")
+    var = np.random.random(len(time_index))
+    test_data = pd.Series(var, index=time_index)
+
+    if not inferable:
+        test_data = pd.concat((test_data[:2], test_data[3:]))
+        assert pd.infer_freq(test_data.index) is None
+
+    truncated_data = test_data[n_dropped_indices:]
+    
+    expected = np.array(
+        [
+            interval("2020-12-21", "2020-12-31", closed="left"),
+            interval("2020-12-31", "2021-01-20", closed="left"),
+        ]
+    )
+    
+    if valid:
+        calendar = dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
+        print(calendar._map_year(2020).min().left)
+        print(truncated_data.index[-1])
+        print(calendar._leftmost_time_bound)
+        assert np.array_equal(calendar.flat, expected)
+    else:
+        expected_msg = "The input data could not cover the target advent calendar."  
+        with pytest.raises(ValueError, match=expected_msg):  
+            dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
+            print(truncated_data.index[-1])
+            dummy_calendar.get_intervals()
+            print(dummy_calendar.get_intervals())
