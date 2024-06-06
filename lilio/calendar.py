@@ -479,6 +479,9 @@ class Calendar:
             input_data: Input data for datetime mapping. Its index must be either
                 pandas.DatetimeIndex, or an xarray `time` coordinate with datetime
                 data.
+            safe: bool describing if data should be mapped in safe 
+                (makes sure intervals are data-filled) or greedy mode 
+                (interval created if there is any data), safe is default. 
 
         Returns:
             The calendar mapped to the input data period.

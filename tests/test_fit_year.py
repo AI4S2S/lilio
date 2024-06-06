@@ -25,7 +25,9 @@ def dummy_calendar():
     cal = cal.map_years(2021, 2021)
     return cal
 
-test_matrix = (
+
+@pytest.mark.parametrize(
+    "safe_mode, n_dropped_indices, inferable, valid", (
         # Safe mode (default):
         (True, 0, True, True),
         (True, 0, False, True),
@@ -42,13 +44,9 @@ test_matrix = (
         (False, 10, False, True),
         (False, 11, True, False),
         (False, 11, False, False),
-    )
-
-
-@pytest.mark.parametrize(
-    "safe_mode, n_dropped_indices, inferable, valid", test_matrix,
+    ),
 )
-def test_right_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
+def test_map_to_data_rightbounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
     """Test right bounds of calendar are created correctly."""
     time_index = pd.date_range("20200131", "20210121", freq="2d")
     var = np.random.random(len(time_index))
@@ -77,16 +75,33 @@ def test_right_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, v
             dummy_calendar.get_intervals()
 
 @pytest.mark.parametrize(
-    "safe_mode, n_dropped_indices, inferable, valid", test_matrix,
+    "safe_mode, n_dropped_indices, inferable, valid", (
+        # Safe mode (default):
+        (True, 0, True, True),
+        (True, 0, False, True),
+        (True, 1, True, True),  # Only if we can infer the freq do we know if valid
+        (True, 1, False, False),  # Otherwise not
+        (True, 2, True, False),
+        (True, 2, False, False),
+        # Greedy mode:
+        (False, 0, True, True),
+        (False, 0, False, True),
+        (False, 1, True, True),
+        (False, 1, False, True),
+        (False, 5, True, True),  # anchor width is 10d
+        (False, 5, False, True),
+        (False, 6, True, False),
+        (False, 6, False, False),
+    ),
 )
-def test_left_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
+def test_map_to_data_leftbounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, valid):
     """Test left bounds of the calendar are created correctly."""
-    time_index = pd.date_range("20200131", "20210121", freq="2d")
+    time_index = pd.date_range("20201220", "20210121", freq="2d")
     var = np.random.random(len(time_index))
     test_data = pd.Series(var, index=time_index)
 
     if not inferable:
-        test_data = pd.concat((test_data[:2], test_data[3:]))
+        test_data = pd.concat((test_data[:-3], test_data[-2:]))
         assert pd.infer_freq(test_data.index) is None
 
     truncated_data = test_data[n_dropped_indices:]
@@ -100,14 +115,9 @@ def test_left_bounds(dummy_calendar, safe_mode, n_dropped_indices, inferable, va
     
     if valid:
         calendar = dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
-        print(calendar._map_year(2020).min().left)
-        print(truncated_data.index[-1])
-        print(calendar._leftmost_time_bound)
         assert np.array_equal(calendar.flat, expected)
     else:
         expected_msg = "The input data could not cover the target advent calendar."  
         with pytest.raises(ValueError, match=expected_msg):  
             dummy_calendar.map_to_data(truncated_data, safe=safe_mode)
-            print(truncated_data.index[-1])
             dummy_calendar.get_intervals()
-            print(dummy_calendar.get_intervals())
