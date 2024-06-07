@@ -455,20 +455,32 @@ class Calendar:
 
         return self
 
-    def _infer_time_bound(self, input_data):
+    def _infer_time_bound(
+        self, input_data: Union[pd.Series, pd.DataFrame, xr.Dataset, xr.DataArray]
+    ):
+        """Infer time bounds from input data.
+
+        Args:
+            input_data: Input data for datetime mapping. Its index must be either
+                pandas.DatetimeIndex, or an xarray `time` coordinate with datetime
+                data.
+
+        Returns:
+            left and right time bounds of calendar.
+        """
         right = input_data.index.max()
         left = input_data.index.min()
         freq = xr.infer_freq(input_data.index)
         if freq is not None:
             time_delta = pd.Timedelta(freq)
-            right += time_delta/2
-            left -= time_delta/2
+            right += time_delta / 2
+            left -= time_delta / 2
         return left, right
 
     def map_to_data(
         self,
         input_data: Union[pd.Series, pd.DataFrame, xr.Dataset, xr.DataArray],
-        safe: bool=True
+        safe: bool = True,
     ):
         """Map the calendar to input data period.
 
@@ -479,9 +491,9 @@ class Calendar:
             input_data: Input data for datetime mapping. Its index must be either
                 pandas.DatetimeIndex, or an xarray `time` coordinate with datetime
                 data.
-            safe: bool describing if data should be mapped in safe 
-                (makes sure intervals are data-filled) or greedy mode 
-                (interval created if there is any data), safe is default. 
+            safe: bool describing if data should be mapped in safe
+                (makes sure intervals are data-filled) or greedy mode
+                (interval created if there is any data), safe is default.
 
         Returns:
             The calendar mapped to the input data period.
@@ -508,7 +520,7 @@ class Calendar:
         return self
 
     def _set_year_range_from_timestamps(self):
-        min_year = self._leftmost_time_bound.year - 1 # type: ignore
+        min_year = self._leftmost_time_bound.year - 1  # type: ignore
         max_year = self._rightmost_time_bound.year + 1  # type: ignore
 
         # ensure that the input data could always cover the advent calendar
@@ -520,7 +532,7 @@ class Calendar:
             while self._map_year(min_year).min().left < self._leftmost_time_bound:
                 min_year += 1
 
-        else: # greedy mode
+        else:  # greedy mode
             while self._map_year(max_year).max().left > self._rightmost_time_bound:
                 max_year -= 1
             while self._map_year(min_year).min().right < self._leftmost_time_bound:
