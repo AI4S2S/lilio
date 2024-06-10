@@ -385,7 +385,7 @@ class TestMap:
         # test the edge value when the input covers the anchor date
         cal = daily_calendar(anchor="10-15", length="180d")
         # multiple years covered
-        time_index = pd.date_range("20191010", "20211225", freq="60d")
+        time_index = pd.date_range("20190101", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index)
         cal.map_to_data(timeseries)
@@ -408,7 +408,7 @@ class TestMap:
     def test_map_to_data_input_time_backward(self):
         # test when the input data has reverse order time index
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20201010", "20211225", freq="60d")
+        time_index = pd.date_range("20200101", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index[::-1])
         cal.map_to_data(timeseries)
@@ -427,7 +427,7 @@ class TestMap:
     def test_map_to_data_xarray_input(self):
         # test when the input data has reverse order time index
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20201010", "20211225", freq="60d")
+        time_index = pd.date_range("20200101", "20211225", freq="60d")
         test_data = np.random.random(len(time_index))
         dataarray = xr.DataArray(data=test_data, coords={"time": time_index})
         cal.map_to_data(dataarray)

@@ -472,9 +472,15 @@ class Calendar:
         left = input_data.index.min()
         freq = xr.infer_freq(input_data.index)
         if freq is not None:
-            time_delta = pd.Timedelta(freq)
-            right += time_delta / 2
-            left -= time_delta / 2
+            try:
+                time_delta = pd.to_timedelta(freq)
+                right += time_delta / 2
+                left -= time_delta / 2
+            except ValueError as exc:
+                if "w/o a number" in str(exc) or "only leading negative" in str(exc):
+                    pass
+                else:
+                    raise exc
         return left, right
 
     def map_to_data(
