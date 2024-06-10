@@ -470,17 +470,17 @@ class Calendar:
         """
         right = input_data.index.max()
         left = input_data.index.min()
-        freq = xr.infer_freq(input_data.index)
-        if freq is not None:
-            try:
-                time_delta = pd.to_timedelta(freq)
-                right += time_delta / 2
-                left -= time_delta / 2
-            except ValueError as exc:
-                if "w/o a number" in str(exc) or "only leading negative" in str(exc):
-                    pass
-                else:
-                    raise exc
+
+        if isinstance(input_data, (pd.Series, pd.DataFrame)):
+            freq = pd.infer_freq(input_data.index)
+        else:
+            freq = xr.infer_freq(input_data["time"])
+
+        time_delta = pd.to_timedelta(freq, errors="coerce")
+        if not pd.isna(time_delta):
+            right += time_delta / 2
+            left -= time_delta / 2
+
         return left, right
 
     def map_to_data(
