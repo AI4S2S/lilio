@@ -59,7 +59,7 @@ class TestResample:
     @pytest.fixture
     def dummy_multidimensional(self):
         np.random.seed(0)
-        time_index = pd.date_range("20171020", "20211001", freq="15d")
+        time_index = pd.date_range("2017-10-20", "2021-10-01", freq="15d")
         return xr.Dataset(
             data_vars={
                 "temp": (["x", "y", "time"], np.random.randn(2, 2, len(time_index))),
@@ -149,7 +149,7 @@ class TestResample:
             anchor="10-15", length="100d", n_precursors=5, allow_overlap=True
         )
 
-        time_index = pd.date_range("20151101", "20211101", freq="50d")
+        time_index = pd.date_range("2015-11-01", "2021-11-01", freq="50d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index)
         calendar.map_to_data(series)
@@ -161,7 +161,7 @@ class TestResample:
         # Will test the regular expression match and pre-pending of '1' in the
         # check_input_frequency utility function
         calendar = daily_calendar(anchor="10-15", length="1d")
-        time_index = pd.date_range("20191101", "20211101", freq="1d")
+        time_index = pd.date_range("2019-11-01", "2021-11-01", freq="1d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index, name="data1")
         calendar.map_to_data(series)
@@ -261,7 +261,7 @@ TOO_LOW_FREQ_WARN = r".*input data frequency is very close to the Calendar's fre
 class TestResampleChecks:
     @pytest.fixture
     def dummy_dataframe(self):
-        time_index = pd.date_range("20191015", "20211001", freq="2d")
+        time_index = pd.date_range("2019-10-15", "2021-10-01", freq="2d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index, name="data1")
         return pd.DataFrame(series)
@@ -295,7 +295,7 @@ class TestResampleChecks:
             resample(cal, dummy_dataset)
 
     def test_low_freq_month_fmt_dataframe(self):
-        time_index = pd.date_range("20181001", "20211001", freq="20d")
+        time_index = pd.date_range("2018-10-01", "2021-10-01", freq="20d")
         df = pd.DataFrame(
             data={
                 "data1": np.random.random(len(time_index)),
@@ -308,7 +308,7 @@ class TestResampleChecks:
             resample(cal, df)
 
     def test_month_freq_data(self):
-        time_index = pd.date_range("20181001", "20211001", freq="2ME")
+        time_index = pd.date_range("2018-10-01", "2021-10-01", freq="2ME")
         test_data = pd.DataFrame(
             data={
                 "data1": np.random.random(len(time_index)),
@@ -358,7 +358,7 @@ class TestResampleMethods:
 
     @pytest.fixture
     def dummy_dataframe(self):
-        time_index = pd.date_range("20151020", "20211001", freq="60d")
+        time_index = pd.date_range("2015-10-20", "2021-10-01", freq="60d")
         test_data = np.random.random(len(time_index))
         expected = np.array([test_data[4:7].mean(), test_data[7:10].mean()])
         series = pd.Series(test_data, index=time_index, name="data1")

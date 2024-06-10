@@ -184,7 +184,7 @@ class TestCalendar:
 
     def test_map_to_data(self, dummy_calendar):
         # create dummy data for testing
-        time_index = pd.date_range("20201110", "20211211", freq="10d")
+        time_index = pd.date_range("2020-11-10", "2021-12-11", freq="10d")
         var = np.random.random(len(time_index))
         # generate input data
         test_data = pd.Series(var, index=time_index)
@@ -347,7 +347,7 @@ class TestMap:
         # test the edge value when the input could not cover the anchor date
         cal = daily_calendar(anchor="10-15", length="180d")
         # single year covered
-        time_index = pd.date_range("20191020", "20211001", freq="60d")
+        time_index = pd.date_range("2019-10-20", "2021-10-01", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index)
         cal.map_to_data(timeseries)
@@ -365,7 +365,7 @@ class TestMap:
         # test the single year coverage
         cal = daily_calendar(anchor="6-30", length="180d")
         # multiple years covered
-        time_index = pd.date_range("20210101", "20211231", freq="7d")
+        time_index = pd.date_range("2021-01-01", "2021-12-31", freq="7d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index)
         cal.map_to_data(timeseries)
@@ -385,7 +385,7 @@ class TestMap:
         # test the edge value when the input covers the anchor date
         cal = daily_calendar(anchor="10-15", length="180d")
         # multiple years covered
-        time_index = pd.date_range("20190101", "20211225", freq="60d")
+        time_index = pd.date_range("2019-01-01", "2021-12-25", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index)
         cal.map_to_data(timeseries)
@@ -408,7 +408,7 @@ class TestMap:
     def test_map_to_data_input_time_backward(self):
         # test when the input data has reverse order time index
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20200101", "20211225", freq="60d")
+        time_index = pd.date_range("2020-01-01", "2021-12-25", freq="60d")
         test_data = np.random.random(len(time_index))
         timeseries = pd.Series(test_data, index=time_index[::-1])
         cal.map_to_data(timeseries)
@@ -427,7 +427,7 @@ class TestMap:
     def test_map_to_data_xarray_input(self):
         # test when the input data has reverse order time index
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20200101", "20211225", freq="60d")
+        time_index = pd.date_range("2020-01-01", "2021-12-25", freq="60d")
         test_data = np.random.random(len(time_index))
         dataarray = xr.DataArray(data=test_data, coords={"time": time_index})
         cal.map_to_data(dataarray)
@@ -443,7 +443,7 @@ class TestMap:
 
     def test_missing_time_dim(self):
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20191020", "20211001", freq="60d")
+        time_index = pd.date_range("2019-10-20", "2021-10-01", freq="60d")
         test_data = np.random.random(len(time_index))
         dataframe = pd.DataFrame(test_data, index=time_index)
         dataset = dataframe.to_xarray()
@@ -452,7 +452,7 @@ class TestMap:
 
     def test_non_time_dim(self):
         cal = daily_calendar(anchor="10-15", length="180d")
-        time_index = pd.date_range("20191020", "20211001", freq="60d")
+        time_index = pd.date_range("2019-10-20", "2021-10-01", freq="60d")
         test_data = np.random.random(len(time_index))
         dataframe = pd.DataFrame(test_data, index=time_index)
         dataset = dataframe.to_xarray().rename({"index": "time"})
@@ -500,7 +500,7 @@ class TestMap:
         self, dummy_calendar, safe_mode, n_dropped_indices, inferable, valid
     ):
         """Test right bounds of calendar are created correctly."""
-        time_index = pd.date_range("20200131", "20210121", freq="2d")
+        time_index = pd.date_range("2020-01-31", "2021-01-21", freq="2d")
         var = np.random.random(len(time_index))
         test_data = pd.Series(var, index=time_index)
 
@@ -551,7 +551,7 @@ class TestMap:
         self, dummy_calendar, safe_mode, n_dropped_indices, inferable, valid
     ):
         """Test left bounds of the calendar are created correctly."""
-        time_index = pd.date_range("20201220", "20210121", freq="2d")
+        time_index = pd.date_range("2020-12-20", "2021-01-21", freq="2d")
         var = np.random.random(len(time_index))
         test_data = pd.Series(var, index=time_index)
 

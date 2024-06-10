@@ -13,7 +13,7 @@ import lilio.traintest
 def dummy_data():
     # Generate random data
     n = 50
-    time_index = pd.date_range("20151020", periods=n, freq="60d")
+    time_index = pd.date_range("2015-10-20", periods=n, freq="60d")
     time_coord = {"time": time_index}
     x1 = xr.DataArray(np.random.randn(n), coords=time_coord, name="x1")
     x2 = xr.DataArray(np.random.randn(n), coords=time_coord, name="x2")
