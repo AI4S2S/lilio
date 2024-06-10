@@ -496,7 +496,7 @@ class TestMap:
             (False, 11, False, False),
         ),
     )
-    def test_map_to_data_rightbounds(
+    def test_map_to_data_rightbounds(  # noqa: PLR0913 (too-many-arguments)
         self, dummy_calendar, safe_mode, n_dropped_indices, inferable, valid
     ):
         """Test right bounds of calendar are created correctly."""
@@ -547,7 +547,7 @@ class TestMap:
             (False, 6, False, False),
         ),
     )
-    def test_map_to_data_leftbounds(
+    def test_map_to_data_leftbounds(  # noqa: PLR0913 (too-many-arguments)
         self, dummy_calendar, safe_mode, n_dropped_indices, inferable, valid
     ):
         """Test left bounds of the calendar are created correctly."""
