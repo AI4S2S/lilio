@@ -76,7 +76,7 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 __author__ = "Claire Donnelly"
 __email__ = "c.donnelly@esciencecenter.nl"
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 
 __all__ = [
     "Calendar",
