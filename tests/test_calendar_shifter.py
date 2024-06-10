@@ -22,7 +22,7 @@ class TestCalendarShifter:
 
     @pytest.fixture
     def dummy_data(self):
-        time_index = pd.date_range("20211001", "20220501", freq="1d")
+        time_index = pd.date_range("2021-10-01", "2022-05-01", freq="1d")
         np.random.seed(0)
         temperature = 15 + 8 * np.random.randn(2, 2, len(time_index))
         lon = [[-99.83, -99.32], [-99.79, -99.23]]
