@@ -179,7 +179,7 @@ class TestResample:
 
     def test_overlapping(self):
         # Test to ensure overlapping intervals are accepted and correctly resampled
-        time_index = pd.date_range("20191001", "20200101", freq="30d")
+        time_index = pd.date_range("2019-01-01", "2020-01-01", freq="30d")
         test_data = np.random.random(len(time_index))
         series = pd.Series(test_data, index=time_index, name="data1")
 
