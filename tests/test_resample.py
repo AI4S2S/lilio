@@ -30,9 +30,9 @@ class TestResample:
     def dummy_calendar_targets(self, request):
         return daily_calendar(anchor="5-10", length="120d", n_targets=request.param)
 
-    @pytest.fixture(params=["20151020", "20191015"])
+    @pytest.fixture(params=["2015-10-20", "2019-09-10"])
     def dummy_series(self, request):
-        time_index = pd.date_range(request.param, "20211001", freq="60d")
+        time_index = pd.date_range(request.param, "2021-10-01", freq="60d")
         test_data = np.random.random(len(time_index))
         expected = np.array([test_data[4:7].mean(), test_data[7:10].mean()])
         series = pd.Series(test_data, index=time_index, name="data1")
