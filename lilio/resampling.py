@@ -318,17 +318,17 @@ def resample(
         >>> import pandas as pd
         >>> import numpy as np
         >>> cal = lilio.daily_calendar(anchor="12-31", length="180d")
-        >>> time_index = pd.date_range("20191201", "20211231", freq="1d")
+        >>> time_index = pd.date_range("2019-01-01", "2022-01-01", freq="1d")
         >>> var = np.arange(len(time_index))
         >>> input_data = pd.Series(var, index=time_index)
         >>> cal = cal.map_to_data(input_data)
         >>> bins = lilio.resample(cal, input_data)
         >>> bins # doctest: +NORMALIZE_WHITESPACE
            anchor_year  i_interval  ...   data  is_target
-        0         2019          -1  ...   14.5      False
-        1         2019           1  ...  119.5       True
-        2         2020          -1  ...  305.5      False
-        3         2020           1  ...  485.5       True
+        0         2019          -1  ...  273.5      False
+        1         2019           1  ...  453.5       True
+        2         2020          -1  ...  639.5      False
+        3         2020           1  ...  819.5       True
         [4 rows x 5 columns]
     """
     if calendar.mapping is None:
