@@ -10,8 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
  - Moved to ruff formatter instead of black ([#70](https://github.com/AI4S2S/lilio/pull/70))
  - Do import sorting with ruff instead of isort ([#70](https://github.com/AI4S2S/lilio/pull/70))
- - Option for "greedy" mode which creates an interval is any data is available within the time bound ([#75](https://github.com/AI4S2S/lilio/pull/75))
- - Create an interval while inferring data frequency in "safe" mode ([#75](https://github.com/AI4S2S/lilio/pull/75))
+ - Option for "greedy" mode which creates an interval if any data is available within the time bound ([#75](https://github.com/AI4S2S/lilio/pull/75))
+ - `map_to_data` now tries to infer the time bounds for the data, and uses those to determine which anchor years are valid ([#75](https://github.com/AI4S2S/lilio/pull/75))
  - Tests for greedy and safe mode, including inferring data frequency ([#75](https://github.com/AI4S2S/lilio/pull/75))
 
 
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
  - Fixed issue with Pandas 2.2 where 'M' changed to 'ME' ([#72](https://github.com/AI4S2S/lilio/pull/72))
  - Fixed issue where pd.Interval now shows time where it is not wanted ([#72](https://github.com/AI4S2S/lilio/pull/72)). The issue was raised with Pandas ([#57748] https://github.com/pandas-dev/pandas/issues/57748).
  - Added tests for latest version of macos (with M1 chips) ([#73](https://github.com/AI4S2S/lilio/pull/73))
- - Fixed dummy timeseries, incorrect dates and test data, which should not have been working before ([#75](https://github.com/AI4S2S/lilio/pull/75))
+ - Fixed a bug in `map_to_data` that lead to anchor years being included when they should not have ([#75](https://github.com/AI4S2S/lilio/pull/75))
 
 ## 0.4.2 (2024-01-19)
 ### Changed
