@@ -48,14 +48,14 @@ This section is for maintainers of the package.
 2. Determine what new version (major, minor or patch) to use. Package uses `semantic versioning <https://semver.org>`.
 3. Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
 
-```shell
-bumpversion major
-bumpversion minor
-bumpversion patch
-```
+    ```shell
+    bumpversion major
+    bumpversion minor
+    bumpversion patch
+    ```
 
-4. Update CHANGELOG.md with changes between current and new version and verify that the information in `CITATION.cff` is correct
-5. Run the unit tests with `hatch run test`
+4. Update CHANGELOG.md with changes between current and new version and verify that the information in `CITATION.cff` is correct.
+5. Run the unit tests with `hatch run test`.
 6. Commit & push changes to GitHub.
 7. Wait for [GitHub
     actions](https://github.com/AI4S2S/lilio/actions?query=branch%3Amain+)
