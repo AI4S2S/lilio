@@ -40,9 +40,13 @@ The sections below outline the steps in each case.
 
 In case you feel like you've made a valuable contribution, but you don't know how to write or run tests for it, or how to generate the documentation: don't let this discourage you from making the pull request; we can help you! Just go ahead and submit the pull request, but keep in mind that you might be asked to append additional commits to your pull request.
 
-## Versioning
+## You want to make a release
 
-Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
+This section is for maintainers of the package.
+
+1. Checkout ``HEAD`` of ``main`` branch with ``git checkout main`` and ``git pull``.
+2. Determine what new version (major, minor or patch) to use. Package uses `semantic versioning <https://semver.org>`.
+3. Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
 
 ```shell
 bumpversion major
@@ -50,30 +54,31 @@ bumpversion minor
 bumpversion patch
 ```
 
-## Making a release
+4. Update CHANGELOG.md with changes between current and new version and verify that the information in `CITATION.cff` is correct
+5. Run the unit tests with `hatch run test`
+6. Commit & push changes to GitHub.
+7. Wait for [GitHub
+    actions](https://github.com/AI4S2S/lilio/actions?query=branch%3Amain+)
+    to be completed and green.
 
-This section describes how to make a release in 3 parts: preparation, release and validation.
+8. Create a [GitHub release](https://github.com/AI4S2S/lilio/releases/new)
 
-### Preparation
+    - Use version as title and tag version.
+    - As description use intro text from README.md (to give context to
+        Zenodo record) and changes from CHANGELOG.md
 
-1. Update the `CHANGELOG.md` file
-2. Verify that the information in `CITATION.cff` is correct
-3. Make sure the [version has been updated](#versioning).
-4. Run the unit tests with `hatch run test`
+    This will:
 
-### Making the GitHub release
+    - trigger Zenodo into making a snapshot of your repository and sticking a DOI on it.
+    - start a GitHub action that builds and uploads the new version to [PyPI](https://pypi.org/project/lilio/).
+        - Which should trigger [conda-forge](https://anaconda.org/conda-forge/lilio) to update the package as well.
 
-Make a release and tag on GitHub.com. This will:
+10. Verify
 
- - trigger Zenodo into making a snapshot of your repository and sticking a DOI on it.
- - start a GitHub action that builds and uploads the new version to [PyPI](https://pypi.org/project/lilio/).
-    - Which should trigger [conda-forge](https://anaconda.org/conda-forge/lilio) to update the package as well.
+    After making the release, you should check that:
 
+    1. The [Zenodo page](https://doi.org/10.5281/zenodo.7620212) is updated
+    1. The [publishing action](https://github.com/AI4S2S/lilio/actions/workflows/python-publish.yml) ran successfully, and that `pip install lilio` installs the new version.
+    1. The [conda-forge package](https://anaconda.org/conda-forge/lilio) is updated, and can be installed using conda.
 
-### Validation
-
-After making the release, you should check that:
-
-1. The [Zenodo page](https://doi.org/10.5281/zenodo.7620212) is updated
-1. The [publishing action](https://github.com/AI4S2S/lilio/actions/workflows/python-publish.yml) ran successfully, and that `pip install lilio` installs the new version.
-1. The [conda-forge package](https://anaconda.org/conda-forge/lilio) is updated, and can be installed using conda.
+11. Celebrate
