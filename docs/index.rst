@@ -30,7 +30,7 @@ Table of contents
 
     Scaling up Lilio with Dask <dask_integration.md>
     Developer Readme <README.dev.md>
-    Contributing guide <contributing_link>
+    Contributing guide <CONTRIBUTING.md>
     Changelog <CHANGELOG.md>
     API reference <autoapi/index.rst>
 
