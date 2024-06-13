@@ -73,7 +73,7 @@ You can also make use of the [sphinx-autobuild](https://pypi.org/project/sphinx-
 
 ## Versioning
 
-Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
+Firstly, determine what new version (major, minor or patch) to use. This package uses `semantic versioning <https://semver.org>`. Bumping the version across all files is done with [bumpversion](https://github.com/c4urself/bump2version), e.g.
 
 ```shell
 bumpversion major
@@ -87,14 +87,24 @@ This section describes how to make a release in 3 parts: preparation, release an
 
 ### Preparation
 
-1. Update the `CHANGELOG.md` file
-2. Verify that the information in `CITATION.cff` is correct
+1. Update the `CHANGELOG.md` file with changes between current and new version.
+2. Verify that the information in `CITATION.cff` is correct.
 3. Make sure the [version has been updated](#versioning).
-4. Run the unit tests with `hatch run test`
+4. Run the unit tests with `hatch run test`.
+5. Commit & push changes to GitHub.
+6. Wait for [GitHub
+    actions](https://github.com/AI4S2S/lilio/actions?query=branch%3Amain+)
+    to be completed and green.
 
 ### Making the GitHub release
 
-Make a release and tag on GitHub.com. This will:
+Create a new [GitHub release](https://github.com/AI4S2S/lilio/releases/new)
+
+    - Use version as title and tag version.
+    - Summarise the changes in this new release (to give context to
+        Zenodo record) and then add changes from `CHANGELOG.md`
+
+This will:
 
  - trigger Zenodo into making a snapshot of your repository and sticking a DOI on it.
  - start a GitHub action that builds and uploads the new version to [PyPI](https://pypi.org/project/lilio/).

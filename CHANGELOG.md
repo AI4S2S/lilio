@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Moved making a github release to developer documentation and pointed to it in CONTRIBUTING.md ([#78](https://github.com/AI4S2S/lilio/pull/78))
+- Added absolute link to README.md and added CONTRIBUTING.md to index.rst in docs ([#78](https://github.com/AI4S2S/lilio/pull/78))
 
 ## 0.5.0 (2024-06-11)
 ### Changed

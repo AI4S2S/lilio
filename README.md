@@ -40,7 +40,7 @@ python3 -m pip install git+https://github.com/AI4S2S/lilio.git
 ```
 
 ### Configure the package for development and testing
-A more extensive developer guide can be found [here](./docs/README.dev.md).
+A more extensive developer guide can be found [here](https://github.com/AI4S2S/lilio/blob/main/docs/README.dev.md).
 
 The testing framework used here is [pytest](https://pytest.org). Before running the test, we get a local copy of the source code and install `lilio` via the command:
 
@@ -115,7 +115,7 @@ For detailed information on using `lilio` package, visit the [documentation page
 ## Contributing
 
 If you want to contribute to the development of lilio,
-have a look at the [contribution guidelines](docs/CONTRIBUTING.md).
+have a look at the [contribution guidelines](https://github.com/AI4S2S/lilio/blob/main/docs/CONTRIBUTING.md).
 
 ## How to cite us
 [![rsd badge](https://img.shields.io/badge/RSD-lilio-blue)](https://research-software-directory.org/software/lilio)
